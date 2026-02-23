@@ -1,0 +1,893 @@
+17/02/2026, 17:39:11
+Route / not found.
+undefined
+-----------------------
+17/02/2026, 17:39:11
+Route / not found.
+undefined
+-----------------------
+17/02/2026, 17:39:11
+Route /favicon.ico not found.
+undefined
+-----------------------
+17/02/2026, 17:39:11
+Route /favicon.ico not found.
+undefined
+-----------------------
+17/02/2026, 17:44:00
+
+Invalid `dal.category.findUnique()` invocation in
+F:\Programming\new stuff\Duly Noted 2\src\5-Services\category-service.ts:14:45
+
+  11 
+  12 // "Details Guy" might want to get category by ID
+  13 public async getCategoryById(id: number): Promise<CategoryModel> {
+→ 14     const category = await dal.category.findUnique({
+           where: {
+         +   id: Int
+           }
+         })
+
+Argument `id` is missing.
+PrismaClientValidationError: 
+Invalid `dal.category.findUnique()` invocation in
+F:\Programming\new stuff\Duly Noted 2\src\5-Services\category-service.ts:14:45
+
+  11 
+  12 // "Details Guy" might want to get category by ID
+  13 public async getCategoryById(id: number): Promise<CategoryModel> {
+→ 14     const category = await dal.category.findUnique({
+           where: {
+         +   id: Int
+           }
+         })
+
+Argument `id` is missing.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.getCategoryById (F:\Programming\new stuff\Duly Noted 2\src\5-Services\category-service.ts:14:26)
+    at F:\Programming\new stuff\Duly Noted 2\src\6-Controllers\category-controller.ts:22:26
+-----------------------
+17/02/2026, 17:44:04
+
+Invalid `dal.category.findUnique()` invocation in
+F:\Programming\new stuff\Duly Noted 2\src\5-Services\category-service.ts:14:45
+
+  11 
+  12 // "Details Guy" might want to get category by ID
+  13 public async getCategoryById(id: number): Promise<CategoryModel> {
+→ 14     const category = await dal.category.findUnique({
+           where: {
+         +   id: Int
+           }
+         })
+
+Argument `id` is missing.
+PrismaClientValidationError: 
+Invalid `dal.category.findUnique()` invocation in
+F:\Programming\new stuff\Duly Noted 2\src\5-Services\category-service.ts:14:45
+
+  11 
+  12 // "Details Guy" might want to get category by ID
+  13 public async getCategoryById(id: number): Promise<CategoryModel> {
+→ 14     const category = await dal.category.findUnique({
+           where: {
+         +   id: Int
+           }
+         })
+
+Argument `id` is missing.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.getCategoryById (F:\Programming\new stuff\Duly Noted 2\src\5-Services\category-service.ts:14:26)
+    at F:\Programming\new stuff\Duly Noted 2\src\6-Controllers\category-controller.ts:22:26
+-----------------------
+17/02/2026, 17:44:07
+
+Invalid `dal.category.findUnique()` invocation in
+F:\Programming\new stuff\Duly Noted 2\src\5-Services\category-service.ts:14:45
+
+  11 
+  12 // "Details Guy" might want to get category by ID
+  13 public async getCategoryById(id: number): Promise<CategoryModel> {
+→ 14     const category = await dal.category.findUnique({
+           where: {
+         +   id: Int
+           }
+         })
+
+Argument `id` is missing.
+PrismaClientValidationError: 
+Invalid `dal.category.findUnique()` invocation in
+F:\Programming\new stuff\Duly Noted 2\src\5-Services\category-service.ts:14:45
+
+  11 
+  12 // "Details Guy" might want to get category by ID
+  13 public async getCategoryById(id: number): Promise<CategoryModel> {
+→ 14     const category = await dal.category.findUnique({
+           where: {
+         +   id: Int
+           }
+         })
+
+Argument `id` is missing.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.getCategoryById (F:\Programming\new stuff\Duly Noted 2\src\5-Services\category-service.ts:14:26)
+    at F:\Programming\new stuff\Duly Noted 2\src\6-Controllers\category-controller.ts:22:26
+-----------------------
+17/02/2026, 17:45:05
+Cannot read properties of undefined (reading 'id')
+TypeError: Cannot read properties of undefined (reading 'id')
+    at new CategoryModel (F:\Programming\new stuff\Duly Noted 2\src\3-Models\category-model.ts:11:28)
+    at F:\Programming\new stuff\Duly Noted 2\src\6-Controllers\category-controller.ts:32:26
+    at Layer.handleRequest (F:\Programming\new stuff\Duly Noted 2\node_modules\router\lib\layer.js:152:17)
+    at next (F:\Programming\new stuff\Duly Noted 2\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (F:\Programming\new stuff\Duly Noted 2\node_modules\router\lib\route.js:117:3)
+    at handle (F:\Programming\new stuff\Duly Noted 2\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (F:\Programming\new stuff\Duly Noted 2\node_modules\router\lib\layer.js:152:17)
+    at F:\Programming\new stuff\Duly Noted 2\node_modules\router\index.js:295:15
+    at processParams (F:\Programming\new stuff\Duly Noted 2\node_modules\router\index.js:582:12)
+    at next (F:\Programming\new stuff\Duly Noted 2\node_modules\router\index.js:291:5)
+-----------------------
+17/02/2026, 17:45:43
+id 3 not exist.
+undefined
+-----------------------
+17/02/2026, 17:46:17
+
+Invalid `dal.category.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\src\5-Services\category-service.ts:21:50
+
+  18 
+  19 public async addCategory(category: CategoryModel): Promise<CategoryModel> {
+  20     category.validateInsert();
+→ 21     const addedCategory = await dal.category.create(
+Unique constraint failed on the fields: (`name`)
+PrismaClientKnownRequestError: 
+Invalid `dal.category.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\src\5-Services\category-service.ts:21:50
+
+  18 
+  19 public async addCategory(category: CategoryModel): Promise<CategoryModel> {
+  20     category.validateInsert();
+→ 21     const addedCategory = await dal.category.create(
+Unique constraint failed on the fields: (`name`)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.addCategory (F:\Programming\new stuff\Duly Noted 2\src\5-Services\category-service.ts:21:31)
+    at F:\Programming\new stuff\Duly Noted 2\src\6-Controllers\category-controller.ts:33:31
+-----------------------
+17/02/2026, 17:48:11
+Route /api/categories/1 not found.
+undefined
+-----------------------
+17/02/2026, 18:49:33
+
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:31:42
+
+  28 public async addNote(note: NoteModel): Promise<NoteModel> {
+  29     note.validateInsert();
+  30     // Prisma handles id autoincrement, createdAt, updatedAt
+→ 31     const addedNote = await dal.note.create(
+Foreign key constraint violated on the constraint: `Note_categoryId_fkey`
+PrismaClientKnownRequestError: 
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:31:42
+
+  28 public async addNote(note: NoteModel): Promise<NoteModel> {
+  29     note.validateInsert();
+  30     // Prisma handles id autoincrement, createdAt, updatedAt
+→ 31     const addedNote = await dal.note.create(
+Foreign key constraint violated on the constraint: `Note_categoryId_fkey`
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.addNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:31:27)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:33:27
+-----------------------
+20/02/2026, 9:46:18
+
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientInitializationError: 
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:242:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.getAllNotes (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:23)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:11:23
+-----------------------
+20/02/2026, 9:46:18
+
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientInitializationError: 
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:242:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.getAllCategories (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:28)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:11:28
+-----------------------
+20/02/2026, 9:46:22
+
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientInitializationError: 
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:242:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.getAllNotes (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:23)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:11:23
+-----------------------
+20/02/2026, 9:46:22
+
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientInitializationError: 
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:242:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.getAllCategories (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:28)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:11:28
+-----------------------
+20/02/2026, 9:46:26
+
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientInitializationError: 
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:242:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.getAllNotes (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:23)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:11:23
+-----------------------
+20/02/2026, 9:46:26
+
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientInitializationError: 
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:242:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.getAllCategories (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:28)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:11:28
+-----------------------
+20/02/2026, 9:46:30
+
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientInitializationError: 
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:242:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.getAllNotes (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:23)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:11:23
+-----------------------
+20/02/2026, 9:46:30
+
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientInitializationError: 
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:242:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.getAllCategories (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:28)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:11:28
+-----------------------
+20/02/2026, 9:46:34
+
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientInitializationError: 
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:242:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.getAllCategories (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:28)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:11:28
+-----------------------
+20/02/2026, 9:46:34
+
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientInitializationError: 
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:242:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.getAllCategories (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:28)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:11:28
+-----------------------
+20/02/2026, 9:47:18
+
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientKnownRequestError: 
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.getAllCategories (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:28)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:11:28
+-----------------------
+20/02/2026, 9:47:18
+
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientKnownRequestError: 
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.getAllNotes (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:23)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:11:23
+-----------------------
+20/02/2026, 9:47:48
+
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientKnownRequestError: 
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.getAllCategories (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:28)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:11:28
+-----------------------
+20/02/2026, 9:47:48
+
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientKnownRequestError: 
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.getAllNotes (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:23)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:11:23
+-----------------------
+20/02/2026, 9:48:18
+
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientKnownRequestError: 
+Invalid `dal.category.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:47
+
+  5 class CategoryService {
+  6 
+  7     public async getAllCategories(): Promise<CategoryModel[]> {
+→ 8         const categories = await dal.category.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.getAllCategories (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:8:28)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:11:28
+-----------------------
+20/02/2026, 9:48:18
+
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+PrismaClientKnownRequestError: 
+Invalid `dal.note.findMany()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:38
+
+  6 
+  7 public async getAllNotes(): Promise<NoteModel[]> {
+  8     // Order by isPinned (desc -> true first), then updatedAt (desc -> new first)
+→ 9     const notes = await dal.note.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.getAllNotes (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:9:23)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:11:23
+-----------------------
+20/02/2026, 11:58:56
+
+Invalid `dal.category.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:29:52
+
+  26 
+  27 public async updateCategory(category: CategoryModel): Promise<CategoryModel> {
+  28     category.validateUpdate();
+→ 29     const updatedCategory = await dal.category.update(
+Unique constraint failed on the fields: (`name`)
+PrismaClientKnownRequestError: 
+Invalid `dal.category.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:29:52
+
+  26 
+  27 public async updateCategory(category: CategoryModel): Promise<CategoryModel> {
+  28     category.validateUpdate();
+→ 29     const updatedCategory = await dal.category.update(
+Unique constraint failed on the fields: (`name`)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.updateCategory (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:29:33)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:45:33
+-----------------------
+20/02/2026, 11:58:59
+
+Invalid `dal.category.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:29:52
+
+  26 
+  27 public async updateCategory(category: CategoryModel): Promise<CategoryModel> {
+  28     category.validateUpdate();
+→ 29     const updatedCategory = await dal.category.update(
+Unique constraint failed on the fields: (`name`)
+PrismaClientKnownRequestError: 
+Invalid `dal.category.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:29:52
+
+  26 
+  27 public async updateCategory(category: CategoryModel): Promise<CategoryModel> {
+  28     category.validateUpdate();
+→ 29     const updatedCategory = await dal.category.update(
+Unique constraint failed on the fields: (`name`)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.updateCategory (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:29:33)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:45:33
+-----------------------
+20/02/2026, 11:59:03
+
+Invalid `dal.category.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:29:52
+
+  26 
+  27 public async updateCategory(category: CategoryModel): Promise<CategoryModel> {
+  28     category.validateUpdate();
+→ 29     const updatedCategory = await dal.category.update(
+Unique constraint failed on the fields: (`name`)
+PrismaClientKnownRequestError: 
+Invalid `dal.category.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:29:52
+
+  26 
+  27 public async updateCategory(category: CategoryModel): Promise<CategoryModel> {
+  28     category.validateUpdate();
+→ 29     const updatedCategory = await dal.category.update(
+Unique constraint failed on the fields: (`name`)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.updateCategory (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:29:33)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:45:33
+-----------------------
+20/02/2026, 11:59:06
+
+Invalid `dal.category.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:29:52
+
+  26 
+  27 public async updateCategory(category: CategoryModel): Promise<CategoryModel> {
+  28     category.validateUpdate();
+→ 29     const updatedCategory = await dal.category.update(
+Unique constraint failed on the fields: (`name`)
+PrismaClientKnownRequestError: 
+Invalid `dal.category.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:29:52
+
+  26 
+  27 public async updateCategory(category: CategoryModel): Promise<CategoryModel> {
+  28     category.validateUpdate();
+→ 29     const updatedCategory = await dal.category.update(
+Unique constraint failed on the fields: (`name`)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.updateCategory (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:29:33)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:45:33
+-----------------------
+21/02/2026, 18:35:47
+
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:31:42
+
+  28 public async addNote(note: NoteModel): Promise<NoteModel> {
+  29     note.validateInsert();
+  30     // Prisma handles id autoincrement, createdAt, updatedAt
+→ 31     const addedNote = await dal.note.create(
+Foreign key constraint violated on the constraint: `Note_categoryId_fkey`
+PrismaClientKnownRequestError: 
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:31:42
+
+  28 public async addNote(note: NoteModel): Promise<NoteModel> {
+  29     note.validateInsert();
+  30     // Prisma handles id autoincrement, createdAt, updatedAt
+→ 31     const addedNote = await dal.note.create(
+Foreign key constraint violated on the constraint: `Note_categoryId_fkey`
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.addNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:31:27)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:34:27
+-----------------------
+21/02/2026, 18:39:17
+
+Invalid `dal.category.delete()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:38:38
+
+  35 
+  36 public async deleteCategory(id: number): Promise<void> {
+  37     try {
+→ 38         await dal.category.delete(
+Foreign key constraint violated on the constraint: `Note_categoryId_fkey`
+PrismaClientKnownRequestError: 
+Invalid `dal.category.delete()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:38:38
+
+  35 
+  36 public async deleteCategory(id: number): Promise<void> {
+  37     try {
+→ 38         await dal.category.delete(
+Foreign key constraint violated on the constraint: `Note_categoryId_fkey`
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.deleteCategory (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:38:13)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:59:9
+-----------------------
+21/02/2026, 18:39:20
+
+Invalid `dal.category.delete()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:38:38
+
+  35 
+  36 public async deleteCategory(id: number): Promise<void> {
+  37     try {
+→ 38         await dal.category.delete(
+Foreign key constraint violated on the constraint: `Note_categoryId_fkey`
+PrismaClientKnownRequestError: 
+Invalid `dal.category.delete()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:38:38
+
+  35 
+  36 public async deleteCategory(id: number): Promise<void> {
+  37     try {
+→ 38         await dal.category.delete(
+Foreign key constraint violated on the constraint: `Note_categoryId_fkey`
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.deleteCategory (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:38:13)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:59:9
+-----------------------
+21/02/2026, 18:39:40
+
+Invalid `dal.category.delete()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:38:38
+
+  35 
+  36 public async deleteCategory(id: number): Promise<void> {
+  37     try {
+→ 38         await dal.category.delete(
+Foreign key constraint violated on the constraint: `Note_categoryId_fkey`
+PrismaClientKnownRequestError: 
+Invalid `dal.category.delete()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:38:38
+
+  35 
+  36 public async deleteCategory(id: number): Promise<void> {
+  37     try {
+→ 38         await dal.category.delete(
+Foreign key constraint violated on the constraint: `Note_categoryId_fkey`
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.deleteCategory (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:38:13)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:59:9
+-----------------------
+21/02/2026, 18:45:31
+"name" length must be at least 2 characters long
+undefined
+-----------------------

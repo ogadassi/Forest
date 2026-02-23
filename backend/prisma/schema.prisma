@@ -1,0 +1,46 @@
+// 1. Setup
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 2. The Category Table
+model Category {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  color String  @default("#718096")
+  icon  String?
+  type  String  @default("notes") // 'notes' or 'checklist'
+  notes Note[]  // This links Categories to Notes
+}
+
+// 3. The Note Table
+model Note {
+  id          Int      @id @default(autoincrement())
+  title       String   @default("New Note")
+  
+  // JSONB for your dynamic "Keep" logic
+  content     Json     
+  contentType String   @default("text") // 'text' or 'checklist'
+  isCompleted Boolean  @default(false)
+  
+  priority    Int      @default(1)
+  isPinned    Boolean  @default(false)
+  
+  // JSONB for voice/images
+  attachments Json     @default("[]") 
+  
+  remindAt    DateTime?
+  order       Int      @default(0)
+  
+  // Relationship logic
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

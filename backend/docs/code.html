@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Columnar Industrial Forest Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5DBB6A",
+                        "background-dark": "#1F2620",
+                        "card-dark": "#2A332C",
+                        "border-dark": "#4C594F"
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body { font-family: 'Inter', sans-serif; }
+        .column-masonry {
+            columns: 1;
+            column-gap: 1rem;
+        }::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #1F2620; }
+        ::-webkit-scrollbar-thumb { background: #4C594F; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #5DBB6A; }
+        .column-width {
+            min-width: 400px;
+            max-width: 450px;
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1rem;
+        }
+        .nav-item-active {
+            @apply bg-primary/10 text-primary;
+        }
+        .nav-indicator {
+            @apply absolute left-0 w-1 h-6 bg-primary rounded-r-full;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-slate-100 font-display overflow-hidden">
+<div class="flex h-screen overflow-hidden">
+<aside class="w-16 flex flex-col items-center py-6 bg-background-dark border-r border-border-dark flex-shrink-0 z-20">
+<div class="mb-10">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-background-dark">
+<span class="material-icons-round">forest</span>
+</div>
+</div>
+<nav class="flex flex-col gap-6 flex-1">
+<button class="group relative flex items-center justify-center p-2 rounded-xl transition-all nav-item-active" title="Dashboard">
+<span class="material-icons-round">dashboard</span>
+<div class="nav-indicator"></div>
+</button>
+<button class="group relative flex items-center justify-center p-2 rounded-xl transition-all text-slate-400 hover:text-white" title="HEMA">
+<span class="material-symbols-outlined">swords</span>
+</button>
+<button class="group relative flex items-center justify-center p-2 rounded-xl transition-all text-slate-400 hover:text-white" title="Development">
+<span class="material-icons-round">code</span>
+</button>
+<button class="group relative flex items-center justify-center p-2 rounded-xl transition-all text-slate-400 hover:text-white" title="Personal">
+<span class="material-icons-round">person</span>
+</button>
+</nav>
+<div class="mt-auto flex flex-col gap-6 pb-2">
+<button class="text-slate-400 hover:text-white">
+<span class="material-icons-round">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-border-dark">
+<img alt="User profile avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrreAK20wQDVmeuG_fyaBdh1QmmtVY3NLRKzfaMAD1jjis6UbWpAAWN8wgpOp0yNHbzbIaEthV0gYZPqmxTrHxBlHRxVLnPM9R3OikpUiIpxBITiKzJiR-Q42u9m_bRdtGAYmgrPmBKG6y2lnb1cwnV6sWE1aM1SzpTvYinzsXmaA6z1Exq1-l5NBNs4MpRy3wkSX9S9fKdIoFeY1XtyH_bds9dIvH0E-Gj4d0iXe-T8zB-6SHbBQQ-5f_xw06QDxuBWHbRnmZuSpp"/>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col min-w-0">
+<header class="h-16 border-b border-border-dark flex items-center justify-between px-6 bg-background-dark z-10">
+<div class="flex items-center gap-6">
+<h1 class="text-lg font-bold tracking-tight text-slate-100">Industrial Forest</h1>
+<div class="h-6 w-px bg-border-dark"></div>
+<div class="relative">
+<span class="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">search</span>
+<input class="bg-card-dark border border-border-dark rounded-lg pl-10 pr-4 py-1.5 text-xs w-[300px] focus:ring-1 focus:ring-primary/40 focus:border-primary outline-none text-slate-100 transition-all" placeholder="Quick search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center bg-card-dark rounded-lg p-0.5 border border-border-dark">
+<button class="px-3 py-1 text-[10px] font-bold text-primary bg-primary/10 rounded">LIVE</button>
+<button class="px-3 py-1 text-[10px] font-bold text-slate-500 hover:text-slate-300">HISTORY</button>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-background-dark px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 transition-all shadow-lg shadow-primary/10">
+<span class="material-icons-round text-base">add</span>
+                    New
+                </button>
+</div>
+</header>
+<div class="flex-1 overflow-x-auto flex bg-[#1a201b]">
+<section class="column-width border-r border-border-dark/50 flex flex-col h-full">
+<div class="p-4 flex items-center justify-between bg-background-dark/80 backdrop-blur sticky top-0 z-10 border-b border-border-dark/30">
+<div class="flex items-center gap-3">
+<span class="material-icons-round text-primary text-sm">code</span>
+<h2 class="text-xs font-black tracking-widest uppercase text-slate-300">Development</h2>
+</div>
+<span class="text-[10px] font-mono text-slate-500">8 NOTES</span>
+</div>
+<div class="flex-1 overflow-y-auto p-4 column-masonry">
+<div class="masonry-item bg-background-dark border border-border-dark rounded-lg overflow-hidden">
+<div class="bg-card-dark px-3 py-1.5 border-b border-border-dark flex items-center justify-between">
+<span class="text-[9px] font-mono text-slate-400 uppercase">auth_controller.go</span>
+<span class="material-icons-round text-[14px] text-slate-600">content_copy</span>
+</div>
+<div class="p-3 font-mono text-[11px] leading-5 text-slate-300">
+<div class="flex gap-3"><span class="text-slate-600">01</span><span class="text-primary/90">func</span> <span class="text-primary/60">HandleAuth</span>() {</div>
+<div class="flex gap-3"><span class="text-slate-600">02</span>  token := <span class="text-primary">genJWT()</span></div>
+<div class="flex gap-3"><span class="text-slate-600">03</span>}</div>
+</div>
+</div>
+<div class="masonry-item bg-card-dark border border-border-dark rounded-lg p-4 hover:border-primary/50 transition-all">
+<h3 class="font-bold text-sm mb-2">Redis Cache Invalidation</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-3">Implementing TTL of 3600s for mission critical updates on user profiles.</p>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-background-dark text-[9px] text-primary/80 border border-border-dark">#redis</span>
+<span class="px-1.5 py-0.5 rounded bg-background-dark text-[9px] text-primary/80 border border-border-dark">#backend</span>
+</div>
+</div>
+<div class="masonry-item bg-card-dark border border-border-dark rounded-lg p-4">
+<h3 class="text-[10px] font-bold uppercase text-slate-500 mb-3 tracking-wider">PostgreSQL Indexing</h3>
+<div class="space-y-2">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+<span class="text-xs text-slate-300">JSONB GIN Indexes</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-border-dark"></div>
+<span class="text-xs text-slate-500">Partial Indexes</span>
+</div>
+</div>
+</div>
+<div class="masonry-item bg-card-dark border border-border-dark rounded-lg overflow-hidden group">
+<div class="relative aspect-video">
+<img alt="Server" class="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKGDR1dlzFki65p8QhgTTWkqGjkQ-2YcS01E8pz9evXL5kr2QbY6wA1PYOt8yjNN8Hkj2UDCsVocn4RZOQAqVMJD_Mj2M9nsiQPJLg15k_cDHAzeO7Gj09W8kNBM0bGanyw_JDQihQINzifVLNSJCMEGnWeDzJn-oe9DjPsdP4GD866s2wnu3k0T31CdoHU1xB7VKNdCfxEWqNBqup77p3LT8IhGYGukuaverD5xsC2mOjCdiRp_-nY0MP66tewScXnHr3GHqKhbop"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark to-transparent"></div>
+<div class="absolute bottom-3 left-3">
+<h4 class="text-xs font-bold text-white uppercase tracking-tighter">Mainframe V4</h4>
+</div>
+</div>
+</div>
+<div class="masonry-item bg-card-dark border border-border-dark rounded-lg p-4">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-icons-round text-xs text-primary">api</span>
+<h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-300">Gateway Status</h3>
+</div>
+<div class="space-y-1.5">
+<div class="flex justify-between items-center p-2 rounded bg-background-dark border border-border-dark/30">
+<span class="text-[9px] font-mono text-primary">GET</span>
+<span class="text-[10px] font-mono text-slate-400">/v1/nodes</span>
+</div>
+<div class="flex justify-between items-center p-2 rounded bg-background-dark border border-border-dark/30">
+<span class="text-[9px] font-mono text-yellow-500">POST</span>
+<span class="text-[10px] font-mono text-slate-400">/v1/auth</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="column-width border-r border-border-dark/50 flex flex-col h-full">
+<div class="p-4 flex items-center justify-between bg-background-dark/80 backdrop-blur sticky top-0 z-10 border-b border-border-dark/30">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm">swords</span>
+<h2 class="text-xs font-black tracking-widest uppercase text-slate-300">Martial Arts</h2>
+</div>
+<span class="text-[10px] font-mono text-slate-500">5 NOTES</span>
+</div>
+<div class="flex-1 overflow-y-auto p-4 column-masonry">
+<div class="masonry-item bg-primary/5 border border-primary/20 rounded-lg p-4">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-bold text-primary uppercase text-[10px] tracking-widest">Training Log</h3>
+<span class="text-[9px] font-mono text-primary/60">W42</span>
+</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between text-xs">
+<span class="text-slate-300">Mon: Sparring</span>
+<span class="text-primary font-mono">90m</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-slate-300">Wed: Drills</span>
+<span class="text-primary font-mono">60m</span>
+</div>
+<div class="pt-2">
+<div class="h-1 w-full bg-background-dark rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[72%]"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="masonry-item bg-card-dark border border-border-dark rounded-lg overflow-hidden group">
+<div class="relative aspect-video bg-slate-800 flex items-center justify-center">
+<img alt="Training" class="absolute inset-0 w-full h-full object-cover opacity-30 transition-all duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmWCnvIWZe04ccH2_MBpgRgTbOTm-8lYupDqSWtJ6c-YQr0rLvALsqKvDPBXeNeBS_Q_RacNKLmWNJHh-ugbMyYRXmhxlyZe4swiznQa_ynjSZa7QX5w7gJ9fZW0q4Fp0iN3hbStU2ncu3k15beR8wA2kOuoBJqQ4wFY4A5GUv8daGHY4Ha4wTyJ95CS6LUsvaPDbynyuN9_KV0UKXc5CLtlorojUQlBaGYoYqVWxuKtskzOWpshbnZs3JN3Fh5sncxSiL7lbDWdxp"/>
+<div class="z-10 w-10 h-10 rounded-full bg-primary flex items-center justify-center text-background-dark shadow-xl scale-90 group-hover:scale-100 transition-all">
+<span class="material-icons-round text-xl">play_arrow</span>
+</div>
+<div class="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-background-dark to-transparent">
+<p class="text-[11px] font-bold text-white">Zwerchhau Masterclass</p>
+</div>
+</div>
+</div>
+<div class="masonry-item bg-card-dark border border-border-dark rounded-lg p-4">
+<h3 class="font-black text-[10px] uppercase tracking-widest text-primary mb-4">Gear Prep</h3>
+<ul class="space-y-3">
+<li class="flex items-center gap-3">
+<div class="w-4 h-4 rounded border border-primary bg-primary flex items-center justify-center">
+<span class="material-icons-round text-background-dark text-[10px] font-black">check</span>
+</div>
+<span class="text-xs text-slate-500 line-through">Safety inspection</span>
+</li>
+<li class="flex items-center gap-3">
+<div class="w-4 h-4 rounded border border-border-dark"></div>
+<span class="text-xs text-slate-300">Blade maintenance</span>
+</li>
+<li class="flex items-center gap-3">
+<div class="w-4 h-4 rounded border border-border-dark"></div>
+<span class="text-xs text-slate-300">Wash fencing mask</span>
+</li>
+</ul>
+</div>
+<div class="masonry-item bg-card-dark border border-border-dark rounded-lg overflow-hidden">
+<div class="p-3 border-b border-border-dark flex items-center gap-2">
+<span class="material-icons-round text-xs text-slate-500">photo_library</span>
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Stances</span>
+</div>
+<div class="grid grid-cols-2 gap-px bg-border-dark">
+<div class="aspect-square bg-background-dark"><img class="w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmWCnvIWZe04ccH2_MBpgRgTbOTm-8lYupDqSWtJ6c-YQr0rLvALsqKvDPBXeNeBS_Q_RacNKLmWNJHh-ugbMyYRXmhxlyZe4swiznQa_ynjSZa7QX5w7gJ9fZW0q4Fp0iN3hbStU2ncu3k15beR8wA2kOuoBJqQ4wFY4A5GUv8daGHY4Ha4wTyJ95CS6LUsvaPDbynyuN9_KV0UKXc5CLtlorojUQlBaGYoYqVWxuKtskzOWpshbnZs3JN3Fh5sncxSiL7lbDWdxp"/></div>
+<div class="aspect-square bg-background-dark"><img class="w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKGDR1dlzFki65p8QhgTTWkqGjkQ-2YcS01E8pz9evXL5kr2QbY6wA1PYOt8yjNN8Hkj2UDCsVocn4RZOQAqVMJD_Mj2M9nsiQPJLg15k_cDHAzeO7Gj09W8kNBM0bGanyw_JDQihQINzifVLNSJCMEGnWeDzJn-oe9DjPsdP4GD866s2wnu3k0T31CdoHU1xB7VKNdCfxEWqNBqup77p3LT8IhGYGukuaverD5xsC2mOjCdiRp_-nY0MP66tewScXnHr3GHqKhbop"/></div>
+</div>
+</div>
+</div>
+</section>
+<section class="column-width border-r border-border-dark/50 flex flex-col h-full">
+<div class="p-4 flex items-center justify-between bg-background-dark/80 backdrop-blur sticky top-0 z-10 border-b border-border-dark/30">
+<div class="flex items-center gap-3">
+<span class="material-icons-round text-primary text-sm">person</span>
+<h2 class="text-xs font-black tracking-widest uppercase text-slate-300">Personal</h2>
+</div>
+<span class="text-[10px] font-mono text-slate-500">3 NOTES</span>
+</div>
+<div class="flex-1 overflow-y-auto p-4 column-masonry">
+<div class="masonry-item bg-card-dark border border-border-dark rounded-lg p-5">
+<h3 class="font-bold text-sm mb-3">Reading List 2024</h3>
+<div class="space-y-4">
+<div class="flex gap-3">
+<div class="w-1 h-8 bg-primary/40 rounded-full"></div>
+<div>
+<p class="text-xs text-slate-200 font-medium">The Pragmatic Programmer</p>
+<p class="text-[10px] text-slate-500">Chapter 4 of 9 • 45%</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-1 h-8 bg-border-dark rounded-full"></div>
+<div>
+<p class="text-xs text-slate-400 font-medium">Sigmund Ringeck's Knightly Arts</p>
+<p class="text-[10px] text-slate-600">Pending</p>
+</div>
+</div>
+</div>
+</div>
+<div class="masonry-item bg-card-dark border border-border-dark rounded-lg p-5">
+<div class="flex items-center justify-between mb-4">
+<span class="text-[10px] font-black text-slate-500 uppercase">Focus Timer</span>
+<span class="material-icons-round text-primary text-sm">timer</span>
+</div>
+<div class="text-center py-4">
+<span class="text-3xl font-mono font-light text-primary">25:00</span>
+</div>
+<button class="w-full py-2 bg-primary/10 hover:bg-primary/20 text-primary text-[10px] font-bold rounded-lg transition-colors">START SESSION</button>
+</div>
+<div class="masonry-item bg-card-dark border border-border-dark rounded-lg p-4">
+<p class="text-xs italic text-slate-400 leading-relaxed">
+                            "The forest is a system, not just a collection of trees. Build your knowledge like an ecosystem."
+                        </p>
+<div class="mt-3 text-[9px] font-mono text-slate-600 uppercase">— Admin Logs</div>
+</div>
+</div>
+</section>
+<section class="column-width border-r border-border-dark/50 flex flex-col h-full bg-background-dark/20">
+<div class="p-4 flex items-center justify-between bg-background-dark/80 backdrop-blur sticky top-0 z-10 border-b border-border-dark/30">
+<div class="flex items-center gap-3">
+<span class="material-icons-round text-primary text-sm">history</span>
+<h2 class="text-xs font-black tracking-widest uppercase text-slate-300">Activity</h2>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-4 space-y-4">
+<div class="relative pl-6 before:absolute before:left-0 before:top-2 before:bottom-0 before:w-px before:bg-border-dark">
+<div class="absolute left-[-4px] top-1.5 w-2 h-2 rounded-full bg-primary ring-4 ring-[#1a201b]"></div>
+<p class="text-[9px] font-black text-primary/80 uppercase">Just Now</p>
+<p class="text-[11px] font-bold text-slate-200 mt-0.5">Updated Redis Doc</p>
+</div>
+<div class="relative pl-6 before:absolute before:left-0 before:top-2 before:bottom-0 before:w-px before:bg-border-dark">
+<div class="absolute left-[-4px] top-1.5 w-2 h-2 rounded-full bg-border-dark ring-4 ring-[#1a201b]"></div>
+<p class="text-[9px] font-black text-slate-500 uppercase">2 hours ago</p>
+<p class="text-[11px] font-bold text-slate-400 mt-0.5">New HEMA Image Added</p>
+</div>
+<div class="relative pl-6 before:absolute before:left-0 before:top-2 before:bottom-0 before:w-px before:bg-border-dark">
+<div class="absolute left-[-4px] top-1.5 w-2 h-2 rounded-full bg-border-dark ring-4 ring-[#1a201b]"></div>
+<p class="text-[9px] font-black text-slate-500 uppercase">Yesterday</p>
+<p class="text-[11px] font-bold text-slate-400 mt-0.5">Project 'Forest' Initialized</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+<aside class="w-80 bg-background-dark border-l border-border-dark p-6 hidden xl:flex flex-col flex-shrink-0">
+<h2 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-6 flex items-center justify-between">
+            System Overview
+            <span class="material-icons-round text-sm text-primary/60">analytics</span>
+</h2>
+<div class="space-y-4">
+<div class="p-5 rounded-xl bg-card-dark border border-border-dark shadow-xl">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Network</h3>
+<div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+</div>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-[9px] mb-1.5 font-mono">
+<span class="text-slate-500 uppercase">Latency</span>
+<span class="text-primary">24ms</span>
+</div>
+<div class="h-1 bg-background-dark rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[92%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[9px] mb-1.5 font-mono">
+<span class="text-slate-500 uppercase">Load</span>
+<span class="text-slate-400">42%</span>
+</div>
+<div class="h-1 bg-background-dark rounded-full overflow-hidden">
+<div class="h-full bg-slate-600 w-[42%]"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-5 rounded-xl bg-card-dark border border-border-dark">
+<h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Upcoming Milestones</h3>
+<div class="space-y-4">
+<div class="flex items-start gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-primary mt-1"></div>
+<div>
+<p class="text-[11px] font-bold text-slate-200">API v2.1 Migration</p>
+<p class="text-[9px] text-slate-500 uppercase mt-0.5">Friday, 12:00</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-border-dark mt-1"></div>
+<div>
+<p class="text-[11px] font-bold text-slate-400">Steel Sparring Event</p>
+<p class="text-[9px] text-slate-600 uppercase mt-0.5">Next Sunday</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-border-dark/30">
+<div class="bg-primary hover:bg-primary/90 transition-all cursor-pointer p-3 rounded-lg flex items-center justify-center gap-2 text-background-dark font-black text-[10px] uppercase tracking-widest shadow-lg shadow-primary/20">
+<span class="material-icons-round text-sm">sync</span>
+                Sync All Nodes
+            </div>
+</div>
+</aside>
+</div>
+
+</body></html>

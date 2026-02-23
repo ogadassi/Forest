@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #5DBB6A;
+    --color-background-dark: #181e19;
+    --color-card-dark: #212922;
+    --color-border-dark: #3a4a3d;
+    --font-display: "Inter", sans-serif;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    background-color: #181e19;
+    color: #e2e8f0;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3a4a3d;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5DBB6A;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* ── react-grid-layout: resize handle ── */
+.react-resizable-handle {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: none !important;
+    background-image: none !important;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 50;
+}
+
+.react-grid-item:hover .react-resizable-handle {
+    opacity: 1;
+}
+
+/* Force off the default black border arrows from the library */
+.react-grid-item>.react-resizable-handle::after {
+    display: none !important;
+}
+
+/* Resize handles for all four corners */
+.react-resizable-handle-se::after {
+    display: block !important;
+    content: '';
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid rgba(93, 187, 106, 0.6);
+    border-bottom: 2px solid rgba(93, 187, 106, 0.6);
+    border-radius: 1px;
+}
+
+.react-resizable-handle-sw::after {
+    display: block !important;
+    content: '';
+    position: absolute;
+    left: 4px;
+    bottom: 4px;
+    width: 8px;
+    height: 8px;
+    border-left: 2px solid rgba(93, 187, 106, 0.6);
+    border-bottom: 2px solid rgba(93, 187, 106, 0.6);
+    border-radius: 1px;
+}
+
+.react-resizable-handle-ne::after {
+    display: block !important;
+    content: '';
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid rgba(93, 187, 106, 0.6);
+    border-top: 2px solid rgba(93, 187, 106, 0.6);
+    border-radius: 1px;
+}
+
+.react-resizable-handle-nw::after {
+    display: block !important;
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    width: 8px;
+    height: 8px;
+    border-left: 2px solid rgba(93, 187, 106, 0.6);
+    border-top: 2px solid rgba(93, 187, 106, 0.6);
+    border-radius: 1px;
+}
+
+/* ── react-grid-layout: drop placeholder ghost ── */
+.react-grid-item.react-grid-placeholder {
+    background: rgba(93, 187, 106, 0.08) !important;
+    border: 1px dashed rgba(93, 187, 106, 0.35) !important;
+    border-radius: 16px !important;
+    box-shadow: none !important;
+}
+
+/* ── Grid item transitions ── */
+.react-grid-item {
+    transition: box-shadow 0.2s;
+    border-radius: 16px;
+}
+
+
+.react-grid-item.react-draggable-dragging {
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(93, 187, 106, 0.3) !important;
+    z-index: 100;
+}
+
+/* ── Container Queries for Dashboard Cards ── */
+@container (max-width: 260px) {
+    .panel-options {
+        display: none !important;
+    }
+}
+
+@container (max-width: 200px) {
+    .panel-note-count {
+        display: none !important;
+    }
+
+    .panel-header {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        gap: 0.25rem !important;
+    }
+}
+
+@container (max-width: 120px) {
+    .panel-drag-handle {
+        display: none !important;
+    }
+}
+
+/* ── Custom Animations ── */
+@keyframes slide-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slide-in-up {
+    animation: slide-in-up 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.4s ease-out forwards;
+}
