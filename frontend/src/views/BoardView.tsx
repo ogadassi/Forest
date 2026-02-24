@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useLayoutEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useCallback, useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -280,7 +280,7 @@ export const BoardView: React.FC = () => {
         }
 
         // If only one category is selected (focused view), bypass the grid entirely
-        if (displayedCategories.length === 1) {
+        if (selectedCategoryId && displayedCategories.length === 1) {
             const category = displayedCategories[0];
             return (
                 <div

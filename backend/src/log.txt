@@ -891,3 +891,259 @@ Foreign key constraint violated on the constraint: `Note_categoryId_fkey`
 "name" length must be at least 2 characters long
 undefined
 -----------------------
+2/23/2026, 8:45:17 PM
+Route / not found.
+undefined
+-----------------------
+2/24/2026, 5:50:33 AM
+Route / not found.
+undefined
+-----------------------
+2/24/2026, 6:06:15 AM
+id 18 not exist.
+undefined
+-----------------------
+2/24/2026, 6:06:41 AM
+"name" length must be at least 2 characters long
+undefined
+-----------------------
+2/24/2026, 7:18:15 AM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 7:19:08 AM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 7:19:18 AM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 7:19:18 AM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 7:19:19 AM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:25:02 PM
+Route / not found.
+undefined
+-----------------------
+2/24/2026, 1:28:24 PM
+"title" length must be less than or equal to 100 characters long
+undefined
+-----------------------
+2/24/2026, 1:28:29 PM
+"title" length must be less than or equal to 100 characters long
+undefined
+-----------------------
+2/24/2026, 1:28:32 PM
+"title" length must be less than or equal to 100 characters long
+undefined
+-----------------------
+2/24/2026, 1:28:35 PM
+"title" length must be less than or equal to 100 characters long
+undefined
+-----------------------
+2/24/2026, 1:28:41 PM
+"title" length must be less than or equal to 100 characters long
+undefined
+-----------------------
+2/24/2026, 1:29:01 PM
+"title" length must be less than or equal to 100 characters long
+undefined
+-----------------------
+2/24/2026, 1:29:25 PM
+"title" length must be less than or equal to 100 characters long
+undefined
+-----------------------
+2/24/2026, 1:29:48 PM
+"title" length must be less than or equal to 100 characters long
+undefined
+-----------------------
+2/24/2026, 1:29:57 PM
+"title" length must be less than or equal to 100 characters long
+undefined
+-----------------------
+2/24/2026, 1:46:44 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:46:46 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:46:46 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:46:49 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:46:50 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:46:50 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:46:50 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:46:51 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:46:51 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:46:51 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:46:52 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:46:53 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:07 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:07 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:08 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:08 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:08 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:09 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:10 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:10 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:12 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:12 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:13 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:13 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:13 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:14 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:15 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:15 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:16 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:16 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:17 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:17 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:17 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:18 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:18 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:18 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:22 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:22 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:29 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:29 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:31 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:31 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:31 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:32 PM
+"order" is not allowed
+undefined
+-----------------------
+2/24/2026, 1:50:32 PM
+"order" is not allowed
+undefined
+-----------------------

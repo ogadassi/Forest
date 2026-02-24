@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
 import { Responsive } from 'react-grid-layout';
 import type { CategoryModel } from '../../models/CategoryModel';
 import type { NoteModel } from '../../models/NoteModel';
@@ -82,26 +82,29 @@ const SortableChecklistItem = ({ note, color, onToggle, onDelete }: { note: Note
         transition,
         opacity: isDragging ? 0.5 : 1,
     };
+    const displayText = (note.content as string) || note.title;
     return (
-        <div ref={setNodeRef} style={style} className={`group flex items-center justify-between gap-3 bg-white/5 hover:bg-white/10 border ${isDragging ? 'border-primary shadow-xl z-50 relative' : 'border-border-dark'} hover:border-white/20 rounded-xl px-4 py-3 transition-colors`}>
-            {/* Drag Handle */}
-            <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-slate-500 hover:text-white mr-1 flex-shrink-0 touch-none">
+        <div ref={setNodeRef} style={style} className={`group flex items-start justify-between gap-3 bg-white/5 hover:bg-white/10 border ${isDragging ? 'border-primary shadow-xl z-50 relative' : 'border-border-dark'} hover:border-white/20 rounded-xl px-4 py-3 transition-colors`}>
+
+            <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-slate-500 hover:text-white mr-1 flex-shrink-0 touch-none pt-1">
                 <span className="material-icons-round text-sm">drag_indicator</span>
             </div>
 
-            <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="flex items-start gap-3 flex-1 min-w-0">
                 <button
-                    className="w-5 h-5 rounded flex items-center justify-center border-[1.5px] border-slate-500 hover:border-primary shrink-0 transition-colors bg-background-dark shadow-sm"
+                    className="w-5 h-5 mt-0.5 rounded flex items-center justify-center border-[1.5px] border-slate-500 hover:border-primary shrink-0 transition-colors bg-background-dark shadow-sm"
                     style={note.isCompleted ? { backgroundColor: color, borderColor: color } : {}}
                     onClick={onToggle}
                 >
                     <span className={`material-icons-round text-[14px] font-black transition-opacity ${note.isCompleted ? 'opacity-100 text-background-dark' : 'opacity-0'}`}>check</span>
                 </button>
-                <span className={`flex-1 truncate text-[13px] font-medium transition-all ${note.isCompleted ? 'line-through text-slate-500 opacity-70' : 'text-slate-200 cursor-text'}`}>
-                    {note.title}
+                <span
+                    title={displayText}
+                    className={`flex-1 text-[13px] font-medium transition-all ${note.isCompleted ? 'line-through text-slate-500 opacity-70' : 'text-slate-200'} whitespace-pre-wrap break-words`}>
+                    {displayText}
                 </span>
             </div>
-            {/* Delete Button */}
+
             <button
                 className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 transition-all shrink-0"
                 title="Delete Item"
@@ -123,7 +126,6 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
     const [newName, setNewName] = useState(category.name);
     const [confirmDelete, setConfirmDelete] = useState(false);
 
-    // Auto-focus quick add input when toggled open
     const checklistInputRef = useRef<HTMLInputElement>(null);
     useEffect(() => {
         if (showChecklistInput && checklistInputRef.current) {
@@ -131,7 +133,6 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         }
     }, [showChecklistInput]);
 
-    // Inline edit states for fullscreen view
     const [showIconPicker, setShowIconPicker] = useState(false);
     const [showColorPicker, setShowColorPicker] = useState(false);
     const [iconSearch, setIconSearch] = useState('');
@@ -145,13 +146,11 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         setIconResults(searchIcons(iconSearch));
     }, [iconSearch]);
 
-    // Grid layout states for notes in fullscreen
     const [layouts, setLayouts] = useState<Layouts>({});
     const containerRef = useRef<HTMLDivElement>(null);
     const [containerWidth, setContainerWidth] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
 
-    // Load initial layout for notes
     useEffect(() => {
         if (!isFullscreenView) return;
         const saved = loadNoteLayouts(category.id!);
@@ -159,12 +158,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
             const reconciled = { ...saved };
             Object.keys(BREAKPOINTS).forEach(bp => {
                 if (reconciled[bp]) {
-                    // Force minimum dimensions on existing blocks
-                    reconciled[bp] = reconciled[bp].map(item => ({
-                        ...item,
-                        minW: 1,
-                        minH: 2
-                    }));
+                    reconciled[bp] = reconciled[bp].map(item => ({ ...item, minW: 1, minH: 2 }));
                 }
             });
             setLayouts(reconciled);
@@ -186,10 +180,8 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         return () => ro.disconnect();
     }, [isFullscreenView]);
 
-    // Track internally sorted notes for checklists
     const [sortedNotes, setSortedNotes] = useState<NoteModel[]>(notes);
     useEffect(() => {
-        // Fallback robust sort by order, defaulting to the original DB return ranking if missing
         setSortedNotes([...notes].sort((a, b) => (a.order || 0) - (b.order || 0)));
     }, [notes]);
 
@@ -204,16 +196,12 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
             const oldIndex = sortedNotes.findIndex(n => n.id === active.id);
             const newIndex = sortedNotes.findIndex(n => n.id === over.id);
             const newArray = arrayMove(sortedNotes, oldIndex, newIndex);
-
-            setSortedNotes(newArray); // Optimistic UI
+            setSortedNotes(newArray);
             const updates = newArray.map((note, index) => ({ id: note.id!, order: index }));
-
             try {
                 await noteService.reorderNotes(updates);
-                // NOTE: intentionally not calling onRefreshNotes here to avoid blink
             } catch (err) {
                 console.error("Failed to save reorder", err);
-                // Revert on failure
                 setSortedNotes([...notes].sort((a, b) => (a.order || 0) - (b.order || 0)));
             }
         }
@@ -232,7 +220,6 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         });
     }, [category.id]);
 
-    // Handle immediate update of single category properties inline
     const handleUpdateInline = async (updates: Partial<CategoryModel>) => {
         const updatedCat = { ...category, ...updates };
         try {
@@ -249,21 +236,16 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         setIsEditing(false);
     };
 
-    // Close active popups/states when clicking outside
     useEffect(() => {
         if (!confirmDelete && !showIconPicker && !showColorPicker && !isEditing) return;
-
         const handleOutsideClick = (e: MouseEvent) => {
             if (confirmDelete) setConfirmDelete(false);
             if (showIconPicker) setShowIconPicker(false);
             if (showColorPicker) setShowColorPicker(false);
             if (isEditing) handleSubmitRename(e);
         };
-
         document.addEventListener('click', handleOutsideClick);
-        return () => {
-            document.removeEventListener('click', handleOutsideClick);
-        };
+        return () => { document.removeEventListener('click', handleOutsideClick); };
     }, [confirmDelete, showIconPicker, showColorPicker, isEditing, newName, category.name]);
 
     return (
@@ -277,12 +259,10 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                 boxShadow: `0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 ${color}18`,
             }}
         >
-            {/* ── HEADER ── */}
             <div
                 className="panel-header flex items-center px-4 py-3 shrink-0 relative"
                 style={{ borderBottom: `1px solid ${color}18` }}
             >
-                {/* Grip icon (Drag Handle - Top Left) */}
                 {!isFullscreenView && (
                     <div
                         className="panel-drag-handle drag-handle pr-2 mr-1 cursor-grab active:cursor-grabbing flex items-center justify-center h-full opacity-30 hover:opacity-70 transition-opacity flex-shrink-0"
@@ -293,28 +273,18 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                         <span className="material-icons-round text-base hover:scale-110 active:scale-95 transition-transform">drag_indicator</span>
                     </div>
                 )}
-
-                {/* Clickable Header Area (Opens Fullscreen) */}
                 <div
                     className="non-draggable flex-1 flex items-center gap-2.5 min-w-0 group"
                     title={isFullscreenView ? '' : 'Click to open fullscreen'}
                 >
-                    {/* Category icon */}
                     <div className="relative">
                         <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setShowIconPicker(!showIconPicker);
-                            }}
+                            onClick={(e) => { e.stopPropagation(); setShowIconPicker(!showIconPicker); }}
                             className="w-7 h-7 flex items-center justify-center shrink-0 transition-transform hover:scale-125 cursor-pointer"
                             title="Change icon"
                         >
-                            <span className="material-icons-round text-sm" style={{ color }}>
-                                {icon}
-                            </span>
+                            <span className="material-icons-round text-sm" style={{ color }}>{icon}</span>
                         </button>
-
-                        {/* Inline Icon Picker Popup */}
                         {showIconPicker && (
                             <div
                                 className="absolute top-10 left-0 bg-card-dark border border-border-dark rounded-xl shadow-2xl z-50 p-3 w-[260px] animate-in fade-in zoom-in-95 duration-200"
@@ -338,10 +308,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                         <button
                                             key={resIcon}
                                             type="button"
-                                            onClick={() => {
-                                                handleUpdateInline({ icon: resIcon });
-                                                setShowIconPicker(false);
-                                            }}
+                                            onClick={() => { handleUpdateInline({ icon: resIcon }); setShowIconPicker(false); }}
                                             className={`aspect-square rounded-md flex items-center justify-center hover:scale-110 ${icon === resIcon ? 'text-background-dark' : 'text-slate-400 hover:text-white'}`}
                                             style={icon === resIcon ? { backgroundColor: color } : {}}
                                             title={resIcon.replace(/_/g, ' ')}
@@ -355,8 +322,6 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                             </div>
                         )}
                     </div>
-
-                    {/* Category name (editable) */}
                     <div className="flex-1 min-w-0" onClick={e => isEditing ? e.stopPropagation() : undefined}>
                         {isEditing ? (
                             <form onSubmit={handleSubmitRename} className="w-full">
@@ -367,14 +332,12 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                     value={newName}
                                     onChange={e => setNewName(e.target.value)}
                                     onBlur={handleSubmitRename}
-                                    onKeyDown={e => e.stopPropagation()} // Prevent grid dragging while typing
+                                    onKeyDown={e => e.stopPropagation()}
                                 />
                             </form>
                         ) : (
                             <div className="flex items-center gap-2">
-                                <span className="font-bold text-sm text-slate-100 group-hover:text-white transition-colors truncate">
-                                    {category.name}
-                                </span>
+                                <span className="font-bold text-sm text-slate-100 group-hover:text-white transition-colors truncate">{category.name}</span>
                                 <button
                                     onClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
                                     className="opacity-0 group-hover:opacity-100 p-1 hover:bg-white/10 rounded transition-all text-slate-400 hover:text-white"
@@ -385,8 +348,6 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                             </div>
                         )}
                     </div>
-
-                    {/* Note count */}
                     <span
                         className="panel-note-count text-[10px] font-black px-2 py-0.5 rounded-full shrink-0 group-hover:bg-white/10 transition-colors"
                         style={{ color, background: `${color}18` }}
@@ -394,23 +355,15 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                         {notes.length}
                     </span>
                 </div>
-
                 <div className="panel-options non-draggable relative ml-2 shrink-0 flex items-center gap-1" onPointerDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()}>
-
-                    {/* Color Picker Toggle */}
                     <div className="relative">
                         <button
-                            onClick={() => {
-                                setShowColorPicker(!showColorPicker);
-                                setShowIconPicker(false); // keep only one open
-                            }}
+                            onClick={() => { setShowColorPicker(!showColorPicker); setShowIconPicker(false); }}
                             className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
                             title="Change color"
                         >
                             <span className="material-icons-round text-sm" style={{ color }}>format_color_fill</span>
                         </button>
-
-                        {/* Color Picker Popup */}
                         {showColorPicker && (
                             <div
                                 className="absolute top-10 right-0 bg-card-dark border border-border-dark rounded-xl shadow-2xl z-50 p-3 w-[220px] animate-in fade-in slide-in-from-top-2 duration-200"
@@ -423,10 +376,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                         <button
                                             key={c}
                                             type="button"
-                                            onClick={() => {
-                                                handleUpdateInline({ color: c });
-                                                setShowColorPicker(false);
-                                            }}
+                                            onClick={() => { handleUpdateInline({ color: c }); setShowColorPicker(false); }}
                                             className="w-6 h-6 rounded-md transition-transform hover:scale-125"
                                             style={{
                                                 backgroundColor: c,
@@ -456,8 +406,6 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                             </div>
                         )}
                     </div>
-
-                    {/* Simple Delete Button */}
                     {confirmDelete ? (
                         <button
                             className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-bold rounded-lg transition-colors flex items-center gap-1"
@@ -476,8 +424,6 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                             <span className="material-icons-round text-sm">delete</span>
                         </button>
                     )}
-
-                    {/* Close Fullscreen (Only in Fullscreen View) */}
                     {isFullscreenView && (
                         <button
                             onClick={() => { if (onHeaderClick) onHeaderClick(); }}
@@ -490,14 +436,12 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                 </div>
             </div >
 
-            {/* ── NOTE LIST ── */}
             <div
                 className={`non-draggable flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scrollbar ${isFullscreenView ? '' : 'space-y-2'}`}
                 ref={isFullscreenView ? containerRef : undefined}
             >
                 {category.type === 'checklist' ? (
                     <div className="flex flex-col h-full overflow-hidden">
-                        {/* Checklist items list */}
                         <div className="flex-1 overflow-y-auto custom-scrollbar space-y-1 pr-1 pb-4">
                             {sortedNotes.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-500/80 py-10 opacity-80 animate-in fade-in">
@@ -534,20 +478,20 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                 </DndContext>
                             )}
                         </div>
-                        {/* Conditional Quick Add Input at bottom */}
                         {showChecklistInput && (
                             <form
                                 onSubmit={async (e) => {
                                     e.preventDefault();
-                                    if (!newItemTitle.trim() || isAddingItem) {
+                                    const trimmedText = newItemTitle.trim();
+                                    if (!trimmedText || isAddingItem) {
                                         setShowChecklistInput(false);
                                         return;
                                     }
                                     setIsAddingItem(true);
                                     try {
                                         const newNote: NoteModel = {
-                                            title: newItemTitle.trim(),
-                                            content: '',
+                                            title: trimmedText.substring(0, 50),
+                                            content: trimmedText,
                                             contentType: 'text',
                                             categoryId: category.id!,
                                             priority: 1,
@@ -577,7 +521,6 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                     onChange={(e) => setNewItemTitle(e.target.value)}
                                     disabled={isAddingItem}
                                     onBlur={() => {
-                                        // Slight delay so the submit button doesn't cancel instantly if clicking save or enter
                                         setTimeout(() => {
                                             if (!newItemTitle.trim()) {
                                                 setShowChecklistInput(false);
@@ -589,7 +532,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                             setShowChecklistInput(false);
                                             setNewItemTitle('');
                                         }
-                                        e.stopPropagation(); // prevent grid drags or modal closes
+                                        e.stopPropagation();
                                     }}
                                 />
                             </form>
@@ -628,10 +571,8 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                         {notes.map(note => {
                             const lgLayout = layouts.lg?.find(l => l.i === String(note.id));
                             const dataGrid = lgLayout ? { ...lgLayout } : { x: 0, y: 0, w: 4, h: 8 };
-
                             return (
                                 <div key={note.id} data-grid={dataGrid} className="relative group">
-                                    {/* Drag handle — absolute top-right inside the card boundary */}
                                     <div
                                         className="panel-drag-handle drag-handle absolute top-1.5 left-1.5 z-20 opacity-0 group-hover:opacity-60 transition-opacity cursor-grab active:cursor-grabbing flex items-center justify-center"
                                         title="Drag to move"
@@ -662,7 +603,6 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                 )}
             </div>
 
-            {/* Floating Add Note Button (Bottom Right) */}
             {onAddNoteClick && (
                 <button
                     onClick={(e) => {
