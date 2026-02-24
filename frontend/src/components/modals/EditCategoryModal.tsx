@@ -69,8 +69,8 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
     if (!isOpen || !category) return null;
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-            <div className="bg-card-dark border border-border-dark rounded-2xl w-full max-w-lg shadow-2xl shadow-black/50 overflow-hidden">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4" onKeyDown={e => { if (e.key === 'Escape') onClose(); }} onClick={onClose}>
+            <div onClick={(e) => e.stopPropagation()} className="bg-card-dark border border-border-dark rounded-2xl w-full max-w-[85vw] md:max-w-2xl max-h-[95vh] flex flex-col shadow-2xl shadow-black/50 overflow-hidden">
 
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-border-dark/50">

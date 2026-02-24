@@ -62,9 +62,10 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4" onKeyDown={e => { if (e.key === 'Escape') onClose(); }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4" onKeyDown={e => { if (e.key === 'Escape') onClose(); }} onClick={onClose}>
             <div
-                className="bg-[#242c26] w-full max-w-lg max-h-[95vh] rounded-2xl flex flex-col shadow-2xl relative overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+                className="bg-[#242c26] w-full max-w-[85vw] md:max-w-2xl max-h-[95vh] rounded-2xl flex flex-col shadow-2xl relative overflow-hidden"
                 style={{ border: '1px solid rgba(255,255,255,0.05)' }}
             >
                 <div className="flex items-center justify-between px-6 py-4 shrink-0 border-b border-white/5">

@@ -32,8 +32,7 @@ async function main() {
             content: "1. Build Backend\n2. Build Frontend\n3. Integrate\n4. Profit?",
             contentType: "text",
             categoryId: forest.id,
-            priority: 1,
-            isPinned: true,
+            priority: 2,
             attachments: []
         }
     });
@@ -44,8 +43,7 @@ async function main() {
             content: "Use WebSocket for real-time latency updates in the sidebar.",
             contentType: "text",
             categoryId: dashboard.id,
-            priority: 2,
-            isPinned: false,
+            priority: 3,
             attachments: []
         }
     });

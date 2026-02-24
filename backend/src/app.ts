@@ -14,7 +14,8 @@ import { searchController } from "./6-Controllers/search-controller";
 const server = express();
 
 server.use(cors());
-server.use(express.json());
+server.use(express.json({ limit: '50mb' }));
+server.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Register middleware:
 server.use(loggerMiddleware.logToConsole);

@@ -76,8 +76,13 @@ export const MainLayout: React.FC = () => {
             socketService.connect();
 
             // When another client updates data, we trigger a refresh
+            // Debounce so rapid events don't crush the frontend
+            let timeout: ReturnType<typeof setTimeout> | null = null;
             const handleUpdate = () => {
-                setRefreshKey(prev => prev + 1);
+                if (timeout) clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    setRefreshKey(prev => prev + 1);
+                }, 1000); // 1-second debounce
             };
 
             socketService.on("note-updated", handleUpdate);
@@ -85,6 +90,7 @@ export const MainLayout: React.FC = () => {
 
             // Cleanup on unmount
             return () => {
+                if (timeout) clearTimeout(timeout);
                 socketService.off("note-updated", handleUpdate);
                 socketService.off("category-updated", handleUpdate);
                 socketService.disconnect();
@@ -163,7 +169,7 @@ export const MainLayout: React.FC = () => {
                 </header>
 
                 <div className="flex-1 overflow-hidden relative">
-                    <Outlet context={{ refreshKey, selectedCategoryId, setSelectedCategoryId, setRefreshKey }} />
+                    <Outlet context={{ refreshKey, selectedCategoryId, setSelectedCategoryId, setRefreshKey, setCategories }} />
                 </div>
             </main>
 

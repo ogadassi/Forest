@@ -118,14 +118,14 @@ export const SmartSearchBar: React.FC<SmartSearchBarProps> = ({ categories, isOp
         <>
             {/* Backdrop — no animation class so it doesn't re-trigger on result updates */}
             <div
-                className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
+                className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-[2px]"
                 onClick={() => onOpenChange(false)}
             />
 
             {/* Modal */}
             <div className="fixed inset-0 z-[101] flex items-start justify-center pt-[12vh] px-4 pointer-events-none">
                 <div
-                    className="w-full max-w-[600px] rounded-2xl overflow-hidden pointer-events-auto"
+                    className="w-full max-w-[85vw] md:max-w-4xl rounded-2xl overflow-hidden pointer-events-auto"
                     style={{
                         background: 'linear-gradient(145deg, #1e2a20, #181e19)',
                         border: '1px solid rgba(93,187,106,0.25)',

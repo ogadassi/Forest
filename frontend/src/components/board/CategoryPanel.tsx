@@ -46,12 +46,19 @@ function buildDefaultNoteLayouts(notes: NoteModel[], existing: Layouts): Layouts
         const colsForBp = COLS[bp as keyof typeof COLS];
         const itemsPerRow = Math.max(1, Math.floor(colsForBp / w));
 
-        const newItems: GridItem[] = missing.map((note, idx) => ({
-            i: String(note.id),
-            x: ((validBase.length + idx) % itemsPerRow) * w,
-            y: Math.floor((validBase.length + idx) / itemsPerRow) * 9,
-            w, h: 8, minW: 1, minH: 2,
-        }));
+        const newItems: GridItem[] = missing.map((note, idx) => {
+            const rawContent = typeof note.content === 'string' ? note.content : JSON.stringify(note.content || '');
+            const txtLen = rawContent.replace(/<[^>]*>?/gm, '').length;
+            const extraHeight = Math.floor(txtLen / 120);
+            const calculatedH = Math.min(6 + extraHeight, 20); // Cap at h=20 so it doesn't get unmanageable
+
+            return {
+                i: String(note.id),
+                x: ((validBase.length + idx) % itemsPerRow) * w,
+                y: Math.floor((validBase.length + idx) / itemsPerRow) * 9, // Push down enough to avoid overlaps
+                w, h: calculatedH, minW: 1, minH: 4,
+            };
+        });
         newLayouts[bp] = [...validBase, ...newItems];
     });
     return newLayouts;
@@ -67,6 +74,8 @@ interface CategoryPanelProps {
     isFullscreenView?: boolean;
     onHeaderClick?: () => void;
     onRefreshNotes?: () => void;
+    onUpdateNoteOptimistic?: (note: NoteModel, apiCall: () => Promise<void>) => void;
+    onDeleteNoteOptimistic?: (noteId: number, apiCall: () => Promise<void>) => void;
 }
 
 const PRESET_COLORS = [
@@ -92,9 +101,11 @@ const SortableChecklistItem = ({ note, color, onToggle, onDelete }: { note: Note
 
             <div className="flex items-start gap-3 flex-1 min-w-0">
                 <button
+                    type="button"
                     className="w-5 h-5 mt-0.5 rounded flex items-center justify-center border-[1.5px] border-slate-500 hover:border-primary shrink-0 transition-colors bg-background-dark shadow-sm"
                     style={note.isCompleted ? { backgroundColor: color, borderColor: color } : {}}
                     onClick={onToggle}
+                    onPointerDown={(e) => e.stopPropagation()}
                 >
                     <span className={`material-icons-round text-[14px] font-black transition-opacity ${note.isCompleted ? 'opacity-100 text-background-dark' : 'opacity-0'}`}>check</span>
                 </button>
@@ -106,9 +117,11 @@ const SortableChecklistItem = ({ note, color, onToggle, onDelete }: { note: Note
             </div>
 
             <button
+                type="button"
                 className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 transition-all shrink-0"
                 title="Delete Item"
                 onClick={onDelete}
+                onPointerDown={(e) => e.stopPropagation()}
             >
                 <span className="material-icons-round text-sm">delete</span>
             </button>
@@ -117,7 +130,8 @@ const SortableChecklistItem = ({ note, color, onToggle, onDelete }: { note: Note
 };
 
 export const CategoryPanel: React.FC<CategoryPanelProps> = ({
-    category, notes, onNoteClick, onRename, onDelete, onAddNoteClick, isFullscreenView, onHeaderClick, onRefreshNotes
+    category, notes, onNoteClick, onRename, onDelete, onAddNoteClick, isFullscreenView, onHeaderClick, onRefreshNotes,
+    onUpdateNoteOptimistic, onDeleteNoteOptimistic
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newItemTitle, setNewItemTitle] = useState('');
@@ -437,11 +451,11 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
             </div >
 
             <div
-                className={`non-draggable flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scrollbar ${isFullscreenView ? '' : 'space-y-2'}`}
+                className={`non-draggable flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scrollbar ${isFullscreenView ? '' : 'flex flex-col gap-2 min-h-0'}`}
                 ref={isFullscreenView ? containerRef : undefined}
             >
                 {category.type === 'checklist' ? (
-                    <div className="flex flex-col h-full overflow-hidden">
+                    <div className="flex-1 flex flex-col h-full overflow-hidden">
                         <div className="flex-1 overflow-y-auto custom-scrollbar space-y-1 pr-1 pb-4">
                             {sortedNotes.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-500/80 py-10 opacity-80 animate-in fade-in">
@@ -460,17 +474,60 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                                 color={color}
                                                 onToggle={async (e) => {
                                                     e.stopPropagation();
-                                                    try {
-                                                        await noteService.updateNote({ ...note, isCompleted: !note.isCompleted });
-                                                        if (onRefreshNotes) onRefreshNotes();
-                                                    } catch (err) { }
+                                                    const newStatus = !note.isCompleted;
+                                                    console.log(`[Click: checkmark] Note ${note.id} moving to -> ${newStatus}`);
+                                                    const updatedNote = { ...note, isCompleted: newStatus };
+
+                                                    // Immediate local override for completely 0ms visual swap
+                                                    setSortedNotes(prev => prev.map(n => n.id === note.id ? updatedNote : n));
+
+                                                    const apiCall = async () => {
+                                                        console.log(`[API Call Start: updateNote] Note ${note.id} -> isCompleted: ${newStatus}`);
+                                                        await noteService.updateNote(updatedNote);
+                                                        console.log(`[API Call Success: updateNote] Note ${note.id}`);
+                                                        // Deliberately NOT calling onRefreshNotes() to avoid racing the DB write!
+                                                        // The globally debounced Socket sequence will fetch the absolute truth securely.
+                                                    };
+
+                                                    if (onUpdateNoteOptimistic) {
+                                                        console.log(`[Optimistic Dispatch: updateNote] Emitting to BoardView override for Note ${note.id}`);
+                                                        onUpdateNoteOptimistic(updatedNote, apiCall);
+                                                    } else {
+                                                        console.log(`[Optimistic Dispatch: updateNote] Fallback to local setSortedNotes`);
+                                                        try {
+                                                            await apiCall();
+                                                        } catch (err) {
+                                                            console.error(`[API Call FAILED: updateNote] Note ${note.id}`, err);
+                                                            setSortedNotes(prev => prev.map(n => n.id === note.id ? { ...n, isCompleted: !newStatus } : n));
+                                                        }
+                                                    }
                                                 }}
                                                 onDelete={async (e) => {
                                                     e.stopPropagation();
-                                                    try {
+                                                    console.log(`[Click: delete] Note ${note.id}`);
+
+                                                    // Immediate local override for 0ms visual swap
+                                                    setSortedNotes(prev => prev.filter(n => n.id !== note.id));
+
+                                                    const apiCall = async () => {
+                                                        console.log(`[API Call Start: deleteNote] Note ${note.id}`);
                                                         await noteService.deleteNote(note.id!);
-                                                        if (onRefreshNotes) onRefreshNotes();
-                                                    } catch (err) { }
+                                                        console.log(`[API Call Success: deleteNote] Note ${note.id}`);
+                                                        // Deliberately NOT calling onRefreshNotes() 
+                                                    };
+
+                                                    if (onDeleteNoteOptimistic) {
+                                                        console.log(`[Optimistic Dispatch: deleteNote] Emitting to BoardView override for Note ${note.id}`);
+                                                        onDeleteNoteOptimistic(note.id!, apiCall);
+                                                    } else {
+                                                        console.log(`[Optimistic Dispatch: deleteNote] Fallback to local setSortedNotes`);
+                                                        try {
+                                                            await apiCall();
+                                                        } catch (err) {
+                                                            console.error(`[API Call FAILED: deleteNote] Note ${note.id}`, err);
+                                                            setSortedNotes([...notes].sort((a, b) => (a.order || 0) - (b.order || 0)));
+                                                        }
+                                                    }
                                                 }}
                                             />
                                         ))}
@@ -495,7 +552,6 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                             contentType: 'text',
                                             categoryId: category.id!,
                                             priority: 1,
-                                            isPinned: false,
                                             isCompleted: false,
                                             attachments: []
                                         };
@@ -595,11 +651,24 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                         })}
                     </ResponsiveGridLayout>
                 ) : (
-                    notes.map(note => (
-                        <div key={note.id} onClick={(e) => { e.stopPropagation(); }}>
-                            <NoteCard note={note} onClick={() => onNoteClick(note)} />
-                        </div>
-                    ))
+                    notes.map(note => {
+                        const raw = typeof note.content === 'string' ? note.content : JSON.stringify(note.content || '');
+                        const txtLen = raw.replace(/<[^>]*>?/gm, '').length;
+                        // Each note starts from 0 and gets proportional shares of the available panel height
+                        const weight = Math.max(1, Math.ceil(txtLen / 200));
+                        return (
+                            <div
+                                key={note.id}
+                                onClick={(e) => { e.stopPropagation(); }}
+                                // min-h-0 overrides flex's default min-h:auto, allowing the item to shrink to its share
+                                // overflow-hidden prevents the item from growing beyond its allotted flex share
+                                className="overflow-hidden min-h-0"
+                                style={{ flex: `${weight} ${weight} 0` }}
+                            >
+                                <NoteCard note={note} onClick={() => onNoteClick(note)} />
+                            </div>
+                        );
+                    })
                 )}
             </div>
 

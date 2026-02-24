@@ -23,12 +23,9 @@ function getDir(text: string): 'rtl' | 'ltr' {
 export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick, hasLeftHandle }) => {
     const priority = PRIORITY_CONFIG[note.priority] ?? PRIORITY_CONFIG[1];
 
-    const contentPreview = typeof note.content === 'string'
+    const rawContent = typeof note.content === 'string'
         ? note.content
         : JSON.stringify(note.content);
-    const truncated = contentPreview.length > 4000
-        ? contentPreview.slice(0, 4000) + '…'
-        : contentPreview;
 
     return (
         <div
@@ -36,7 +33,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick, hasLeftHandle
             className="h-full flex flex-col group relative rounded-xl cursor-pointer transition-all duration-200 overflow-hidden
                        hover:-translate-y-0.5 hover:shadow-xl active:scale-[0.98]"
             style={{
-                background: 'rgba(255,255,255,0.03)',
+                background: note.color || 'rgba(255,255,255,0.03)',
                 border: '1px solid rgba(255,255,255,0.07)',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
             }}
@@ -47,36 +44,33 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick, hasLeftHandle
                 style={{ background: 'linear-gradient(135deg, rgba(93,187,106,0.04) 0%, transparent 60%)' }}
             />
 
-            <div className="relative p-4 flex-1 flex flex-col overflow-hidden">
-                {/* Top row: title + pin */}
+            <div className="relative p-4 flex-1 flex flex-col overflow-hidden min-h-0">
+                {/* Top row: title */}
                 <div className={`flex items-start justify-between gap-2 mb-2 transition-[padding] duration-150 ${hasLeftHandle ? 'group-hover:pl-5' : ''}`}>
                     <h3 dir={getDir(note.title)} className="font-semibold text-sm text-slate-100 leading-snug line-clamp-2 flex-1 break-words">
                         {note.title}
                     </h3>
-                    {note.isPinned && (
-                        <span className="material-icons-round text-xs text-primary/70 rotate-45 shrink-0 mt-0.5">
-                            push_pin
-                        </span>
-                    )}
                 </div>
 
-                {/* Content preview */}
-                {truncated && (
+                {/* Content preview — maskImage fades bottom edge to signal content is cut off */}
+                {rawContent && (
                     <div
-                        className="flex-1 min-h-7 mb-3 overflow-hidden"
+                        className="flex-1 min-h-0 overflow-hidden text-[13px] text-slate-400 break-words pointer-events-none"
                         style={{
-                            maskImage: 'linear-gradient(to bottom, black calc(100% - 15px), transparent 100%)',
-                            WebkitMaskImage: 'linear-gradient(to bottom, black calc(100% - 15px), transparent 100%)'
+                            maskImage: 'linear-gradient(to bottom, black 55%, transparent 100%)',
+                            WebkitMaskImage: 'linear-gradient(to bottom, black 55%, transparent 100%)',
                         }}
                     >
-                        <p dir={getDir(truncated)} className="text-[13px] text-slate-400 leading-relaxed whitespace-pre-wrap break-words line-clamp-[14]">
-                            {truncated}
-                        </p>
+                        <div
+                            dir={getDir(rawContent.replace(/<[^>]*>?/gm, ''))}
+                            className="prose prose-sm prose-invert max-w-none prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-li:my-0.5 prose-img:max-h-32 prose-img:w-auto prose-img:object-contain prose-img:my-1 prose-img:rounded-md leading-relaxed"
+                            dangerouslySetInnerHTML={{ __html: rawContent }}
+                        />
                     </div>
                 )}
 
                 {/* Footer: badges */}
-                <div className="mt-auto pt-2 flex items-center gap-2 flex-wrap">
+                <div className="shrink-0 pt-2 flex items-center gap-2 flex-wrap">
                     {/* Priority badge */}
                     <span
                         className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full"

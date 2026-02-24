@@ -57,7 +57,7 @@ async function fetchMatchingNotes(searchTerms: string[]) {
         const isScript = /^\[.+\]$/.test(term); // e.g. [א-ת]
         const sqlPattern = isScript ? `%${term}%` : `%${term}%`;
         const byContent = await prisma.$queryRawUnsafe<any[]>(`
-            SELECT n.id, n.title, n.content, n."contentType", n.priority, n."isPinned", n."categoryId", n."createdAt", n."updatedAt",
+            SELECT n.id, n.title, n.content, n."contentType", n.priority, n."categoryId", n."createdAt", n."updatedAt",
                    c.id as cat_id, c.name as cat_name, c.color as cat_color, c."icon" as cat_icon
             FROM "Note" n
             JOIN "Category" c ON n."categoryId" = c.id
@@ -71,7 +71,7 @@ async function fetchMatchingNotes(searchTerms: string[]) {
                 results.push({
                     id: row.id, title: row.title, content: row.content,
                     contentType: row.contentType, priority: row.priority,
-                    isPinned: row.isPinned, categoryId: row.categoryId,
+                    categoryId: row.categoryId,
                     createdAt: row.createdAt, updatedAt: row.updatedAt,
                     category: { id: row.cat_id, name: row.cat_name, color: row.cat_color, icon: row.cat_icon }
                 });

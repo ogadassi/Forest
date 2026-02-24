@@ -29,7 +29,7 @@ model Note {
   isCompleted Boolean  @default(false)
   
   priority    Int      @default(1)
-  isPinned    Boolean  @default(false)
+  color       String?  // Optional background color
   
   // JSONB for voice/images
   attachments Json     @default("[]") 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { NoteModel } from '../../models/NoteModel';
 import { noteService } from '../../services/NoteService';
+import { RichTextEditor } from './RichTextEditor';
 
 interface CreateNoteModalProps {
     isOpen: boolean;
@@ -13,20 +14,78 @@ export const CreateNoteModal: React.FC<CreateNoteModalProps> = ({ isOpen, onClos
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [color, setColor] = useState<string | undefined>(undefined);
+    const [showColorPicker, setShowColorPicker] = useState(false);
 
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const editorRef = useRef<any>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    const COLORS = [
+        { name: 'Default', value: undefined },
+        { name: 'Red', value: '#3A2323' },
+        { name: 'Orange', value: '#3D3624' },
+        { name: 'Green', value: '#253629' },
+        { name: 'Blue', value: '#23323A' },
+        { name: 'Purple', value: '#32233A' },
+    ];
+
+    const handleFormat = (format: string) => {
+        if (!editorRef.current) return;
+        const editor = editorRef.current;
+
+        switch (format) {
+            case 'bold':
+                editor.chain().focus().toggleBold().run();
+                break;
+            case 'italic':
+                editor.chain().focus().toggleItalic().run();
+                break;
+            case 'h1':
+                editor.chain().focus().toggleHeading({ level: 1 }).run();
+                break;
+            case 'h2':
+                editor.chain().focus().toggleHeading({ level: 2 }).run();
+                break;
+            case 'text':
+                editor.chain().focus().setParagraph().run();
+                break;
+            case 'list':
+                editor.chain().focus().toggleTaskList().run();
+                break;
+            case 'align-right':
+                editor.chain().focus().setTextAlign('right').run();
+                break;
+            case 'align-left':
+                editor.chain().focus().setTextAlign('left').run();
+                break;
+            case 'image':
+                fileInputRef.current?.click();
+                break;
         }
-    }, [content, isOpen]);
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !editorRef.current) return;
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            const base64 = reader.result as string;
+            editorRef.current.chain().focus().setImage({ src: base64 }).run();
+        };
+        reader.readAsDataURL(file);
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
 
     useEffect(() => {
         if (isOpen) {
             setTitle('');
             setContent('');
+            setColor(undefined);
+            setShowColorPicker(false);
             setIsSubmitting(false);
         }
     }, [isOpen]);
@@ -42,7 +101,7 @@ export const CreateNoteModal: React.FC<CreateNoteModalProps> = ({ isOpen, onClos
             contentType: 'text',
             categoryId,
             priority: 1,
-            isPinned: false,
+            color,
             attachments: []
         };
 
@@ -60,10 +119,11 @@ export const CreateNoteModal: React.FC<CreateNoteModalProps> = ({ isOpen, onClos
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4" onKeyDown={e => { if (e.key === 'Escape') onClose(); }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4" onKeyDown={e => { if (e.key === 'Escape') onClose(); }} onClick={onClose}>
             <div
-                className="bg-[#242c26] w-full max-w-2xl max-h-[95vh] rounded-2xl flex flex-col shadow-2xl relative overflow-hidden"
-                style={{ border: '1px solid rgba(255,255,255,0.05)' }}
+                onClick={(e) => e.stopPropagation()}
+                className="w-full max-w-[90vw] md:max-w-5xl max-h-[95vh] rounded-2xl flex flex-col shadow-2xl relative overflow-hidden transition-colors duration-300"
+                style={{ backgroundColor: color || '#222723', border: '1px solid rgba(255,255,255,0.05)' }}
             >
                 <div className="flex items-center justify-between px-6 py-4 shrink-0 border-b border-white/5">
                     <div className="flex items-center gap-2.5 text-[#5dbb6a]">
@@ -71,9 +131,6 @@ export const CreateNoteModal: React.FC<CreateNoteModalProps> = ({ isOpen, onClos
                         <span className="text-[10px] font-black uppercase tracking-[0.15em] text-[#63846b]">Creating Note</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <button className="text-slate-500 hover:text-white transition-colors flex items-center justify-center w-7 h-7 rounded-lg hover:bg-white/5">
-                            <span className="material-icons-round text-base">push_pin</span>
-                        </button>
                         <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors flex items-center justify-center w-7 h-7 rounded-lg hover:bg-white/5">
                             <span className="material-icons-round text-lg">close</span>
                         </button>
@@ -87,29 +144,70 @@ export const CreateNoteModal: React.FC<CreateNoteModalProps> = ({ isOpen, onClos
                             placeholder="Title..."
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="w-full bg-transparent border-none outline-none text-2xl sm:text-3xl font-black text-slate-100 placeholder-slate-600 transition-colors"
+                            className="w-full bg-transparent border-none outline-none text-3xl sm:text-4xl font-black text-[#859fbb] placeholder-[#4f6477] transition-colors"
                             autoFocus
                         />
 
-                        <textarea
-                            ref={textareaRef}
+                        <RichTextEditor
+                            content={content}
+                            onChange={(html) => setContent(html)}
                             placeholder="Start typing..."
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
-                            className="w-full bg-transparent border-none outline-none text-sm sm:text-base leading-relaxed text-slate-300 placeholder-slate-600 resize-none overflow-hidden min-h-[20vh]"
+                            editorRef={editorRef}
                         />
                     </div>
                 </div>
 
-                <div className="px-6 py-4 border-t border-white/5 bg-[#202722] shrink-0 flex flex-wrap items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 text-slate-400">
-                        <button className="hover:text-white transition-colors p-1 rounded-md hover:bg-white/10" title="Bold"><span className="material-icons-round text-base">format_bold</span></button>
-                        <button className="hover:text-white transition-colors p-1 rounded-md hover:bg-white/10" title="Italic"><span className="material-icons-round text-base">format_italic</span></button>
-                        <button className="hover:text-white transition-colors p-1 rounded-md hover:bg-white/10" title="List"><span className="material-icons-round text-base">format_list_bulleted</span></button>
+                <div className="px-6 py-4 border-t border-white/5 bg-black/10 shrink-0 flex flex-wrap items-center justify-between gap-4 relative">
+                    <div className="flex items-center gap-2.5 text-[#859fbb]">
+                        <button onClick={() => handleFormat('bold')} className="hover:text-white transition-colors p-1.5 rounded-md hover:bg-white/10 font-serif font-black text-lg leading-none" title="Bold">B</button>
+                        <button onClick={() => handleFormat('italic')} className="hover:text-white transition-colors p-1.5 rounded-md hover:bg-white/10 font-serif italic font-bold text-lg leading-none" title="Italic">I</button>
+                        <button onClick={() => handleFormat('h1')} className="hover:text-white transition-colors p-1.5 rounded-md hover:bg-white/10 font-bold text-sm leading-none" title="Heading 1">H1</button>
+                        <button onClick={() => handleFormat('h2')} className="hover:text-white transition-colors p-1.5 rounded-md hover:bg-white/10 font-bold text-sm leading-none" title="Heading 2">H2</button>
+                        <button onClick={() => handleFormat('text')} className="hover:text-white transition-colors p-1.5 rounded-md hover:bg-white/10 font-medium text-sm leading-none" title="Regular Text">T</button>
+                        <button onClick={() => handleFormat('list')} className="hover:text-white transition-colors p-1.5 rounded-md hover:bg-white/10 flex" title="List"><span className="material-icons-round text-base">format_list_bulleted</span></button>
+
                         <div className="w-px h-5 bg-white/10 mx-1"></div>
-                        <button className="hover:text-white transition-colors p-1 rounded-md hover:bg-white/10" title="Add Image"><span className="material-icons-round text-base">image</span></button>
-                        <button className="hover:text-white transition-colors p-1 rounded-md hover:bg-white/10" title="Add Reminder"><span className="material-icons-round text-base">notifications</span></button>
-                        <button className="hover:text-white transition-colors p-1 rounded-md hover:bg-white/10" title="Color palette"><span className="material-icons-round text-base">palette</span></button>
+
+                        <button onClick={() => handleFormat('align-right')} className="hover:text-white transition-colors p-1.5 rounded-md hover:bg-white/10 flex" title="Align Right (RTL)">
+                            <span className="material-icons-round text-base">format_align_right</span>
+                        </button>
+                        <button onClick={() => handleFormat('align-left')} className="hover:text-white transition-colors p-1.5 rounded-md hover:bg-white/10 flex" title="Align Left (LTR)">
+                            <span className="material-icons-round text-base">format_align_left</span>
+                        </button>
+
+                        <button onClick={() => handleFormat('image')} className="hover:text-white transition-colors p-1.5 rounded-md hover:bg-white/10 flex" title="Add Image"><span className="material-icons-round text-base">image</span></button>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            ref={fileInputRef}
+                            onChange={handleImageUpload}
+                            className="hidden"
+                        />
+
+                        <div className="relative">
+                            <button
+                                onClick={() => setShowColorPicker(!showColorPicker)}
+                                className={`transition-colors p-1.5 rounded-md flex ${showColorPicker ? 'text-white bg-white/10' : 'hover:text-white hover:bg-white/10'}`}
+                                title="Color palette"
+                            >
+                                <span className="material-icons-round text-base">palette</span>
+                            </button>
+                            {showColorPicker && (
+                                <div className="absolute bottom-full mb-3 left-0 bg-[#2b332d] border border-white/10 rounded-xl p-2 flex gap-2 shadow-2xl z-50">
+                                    {COLORS.map(c => (
+                                        <button
+                                            key={c.name}
+                                            onClick={() => { setColor(c.value); setShowColorPicker(false); }}
+                                            className="w-6 h-6 rounded-full border border-white/20 hover:scale-110 transition-transform flex items-center justify-center"
+                                            style={{ backgroundColor: c.value || '#222723' }}
+                                            title={c.name}
+                                        >
+                                            {color === c.value && <span className="material-icons-round text-[12px] opacity-70 mix-blend-difference">check</span>}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-3">

@@ -18,8 +18,8 @@ const ResponsiveGridLayout = Responsive as any;
 
 const STORAGE_KEY = 'forest-dashboard-responsive-layout';
 const BREAKPOINTS = { lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 };
-const COLS = { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 };
-const ROW_HEIGHT = 60;
+const COLS = { lg: 18, md: 15, sm: 9, xs: 6, xxs: 3 };
+const ROW_HEIGHT = 45;
 
 interface GridItem {
     i: string; x: number; y: number;
@@ -38,9 +38,9 @@ function buildDefaultLayouts(categories: CategoryModel[], existing: Layouts): La
         const validBase = base.filter(l => categories.some(c => String(c.id) === l.i));
 
         // Define responsive widths based on breakpoint cols
-        let w = 4; // default lg (1/3 screen)
-        if (bp === 'md') w = 5; // 1/2
-        if (bp === 'sm') w = 6; // full
+        let w = 6; // default lg (1/3 of 18 cols)
+        if (bp === 'md') w = 7; // ~1/2 of 15
+        if (bp === 'sm') w = 9; // full
         if (bp === 'xs' || bp === 'xxs') w = COLS[bp as keyof typeof COLS]; // full
 
         const colsForBp = COLS[bp as keyof typeof COLS];
@@ -49,8 +49,8 @@ function buildDefaultLayouts(categories: CategoryModel[], existing: Layouts): La
         const newItems: GridItem[] = missing.map((cat, idx) => ({
             i: String(cat.id),
             x: ((validBase.length + idx) % itemsPerRow) * w,
-            y: Math.floor((validBase.length + idx) / itemsPerRow) * 9,
-            w, h: 8, minW: 1, minH: 2,
+            y: Math.floor((validBase.length + idx) / itemsPerRow) * 14,
+            w, h: 12, minW: 1, minH: 3,
         }));
 
         newLayouts[bp] = [...validBase, ...newItems];
@@ -94,11 +94,12 @@ export const BoardView: React.FC = () => {
     const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false);
     const [createNoteCategoryId, setCreateNoteCategoryId] = useState<number | undefined>(undefined);
 
-    const { refreshKey, selectedCategoryId, setSelectedCategoryId } =
+    const { refreshKey, selectedCategoryId, setSelectedCategoryId, setCategories: setGlobalCategories } =
         useOutletContext<{
             refreshKey: number;
             selectedCategoryId: number | null;
             setSelectedCategoryId: (id: number | null) => void;
+            setCategories?: React.Dispatch<React.SetStateAction<CategoryModel[]>>;
         }>();
 
     const [internalRefresh, setInternalRefresh] = useState(0);
@@ -113,6 +114,29 @@ export const BoardView: React.FC = () => {
             setCategories(fetchedCategories);
             setNotes(fetchedNotes);
 
+            setNotes(fetchedNotes);
+
+            // Clean up deletedNoteIds for elements that the server confirms are gone
+            const serverNoteIds = new Set(fetchedNotes.map(n => n.id));
+            deletedNoteIds.current.forEach(id => {
+                if (!serverNoteIds.has(id)) {
+                    deletedNoteIds.current.delete(id);
+                }
+            });
+
+            // Clean up optimisticOverrides that have no actively pending mutations
+            setOptimisticOverrides(prev => {
+                if (Object.keys(prev).length === 0) return prev;
+                const next = { ...prev };
+                Object.keys(next).forEach(key => {
+                    const id = Number(key);
+                    if (!mutationCounts.current[id] || mutationCounts.current[id] <= 0) {
+                        delete next[id];
+                    }
+                });
+                return next;
+            });
+
             // Reconcile layouts with fetched categories
             const saved = loadLayouts();
             if (saved && Object.keys(saved).length > 0) {
@@ -124,7 +148,7 @@ export const BoardView: React.FC = () => {
                     if (!reconciled[bp]) reconciled[bp] = [];
 
                     // Force minimum dimensions on existing blocks so past layouts shrink
-                    reconciled[bp] = reconciled[bp].map(item => ({ ...item, minW: 1, minH: 2 }));
+                    reconciled[bp] = reconciled[bp].map(item => ({ ...item, minW: 1, minH: 3 }));
 
                     const existingIds = new Set(reconciled[bp].map(item => item.i));
 
@@ -135,7 +159,7 @@ export const BoardView: React.FC = () => {
                             const numCols = COLS[bp as keyof typeof COLS];
                             const itemWidth = Math.min(4, numCols);
                             const lastItem = reconciled[bp].reduce((prev, current) => (prev.y > current.y) ? prev : current, { y: 0, h: 0 } as GridItem);
-                            reconciled[bp].push({ i: iStr, x: 0, y: (lastItem?.y || 0) + (lastItem?.h || 0), w: itemWidth, h: 8, minW: 1, minH: 2 });
+                            reconciled[bp].push({ i: iStr, x: 0, y: (lastItem?.y || 0) + (lastItem?.h || 0), w: itemWidth, h: 12, minW: 1, minH: 3 });
                             modified = true;
                         }
                     });
@@ -186,17 +210,59 @@ export const BoardView: React.FC = () => {
         setIsEditNoteModalOpen(true);
     };
 
+    // --- Optimistic Checkbox/Delete Handlers ---
+    const mutationCounts = useRef<Record<number, number>>({});
+    const deletedNoteIds = useRef<Set<number>>(new Set());
+    const [optimisticOverrides, setOptimisticOverrides] = useState<Record<number, NoteModel>>({});
+
+    const handleUpdateNoteOptimistic = useCallback((updatedNote: NoteModel, apiCall: () => Promise<void>) => {
+        const id = updatedNote.id!;
+        mutationCounts.current[id] = (mutationCounts.current[id] || 0) + 1;
+        console.log(`[BoardView Optimistic] Queuing UPDATE for Note ${id} (count: ${mutationCounts.current[id]})`);
+
+        setOptimisticOverrides(prev => ({ ...prev, [id]: updatedNote }));
+
+        // Execute API call and handle cleanup
+        apiCall().catch(err => {
+            console.error("Optimistic note update failed", err);
+        }).finally(() => {
+            mutationCounts.current[id] -= 1;
+            console.log(`[BoardView Optimistic] UPDATE Resolved for Note ${id} (count remaining: ${mutationCounts.current[id]})`);
+            if (mutationCounts.current[id] <= 0) {
+                delete mutationCounts.current[id];
+                // Do NOT delete from optimisticOverrides here!
+                // We keep the optimistic state visually alive until `loadData` fetches the true database state,
+                // which prevents a visual flash/blink between the API call finishing and the local state refetching.
+            }
+        });
+    }, []);
+
+    const handleDeleteNoteOptimistic = useCallback((noteId: number, apiCall: () => Promise<void>) => {
+        deletedNoteIds.current.add(noteId);
+        // Force re-render of useMemo
+        setOptimisticOverrides(prev => ({ ...prev }));
+
+        apiCall().catch(err => {
+            console.error("Optimistic delete failed", err);
+            deletedNoteIds.current.delete(noteId);
+            setOptimisticOverrides(prev => ({ ...prev }));
+        });
+    }, []);
+
+
     // Handle Category Inline Rename
     const handleCategoryRename = async (id: number, newName: string) => {
         const cat = categories.find(c => c.id === id);
         if (!cat) return;
         setCategories(prev => prev.map(c => c.id === id ? { ...c, name: newName } : c));
+        if (setGlobalCategories) setGlobalCategories(prev => prev.map(c => c.id === id ? { ...c, name: newName } : c));
         try {
             await categoryService.updateCategory({ ...cat, name: newName });
         } catch (error) {
             console.error('Failed inline update:', error);
             // Revert optimistic update
             setCategories(prev => prev.map(c => c.id === id ? cat : c));
+            if (setGlobalCategories) setGlobalCategories(prev => prev.map(c => c.id === id ? cat : c));
         }
     };
 
@@ -205,6 +271,7 @@ export const BoardView: React.FC = () => {
         // Optimistic UI update
         const removedCat = categories.find(c => c.id === id);
         setCategories(prev => prev.filter(c => c.id !== id));
+        if (setGlobalCategories) setGlobalCategories(prev => prev.filter(c => c.id !== id));
 
         // If we are currently viewing this category in fullscreen, route back to Home
         if (selectedCategoryId === id) {
@@ -218,6 +285,7 @@ export const BoardView: React.FC = () => {
             // Revert on failure
             if (removedCat) {
                 setCategories(prev => [...prev, removedCat]);
+                if (setGlobalCategories) setGlobalCategories(prev => [...prev, removedCat]);
             }
         }
     };
@@ -233,6 +301,34 @@ export const BoardView: React.FC = () => {
             displayedCategories.some(c => String(c.id) === l.i)
         );
     });
+
+    const notesByCategory = React.useMemo(() => {
+        const map = new Map<number, NoteModel[]>();
+        categories.forEach(c => map.set(c.id!, []));
+
+        if (Object.keys(optimisticOverrides).length > 0) {
+            console.log("[BoardView Render] Applying optimistic overrides:", Object.keys(optimisticOverrides));
+        }
+
+        // Merge base notes and optimistic overrides, and filter deleted notes
+        const finalNotes = notes
+            .map(n => optimisticOverrides[n.id!] || n)
+            .filter(n => !deletedNoteIds.current.has(n.id!));
+
+        // Include overrides for any items that might not currently be in base notes
+        Object.values(optimisticOverrides).forEach(n => {
+            if (!notes.find(bn => bn.id === n.id) && !deletedNoteIds.current.has(n.id!)) {
+                finalNotes.push(n);
+            }
+        });
+
+        finalNotes.forEach(n => {
+            if (map.has(n.categoryId)) {
+                map.get(n.categoryId)!.push(n);
+            }
+        });
+        return map;
+    }, [notes, categories, optimisticOverrides]);
 
     const renderContent = () => {
         if (loading && notes.length === 0) {
@@ -291,7 +387,7 @@ export const BoardView: React.FC = () => {
                     <div className="h-full cursor-default" onClick={e => e.stopPropagation()}>
                         <CategoryPanel
                             category={category}
-                            notes={notes.filter(n => n.categoryId === category.id)}
+                            notes={notesByCategory.get(category.id!) || []}
                             onNoteClick={handleNoteClick}
                             onRename={name => handleCategoryRename(category.id!, name)}
                             onDelete={() => handleDeleteCategory(category.id!)}
@@ -301,6 +397,8 @@ export const BoardView: React.FC = () => {
                             }}
                             onHeaderClick={() => setSelectedCategoryId(null)}
                             onRefreshNotes={() => setInternalRefresh(prev => prev + 1)}
+                            onUpdateNoteOptimistic={handleUpdateNoteOptimistic}
+                            onDeleteNoteOptimistic={handleDeleteNoteOptimistic}
                             isFullscreenView={true}
                         />
                     </div>
@@ -332,7 +430,7 @@ export const BoardView: React.FC = () => {
                     <div key={String(category.id)} className="h-full">
                         <CategoryPanel
                             category={category}
-                            notes={notes.filter(n => n.categoryId === category.id)}
+                            notes={notesByCategory.get(category.id!) || []}
                             onNoteClick={handleNoteClick}
                             onRename={name => handleCategoryRename(category.id!, name)}
                             onDelete={() => handleDeleteCategory(category.id!)}
@@ -346,6 +444,8 @@ export const BoardView: React.FC = () => {
                                 }
                             }}
                             onRefreshNotes={() => setInternalRefresh(prev => prev + 1)}
+                            onUpdateNoteOptimistic={handleUpdateNoteOptimistic}
+                            onDeleteNoteOptimistic={handleDeleteNoteOptimistic}
                         />
                     </div>
                 ))}

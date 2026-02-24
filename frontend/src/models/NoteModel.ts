@@ -8,11 +8,11 @@ export interface NoteModel {
     categoryId: number;
     category?: CategoryModel;
     priority: number;
-    isPinned: boolean;
     isCompleted?: boolean;
     attachments: any[];
     remindAt?: Date | string; // Date string from JSON
     createdAt?: Date | string;
     updatedAt?: Date | string;
     order?: number;
+    color?: string;
 }
