@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import type { NoteModel } from '../../models/NoteModel';
 
 interface NoteCardProps {
@@ -27,6 +27,8 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick, hasLeftHandle
         ? note.content
         : JSON.stringify(note.content);
 
+    const hasFooterBadge = note.contentType === 'checklist';
+
     return (
         <div
             onClick={onClick}
@@ -43,11 +45,19 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick, hasLeftHandle
                 className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
                 style={{ background: 'linear-gradient(135deg, rgba(93,187,106,0.04) 0%, transparent 60%)' }}
             />
+            
+            {/* Priority badge - top right */}
+            <span
+                className="absolute top-2.5 right-3 text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full z-10"
+                style={{ color: priority.color, background: priority.bg }}
+            >
+                {priority.label}
+            </span>
 
             <div className="relative p-4 flex-1 flex flex-col overflow-hidden min-h-0">
                 {/* Top row: title */}
                 <div className={`flex items-start justify-between gap-2 mb-2 transition-[padding] duration-150 ${hasLeftHandle ? 'group-hover:pl-5' : ''}`}>
-                    <h3 dir={getDir(note.title)} className="font-semibold text-sm text-slate-100 leading-snug line-clamp-2 flex-1 break-words">
+                    <h3 dir={getDir(note.title)} className="font-semibold text-sm text-slate-100 leading-snug line-clamp-2 flex-1 break-words pr-16">
                         {note.title}
                     </h3>
                 </div>
@@ -57,8 +67,8 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick, hasLeftHandle
                     <div
                         className="flex-1 min-h-0 overflow-hidden text-[13px] text-slate-400 break-words pointer-events-none"
                         style={{
-                            maskImage: 'linear-gradient(to bottom, black 55%, transparent 100%)',
-                            WebkitMaskImage: 'linear-gradient(to bottom, black 55%, transparent 100%)',
+                            maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+                            WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
                         }}
                     >
                         <div
@@ -70,22 +80,14 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick, hasLeftHandle
                 )}
 
                 {/* Footer: badges */}
-                <div className="shrink-0 pt-2 flex items-center gap-2 flex-wrap">
-                    {/* Priority badge */}
-                    <span
-                        className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full"
-                        style={{ color: priority.color, background: priority.bg }}
-                    >
-                        {priority.label}
-                    </span>
-
-                    {note.contentType === 'checklist' && (
+                {hasFooterBadge && (
+                    <div className="shrink-0 pt-2 flex items-center gap-2 flex-wrap">
                         <span className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-slate-500">
                             <span className="material-icons-round text-xs">checklist</span>
                             Checklist
                         </span>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     );

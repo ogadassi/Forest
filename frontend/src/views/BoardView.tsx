@@ -19,7 +19,7 @@ const ResponsiveGridLayout = Responsive as any;
 const STORAGE_KEY = 'forest-dashboard-responsive-layout';
 const BREAKPOINTS = { lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 };
 const COLS = { lg: 18, md: 15, sm: 9, xs: 6, xxs: 3 };
-const ROW_HEIGHT = 45;
+const ROW_HEIGHT = 20;
 
 interface GridItem {
     i: string; x: number; y: number;
@@ -49,8 +49,8 @@ function buildDefaultLayouts(categories: CategoryModel[], existing: Layouts): La
         const newItems: GridItem[] = missing.map((cat, idx) => ({
             i: String(cat.id),
             x: ((validBase.length + idx) % itemsPerRow) * w,
-            y: Math.floor((validBase.length + idx) / itemsPerRow) * 14,
-            w, h: 12, minW: 1, minH: 3,
+            y: Math.floor((validBase.length + idx) / itemsPerRow) * 29,
+            w, h: 27, minW: 1, minH: 7,
         }));
 
         newLayouts[bp] = [...validBase, ...newItems];
@@ -148,7 +148,7 @@ export const BoardView: React.FC = () => {
                     if (!reconciled[bp]) reconciled[bp] = [];
 
                     // Force minimum dimensions on existing blocks so past layouts shrink
-                    reconciled[bp] = reconciled[bp].map(item => ({ ...item, minW: 1, minH: 3 }));
+                    reconciled[bp] = reconciled[bp].map(item => ({ ...item, minW: 1, minH: 7 }));
 
                     const existingIds = new Set(reconciled[bp].map(item => item.i));
 
@@ -159,7 +159,7 @@ export const BoardView: React.FC = () => {
                             const numCols = COLS[bp as keyof typeof COLS];
                             const itemWidth = Math.min(4, numCols);
                             const lastItem = reconciled[bp].reduce((prev, current) => (prev.y > current.y) ? prev : current, { y: 0, h: 0 } as GridItem);
-                            reconciled[bp].push({ i: iStr, x: 0, y: (lastItem?.y || 0) + (lastItem?.h || 0), w: itemWidth, h: 12, minW: 1, minH: 3 });
+                            reconciled[bp].push({ i: iStr, x: 0, y: (lastItem?.y || 0) + (lastItem?.h || 0), w: itemWidth, h: 27, minW: 1, minH: 7 });
                             modified = true;
                         }
                     });
