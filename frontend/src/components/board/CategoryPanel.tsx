@@ -14,8 +14,8 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
 const ResponsiveGridLayout = Responsive as any;
 
-const BREAKPOINTS = { lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 };
-const COLS = { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 };
+const BREAKPOINTS = { lg: 700, md: 500, sm: 350, xs: 200, xxs: 0 };
+const COLS = { lg: 12, md: 8, sm: 4, xs: 2, xxs: 1 };
 
 interface GridItem {
     i: string; x: number; y: number;
@@ -38,9 +38,9 @@ function buildDefaultNoteLayouts(notes: NoteModel[], existing: Layouts): Layouts
         const missing = notes.filter(n => !existingIds.has(String(n.id)));
         const validBase = base.filter(l => notes.some(n => String(n.id) === l.i));
 
-        let w = 4;
-        if (bp === 'md') w = 5;
-        if (bp === 'sm') w = 6;
+        let w = 6;
+        if (bp === 'md') w = 4;
+        if (bp === 'sm') w = 4;
         if (bp === 'xs' || bp === 'xxs') w = COLS[bp as keyof typeof COLS];
 
         const colsForBp = COLS[bp as keyof typeof COLS];
@@ -49,17 +49,26 @@ function buildDefaultNoteLayouts(notes: NoteModel[], existing: Layouts): Layouts
         const newItems: GridItem[] = missing.map((note, idx) => {
             const rawContent = typeof note.content === 'string' ? note.content : JSON.stringify(note.content || '');
             const txtLen = rawContent.replace(/<[^>]*>?/gm, '').length;
-            const extraHeight = Math.floor(txtLen / 250);
-            const calculatedH = Math.min(4 + extraHeight, 12); // Cap at h=12 so it doesn't get unmanageable
+            const extraHeight = Math.floor(txtLen / 150);
+            const calculatedH = Math.min(8 + extraHeight, 18); // default h=8 (~160px), cap at 18
 
             return {
                 i: String(note.id),
                 x: ((validBase.length + idx) % itemsPerRow) * w,
-                y: Math.floor((validBase.length + idx) / itemsPerRow) * 5, // Push down enough to avoid overlaps
-                w, h: calculatedH, minW: 1, minH: 3,
+                y: Math.floor((validBase.length + idx) / itemsPerRow) * 9,
+                w, h: calculatedH, minW: 1, minH: 10,
             };
         });
-        newLayouts[bp] = [...validBase, ...newItems];
+        // Enforce min constraints on existing saved items so old layouts
+        // don't render as thin slivers when the panel size changes.
+        const sanitizedBase = validBase.map(item => ({
+            ...item,
+            w: Math.min(item.w, colsForBp),
+            h: Math.max(item.h, 8),
+            minW: 1,
+            minH: 8,
+        }));
+        newLayouts[bp] = [...sanitizedBase, ...newItems];
     });
     return newLayouts;
 }
@@ -165,6 +174,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
     const [containerWidth, setContainerWidth] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
     const [isResizing, setIsResizing] = useState(false);
+    const lastInteractionTimeRef = useRef(0);
 
 
     useEffect(() => {
@@ -248,7 +258,10 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
     return (
         <div
             className={`category-panel-root h-full flex flex-col rounded-2xl overflow-hidden select-none relative ${isFullscreenView ? '' : 'cursor-pointer'}`}
-            onClick={!isFullscreenView ? onHeaderClick : undefined}
+            onClick={!isFullscreenView ? () => {
+                if (Date.now() - lastInteractionTimeRef.current < 300) return;
+                onHeaderClick?.();
+            } : undefined}
             style={{
                 containerType: 'size',
                 background: `linear-gradient(160deg, ${color}0C 0%, rgba(26,32,27,0) 55%), #1e261f`,
@@ -333,15 +346,14 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                 />
                             </form>
                         ) : (
-                            <div className="flex items-center gap-2">
-                                <span className="font-bold text-sm text-slate-100 group-hover:text-white transition-colors truncate">{category.name}</span>
-                                <button
+                            <div className="flex items-center min-w-0">
+                                <span
+                                    className="font-bold text-sm text-slate-100 group-hover:text-white transition-colors truncate cursor-text"
                                     onClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
-                                    className="opacity-0 group-hover:opacity-100 p-1 hover:bg-white/10 rounded transition-all text-slate-400 hover:text-white"
-                                    title="Rename category"
+                                    title="Click to rename"
                                 >
-                                    <span className="material-icons-round text-[14px]">edit</span>
-                                </button>
+                                    {category.name}
+                                </span>
                             </div>
                         )}
                     </div>
@@ -604,10 +616,10 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                         width={containerWidth}
                         useCSSTransforms={true}
                         measureBeforeMount={false}
-                        onDragStart={() => setIsDragging(true)}
-                        onDragStop={() => setTimeout(() => setIsDragging(false), 50)}
-                        onResizeStart={() => setIsResizing(true)}
-                        onResizeStop={() => setTimeout(() => setIsResizing(false), 50)}
+                        onDragStart={() => { lastInteractionTimeRef.current = Date.now(); setIsDragging(true); }}
+                        onDragStop={() => { lastInteractionTimeRef.current = Date.now(); setTimeout(() => setIsDragging(false), 50); }}
+                        onResizeStart={() => { lastInteractionTimeRef.current = Date.now(); setIsResizing(true); }}
+                        onResizeStop={() => { lastInteractionTimeRef.current = Date.now(); setTimeout(() => setIsResizing(false), 50); }}
                     >
                         {notes.map(note => (
                             <div key={String(note.id)} className="relative group">
