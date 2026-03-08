@@ -14,8 +14,8 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
 const ResponsiveGridLayout = Responsive as any;
 
-const BREAKPOINTS = { lg: 700, md: 500, sm: 350, xs: 200, xxs: 0 };
-const COLS = { lg: 12, md: 8, sm: 4, xs: 2, xxs: 1 };
+const BREAKPOINTS = { lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 };
+const COLS = { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 };
 
 interface GridItem {
     i: string; x: number; y: number;
@@ -38,37 +38,21 @@ function buildDefaultNoteLayouts(notes: NoteModel[], existing: Layouts): Layouts
         const missing = notes.filter(n => !existingIds.has(String(n.id)));
         const validBase = base.filter(l => notes.some(n => String(n.id) === l.i));
 
-        let w = 6;
-        if (bp === 'md') w = 4;
-        if (bp === 'sm') w = 4;
+        let w = 4;
+        if (bp === 'md') w = 5;
+        if (bp === 'sm') w = 6;
         if (bp === 'xs' || bp === 'xxs') w = COLS[bp as keyof typeof COLS];
 
         const colsForBp = COLS[bp as keyof typeof COLS];
         const itemsPerRow = Math.max(1, Math.floor(colsForBp / w));
 
-        const newItems: GridItem[] = missing.map((note, idx) => {
-            const rawContent = typeof note.content === 'string' ? note.content : JSON.stringify(note.content || '');
-            const txtLen = rawContent.replace(/<[^>]*>?/gm, '').length;
-            const extraHeight = Math.floor(txtLen / 150);
-            const calculatedH = Math.min(8 + extraHeight, 18); // default h=8 (~160px), cap at 18
-
-            return {
-                i: String(note.id),
-                x: ((validBase.length + idx) % itemsPerRow) * w,
-                y: Math.floor((validBase.length + idx) / itemsPerRow) * 9,
-                w, h: calculatedH, minW: 1, minH: 10,
-            };
-        });
-        // Enforce min constraints on existing saved items so old layouts
-        // don't render as thin slivers when the panel size changes.
-        const sanitizedBase = validBase.map(item => ({
-            ...item,
-            w: Math.min(item.w, colsForBp),
-            h: Math.max(item.h, 8),
-            minW: 1,
-            minH: 8,
+        const newItems: GridItem[] = missing.map((note, idx) => ({
+            i: String(note.id),
+            x: ((validBase.length + idx) % itemsPerRow) * w,
+            y: Math.floor((validBase.length + idx) / itemsPerRow) * 9,
+            w, h: 8, minW: 1, minH: 2,
         }));
-        newLayouts[bp] = [...sanitizedBase, ...newItems];
+        newLayouts[bp] = [...validBase, ...newItems];
     });
     return newLayouts;
 }
@@ -83,8 +67,6 @@ interface CategoryPanelProps {
     isFullscreenView?: boolean;
     onHeaderClick?: () => void;
     onRefreshNotes?: () => void;
-    onUpdateNoteOptimistic?: (note: NoteModel, apiCall: () => Promise<void>) => void;
-    onDeleteNoteOptimistic?: (noteId: number, apiCall: () => Promise<void>) => void;
 }
 
 const PRESET_COLORS = [
@@ -99,38 +81,46 @@ const SortableChecklistItem = ({ note, color, onToggle, onDelete }: { note: Note
         transform: CSS.Transform.toString(transform),
         transition,
         opacity: isDragging ? 0.5 : 1,
+        borderColor: isDragging ? color : `${color}30`,
+        backgroundColor: `${color}0A`, // Very subtle background tint
     };
     const displayText = (note.content as string) || note.title;
     return (
-        <div ref={setNodeRef} style={style} className={`group flex items-start justify-between gap-3 bg-white/5 hover:bg-white/10 border ${isDragging ? 'border-primary shadow-xl z-50 relative' : 'border-border-dark'} hover:border-white/20 rounded-xl px-4 py-3 transition-colors`}>
+        <div
+            ref={setNodeRef}
+            style={style}
+            className={`group flex items-center justify-between gap-3 border ${isDragging ? 'shadow-xl z-50 relative' : ''} hover:bg-white/5 rounded-xl px-4 py-3 transition-colors`}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = `${color}60`; }}
+            onMouseLeave={(e) => { if (!isDragging) e.currentTarget.style.borderColor = `${color}30`; }}
+        >
 
-            <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-slate-500 hover:text-white mr-1 flex-shrink-0 touch-none pt-1">
+            <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing hover:text-white mr-1 flex-shrink-0 touch-none flex items-center justify-center transition-colors" style={{ color: `${color}80` }}>
                 <span className="material-icons-round text-sm">drag_indicator</span>
             </div>
 
-            <div className="flex items-start gap-3 flex-1 min-w-0">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
                 <button
-                    type="button"
-                    className="w-5 h-5 mt-0.5 rounded flex items-center justify-center border-[1.5px] border-slate-500 hover:border-primary shrink-0 transition-colors bg-background-dark shadow-sm"
-                    style={note.isCompleted ? { backgroundColor: color, borderColor: color } : {}}
+                    className="w-5 h-5 rounded flex items-center justify-center border-[1.5px] hover:border-primary shrink-0 transition-colors bg-background-dark shadow-sm"
+                    style={note.isCompleted ? { backgroundColor: color, borderColor: color } : { borderColor: `${color}80` }}
                     onClick={onToggle}
-                    onPointerDown={(e) => e.stopPropagation()}
                 >
                     <span className={`material-icons-round text-[14px] font-black transition-opacity ${note.isCompleted ? 'opacity-100 text-background-dark' : 'opacity-0'}`}>check</span>
                 </button>
                 <span
                     title={displayText}
-                    className={`flex-1 text-[13px] font-medium transition-all ${note.isCompleted ? 'line-through text-slate-500 opacity-70' : 'text-slate-200'} whitespace-pre-wrap break-words`}>
+                    className={`flex-1 text-[13px] leading-tight font-medium transition-all ${note.isCompleted ? 'line-through opacity-50 text-slate-500' : 'text-slate-200'} whitespace-pre-wrap break-words`}
+                >
                     {displayText}
                 </span>
             </div>
 
             <button
-                type="button"
-                className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 transition-all shrink-0"
+                className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-400/10 opacity-0 group-hover:opacity-100 transition-all shrink-0"
+                style={{ color: `${color}80` }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = '#f87171'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = `${color}80`; }}
                 title="Delete Item"
                 onClick={onDelete}
-                onPointerDown={(e) => e.stopPropagation()}
             >
                 <span className="material-icons-round text-sm">delete</span>
             </button>
@@ -139,8 +129,7 @@ const SortableChecklistItem = ({ note, color, onToggle, onDelete }: { note: Note
 };
 
 export const CategoryPanel: React.FC<CategoryPanelProps> = ({
-    category, notes, onNoteClick, onRename, onDelete, onAddNoteClick, isFullscreenView, onHeaderClick, onRefreshNotes,
-    onUpdateNoteOptimistic, onDeleteNoteOptimistic
+    category, notes, onNoteClick, onRename, onDelete, onAddNoteClick, isFullscreenView, onHeaderClick, onRefreshNotes
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newItemTitle, setNewItemTitle] = useState('');
@@ -173,18 +162,26 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
     const containerRef = useRef<HTMLDivElement>(null);
     const [containerWidth, setContainerWidth] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
-    const [isResizing, setIsResizing] = useState(false);
-    const lastInteractionTimeRef = useRef(0);
-
 
     useEffect(() => {
-        const savedLayouts = loadNoteLayouts(category.id!);
-        const newLayouts = buildDefaultNoteLayouts(notes, savedLayouts);
-        setLayouts(newLayouts);
-        saveNoteLayouts(category.id!, newLayouts);
-    }, [category.id, notes]);
+        if (!isFullscreenView) return;
+        const saved = loadNoteLayouts(category.id!);
+        if (saved && Object.keys(saved).length > 0) {
+            const reconciled = { ...saved };
+            Object.keys(BREAKPOINTS).forEach(bp => {
+                if (reconciled[bp]) {
+                    reconciled[bp] = reconciled[bp].map(item => ({ ...item, minW: 1, minH: 2 }));
+                }
+            });
+            setLayouts(reconciled);
+        } else {
+            const initial = buildDefaultNoteLayouts(notes, {});
+            setLayouts(initial);
+        }
+    }, [category.id, notes.length, isFullscreenView]);
 
     useLayoutEffect(() => {
+        if (!isFullscreenView) return;
         const el = containerRef.current;
         if (!el) return;
         setContainerWidth(el.offsetWidth);
@@ -193,7 +190,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         });
         ro.observe(el);
         return () => ro.disconnect();
-    }, []);
+    }, [isFullscreenView]);
 
     const [sortedNotes, setSortedNotes] = useState<NoteModel[]>(notes);
     useEffect(() => {
@@ -223,8 +220,16 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
     };
 
     const handleLayoutChange = useCallback((_currentLayout: readonly GridItem[], allLayouts: any) => {
-        saveNoteLayouts(category.id!, allLayouts);
-        setLayouts(allLayouts);
+        setLayouts(prev => {
+            const merged = { ...prev };
+            Object.keys(allLayouts).forEach(bp => {
+                const currentArr = allLayouts[bp] as GridItem[];
+                const unseen = (merged[bp] || []).filter(oldItem => !currentArr.find(a => a.i === oldItem.i));
+                merged[bp] = [...currentArr, ...unseen];
+            });
+            saveNoteLayouts(category.id!, merged);
+            return merged;
+        });
     }, [category.id]);
 
     const handleUpdateInline = async (updates: Partial<CategoryModel>) => {
@@ -258,15 +263,12 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
     return (
         <div
             className={`category-panel-root h-full flex flex-col rounded-2xl overflow-hidden select-none relative ${isFullscreenView ? '' : 'cursor-pointer'}`}
-            onClick={!isFullscreenView ? () => {
-                if (Date.now() - lastInteractionTimeRef.current < 300) return;
-                onHeaderClick?.();
-            } : undefined}
+            onClick={!isFullscreenView ? onHeaderClick : undefined}
             style={{
                 containerType: 'size',
-                background: `linear-gradient(160deg, ${color}0C 0%, rgba(26,32,27,0) 55%), #1e261f`,
-                border: `1px solid ${color}28`,
-                boxShadow: `0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 ${color}18`,
+                background: `linear-gradient(160deg, ${color}30 0%, rgba(26,32,27,0.6) 60%), #1e261f`,
+                border: `1px solid ${color}40`,
+                boxShadow: `0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 ${color}30`,
             }}
         >
             <div
@@ -290,7 +292,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                     <div className="relative">
                         <button
                             onClick={(e) => { e.stopPropagation(); setShowIconPicker(!showIconPicker); }}
-                            className="w-7 h-7 flex items-center justify-center shrink-0 transition-transform hover:scale-125 cursor-pointer"
+                            className="w-8 h-8 flex items-center justify-center shrink-0 rounded-xl hover:bg-white/10 transition-all active:scale-90 cursor-pointer"
                             title="Change icon"
                         >
                             <span className="material-icons-round text-sm" style={{ color }}>{icon}</span>
@@ -346,11 +348,11 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                 />
                             </form>
                         ) : (
-                            <div className="flex items-center min-w-0">
+                            <div className="flex items-center gap-2">
                                 <span
                                     className="font-bold text-sm text-slate-100 group-hover:text-white transition-colors truncate cursor-text"
                                     onClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
-                                    title="Click to rename"
+                                    title="Click to rename category"
                                 >
                                     {category.name}
                                 </span>
@@ -368,40 +370,40 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                     <div className="relative">
                         <button
                             onClick={() => { setShowColorPicker(!showColorPicker); setShowIconPicker(false); }}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+                            className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-white/10 text-slate-400 hover:text-white transition-all active:scale-90"
                             title="Change color"
                         >
-                            <span className="material-icons-round text-sm" style={{ color }}>format_color_fill</span>
+                            <span className="material-icons-round text-sm" style={{ color: color || '#94a3b8' }}>palette</span>
                         </button>
                         {showColorPicker && (
                             <div
-                                className="absolute top-10 right-0 bg-card-dark border border-border-dark rounded-xl shadow-2xl z-50 p-3 w-[220px] animate-in fade-in slide-in-from-top-2 duration-200"
+                                className="absolute top-10 right-0 bg-card-dark border border-border-dark rounded-2xl shadow-2xl z-50 p-4 w-[200px] animate-in fade-in slide-in-from-top-2 duration-200"
                                 onPointerDown={(e) => e.stopPropagation()}
                                 onClick={(e) => e.stopPropagation()}
                             >
-                                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Color</div>
-                                <div className="flex flex-wrap gap-2">
+                                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-3">Color</div>
+                                <div className="grid grid-cols-5 gap-2">
                                     {PRESET_COLORS.map(c => (
                                         <button
                                             key={c}
                                             type="button"
                                             onClick={() => { handleUpdateInline({ color: c }); setShowColorPicker(false); }}
-                                            className="w-6 h-6 rounded-md transition-transform hover:scale-125"
+                                            className="w-8 h-8 rounded-xl transition-all hover:scale-110 relative flex items-center justify-center border border-white/5"
                                             style={{
                                                 backgroundColor: c,
-                                                boxShadow: color.toLowerCase() === c ? `0 0 0 2px ${c}66, 0 0 8px ${c}aa` : 'none',
+                                                boxShadow: color.toLowerCase() === c ? `0 0 0 2px ${c}99, 0 0 10px ${c}aa` : 'none',
                                                 transform: color.toLowerCase() === c ? 'scale(1.15)' : 'none'
                                             }}
                                             title={`Set color to ${c}`}
-                                        />
+                                        >
+                                            {color.toLowerCase() === c && <span className="material-icons-round text-white text-[12px]">check</span>}
+                                        </button>
                                     ))}
-                                    <div className="w-px h-6 bg-white/10 mx-1"></div>
                                     <label
-                                        className="w-6 h-6 rounded-md flex items-center justify-center cursor-pointer hover:scale-125 transition-transform overflow-hidden"
+                                        className="w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer hover:scale-110 transition-transform overflow-hidden border border-white/10"
                                         title="Custom color"
                                         style={{
                                             background: 'conic-gradient(red, yellow, lime, aqua, blue, magenta, red)',
-                                            boxShadow: !PRESET_COLORS.includes(color.toLowerCase()) ? `0 0 0 2px ${color}66, 0 0 8px ${color}aa` : 'none',
                                         }}
                                     >
                                         <input
@@ -416,18 +418,24 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                         )}
                     </div>
                     {confirmDelete ? (
-                        <button
-                            className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-bold rounded-lg transition-colors flex items-center gap-1"
-                            onPointerDown={e => e.stopPropagation()}
-                            onClick={(e) => { e.stopPropagation(); setConfirmDelete(false); onDelete(); }}
-                        >
-                            Confirm?
-                        </button>
+                        <>
+                            <span className="text-xs text-red-400 font-semibold ml-1">Delete?</span>
+                            <button
+                                onPointerDown={e => e.stopPropagation()}
+                                onClick={(e) => { e.stopPropagation(); setConfirmDelete(false); }}
+                                className="px-2 py-1 text-xs font-bold text-slate-400 hover:text-slate-100 hover:bg-white/5 rounded-lg transition-all"
+                            >Cancel</button>
+                            <button
+                                onPointerDown={e => e.stopPropagation()}
+                                onClick={(e) => { e.stopPropagation(); setConfirmDelete(false); onDelete(); }}
+                                className="px-2 py-1 text-xs font-bold bg-red-500/20 text-red-400 hover:bg-red-500/40 hover:text-red-300 rounded-lg transition-all"
+                            >Delete</button>
+                        </>
                     ) : (
                         <button
                             onClick={(e) => { e.stopPropagation(); setConfirmDelete(true); }}
                             onPointerDown={e => e.stopPropagation()}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors"
+                            className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-all active:scale-90"
                             title="Delete category"
                         >
                             <span className="material-icons-round text-sm">delete</span>
@@ -436,7 +444,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                     {isFullscreenView && (
                         <button
                             onClick={() => { if (onHeaderClick) onHeaderClick(); }}
-                            className="w-7 h-7 ml-1 rounded-lg flex items-center justify-center hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+                            className="w-8 h-8 ml-1 rounded-xl flex items-center justify-center hover:bg-white/10 text-slate-400 hover:text-white transition-all active:scale-90"
                             title="Minimize category"
                         >
                             <span className="material-icons-round text-sm">remove</span>
@@ -446,11 +454,11 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
             </div >
 
             <div
-                className="non-draggable flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scrollbar min-h-0"
-                ref={containerRef}
+                className={`non-draggable flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scrollbar ${isFullscreenView ? '' : 'space-y-2'}`}
+                ref={isFullscreenView ? containerRef : undefined}
             >
                 {category.type === 'checklist' ? (
-                    <div className="flex-1 flex flex-col h-full overflow-hidden">
+                    <div className="flex flex-col h-full overflow-hidden">
                         <div className="flex-1 overflow-y-auto custom-scrollbar space-y-1 pr-1 pb-4">
                             {sortedNotes.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-500/80 py-10 opacity-80 animate-in fade-in">
@@ -469,60 +477,17 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                                 color={color}
                                                 onToggle={async (e) => {
                                                     e.stopPropagation();
-                                                    const newStatus = !note.isCompleted;
-                                                    console.log(`[Click: checkmark] Note ${note.id} moving to -> ${newStatus}`);
-                                                    const updatedNote = { ...note, isCompleted: newStatus };
-
-                                                    // Immediate local override for completely 0ms visual swap
-                                                    setSortedNotes(prev => prev.map(n => n.id === note.id ? updatedNote : n));
-
-                                                    const apiCall = async () => {
-                                                        console.log(`[API Call Start: updateNote] Note ${note.id} -> isCompleted: ${newStatus}`);
-                                                        await noteService.updateNote(updatedNote);
-                                                        console.log(`[API Call Success: updateNote] Note ${note.id}`);
-                                                        // Deliberately NOT calling onRefreshNotes() to avoid racing the DB write!
-                                                        // The globally debounced Socket sequence will fetch the absolute truth securely.
-                                                    };
-
-                                                    if (onUpdateNoteOptimistic) {
-                                                        console.log(`[Optimistic Dispatch: updateNote] Emitting to BoardView override for Note ${note.id}`);
-                                                        onUpdateNoteOptimistic(updatedNote, apiCall);
-                                                    } else {
-                                                        console.log(`[Optimistic Dispatch: updateNote] Fallback to local setSortedNotes`);
-                                                        try {
-                                                            await apiCall();
-                                                        } catch (err) {
-                                                            console.error(`[API Call FAILED: updateNote] Note ${note.id}`, err);
-                                                            setSortedNotes(prev => prev.map(n => n.id === note.id ? { ...n, isCompleted: !newStatus } : n));
-                                                        }
-                                                    }
+                                                    try {
+                                                        await noteService.updateNote({ ...note, isCompleted: !note.isCompleted });
+                                                        if (onRefreshNotes) onRefreshNotes();
+                                                    } catch (err) { }
                                                 }}
                                                 onDelete={async (e) => {
                                                     e.stopPropagation();
-                                                    console.log(`[Click: delete] Note ${note.id}`);
-
-                                                    // Immediate local override for 0ms visual swap
-                                                    setSortedNotes(prev => prev.filter(n => n.id !== note.id));
-
-                                                    const apiCall = async () => {
-                                                        console.log(`[API Call Start: deleteNote] Note ${note.id}`);
+                                                    try {
                                                         await noteService.deleteNote(note.id!);
-                                                        console.log(`[API Call Success: deleteNote] Note ${note.id}`);
-                                                        // Deliberately NOT calling onRefreshNotes() 
-                                                    };
-
-                                                    if (onDeleteNoteOptimistic) {
-                                                        console.log(`[Optimistic Dispatch: deleteNote] Emitting to BoardView override for Note ${note.id}`);
-                                                        onDeleteNoteOptimistic(note.id!, apiCall);
-                                                    } else {
-                                                        console.log(`[Optimistic Dispatch: deleteNote] Fallback to local setSortedNotes`);
-                                                        try {
-                                                            await apiCall();
-                                                        } catch (err) {
-                                                            console.error(`[API Call FAILED: deleteNote] Note ${note.id}`, err);
-                                                            setSortedNotes([...notes].sort((a, b) => (a.order || 0) - (b.order || 0)));
-                                                        }
-                                                    }
+                                                        if (onRefreshNotes) onRefreshNotes();
+                                                    } catch (err) { }
                                                 }}
                                             />
                                         ))}
@@ -546,7 +511,6 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                             content: trimmedText,
                                             contentType: 'text',
                                             categoryId: category.id!,
-                                            priority: 1,
                                             isCompleted: false,
                                             attachments: []
                                         };
@@ -599,51 +563,59 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                             <span className="text-xs text-slate-500/80">No notes here yet.</span>
                         </div>
                     </div>
-                ) : containerWidth > 0 ? (
+                ) : isFullscreenView && containerWidth > 0 ? (
                     <ResponsiveGridLayout
                         className="layout min-h-full pb-20 animate-fade-in"
                         layouts={layouts}
                         breakpoints={BREAKPOINTS}
                         cols={COLS}
-                        rowHeight={20}
+                        rowHeight={60}
                         onLayoutChange={handleLayoutChange}
                         isDraggable={!isEditing}
                         isResizable={!isEditing}
                         dragConfig={{ handle: '.drag-handle', cancel: '.non-draggable' }}
                         resizeConfig={{ handles: ['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne'] }}
-                        margin={[12, 12]}
+                        margin={[16, 16]}
                         containerPadding={[0, 0]}
                         width={containerWidth}
                         useCSSTransforms={true}
                         measureBeforeMount={false}
-                        onDragStart={() => { lastInteractionTimeRef.current = Date.now(); setIsDragging(true); }}
-                        onDragStop={() => { lastInteractionTimeRef.current = Date.now(); setTimeout(() => setIsDragging(false), 50); }}
-                        onResizeStart={() => { lastInteractionTimeRef.current = Date.now(); setIsResizing(true); }}
-                        onResizeStop={() => { lastInteractionTimeRef.current = Date.now(); setTimeout(() => setIsResizing(false), 50); }}
+                        onDragStart={() => setIsDragging(true)}
+                        onDragStop={() => setTimeout(() => setIsDragging(false), 50)}
                     >
-                        {notes.map(note => (
-                            <div key={String(note.id)} className="relative group">
-                                <div
-                                    className="panel-drag-handle drag-handle absolute top-1.5 left-1.5 z-20 opacity-0 group-hover:opacity-60 transition-opacity cursor-grab active:cursor-grabbing flex items-center justify-center"
-                                    title="Drag to move"
-                                    onClick={e => e.stopPropagation()}
-                                    onPointerDown={e => e.stopPropagation()}
-                                >
-                                    <span className="material-icons-round text-sm text-slate-400">drag_indicator</span>
+                        {notes.map(note => {
+                            const lgLayout = layouts.lg?.find(l => l.i === String(note.id));
+                            const dataGrid = lgLayout ? { ...lgLayout } : { x: 0, y: 0, w: 4, h: 8 };
+                            return (
+                                <div key={note.id} data-grid={dataGrid} className="relative group">
+                                    <div
+                                        className="panel-drag-handle drag-handle absolute top-1.5 left-1.5 z-20 opacity-0 group-hover:opacity-60 transition-opacity cursor-grab active:cursor-grabbing flex items-center justify-center"
+                                        title="Drag to move"
+                                        onClick={e => e.stopPropagation()}
+                                        onPointerDown={e => e.stopPropagation()}
+                                    >
+                                        <span className="material-icons-round text-sm text-slate-400">drag_indicator</span>
+                                    </div>
+                                    <div
+                                        className="h-full cursor-pointer"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (!isDragging) onNoteClick(note);
+                                        }}
+                                    >
+                                        <NoteCard note={note} hasLeftHandle onClick={() => { }} />
+                                    </div>
                                 </div>
-                                <div
-                                    className="h-full cursor-pointer"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (!isDragging && !isResizing) onNoteClick(note);
-                                    }}
-                                >
-                                    <NoteCard note={note} hasLeftHandle onClick={() => { }} />
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </ResponsiveGridLayout>
-                ) : null}
+                ) : (
+                    notes.map(note => (
+                        <div key={note.id} onClick={(e) => { e.stopPropagation(); }}>
+                            <NoteCard note={note} onClick={() => onNoteClick(note)} />
+                        </div>
+                    ))
+                )}
             </div>
 
             {onAddNoteClick && (

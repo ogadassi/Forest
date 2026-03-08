@@ -1147,219 +1147,87 @@ undefined
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:55:03
+04/03/2026, 17:09:42
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:55:03
+04/03/2026, 17:09:43
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:55:03
+04/03/2026, 17:12:13
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:55:05
+04/03/2026, 17:12:16
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:55:06
+04/03/2026, 17:12:16
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:57:45
+04/03/2026, 17:12:16
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:57:46
+04/03/2026, 17:12:17
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:57:46
+04/03/2026, 17:12:17
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:58:54
+04/03/2026, 17:12:18
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:58:54
+04/03/2026, 17:12:18
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:58:55
+04/03/2026, 17:12:18
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:58:55
+04/03/2026, 17:12:18
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:59:00
+04/03/2026, 17:12:18
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:59:00
+04/03/2026, 17:12:19
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:59:00
+04/03/2026, 17:12:19
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:59:03
+04/03/2026, 17:12:23
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:59:03
+04/03/2026, 17:14:24
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:59:25
+04/03/2026, 17:14:26
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:59:25
+04/03/2026, 17:19:48
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:59:25
+04/03/2026, 17:20:46
 "order" is not allowed
 undefined
 -----------------------
-24/02/2026, 18:59:25
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 18:59:25
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 18:59:25
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 18:59:27
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 18:59:27
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 18:59:27
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 18:59:28
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 18:59:29
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:01:05
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:01:05
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:01:06
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:01:06
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:01:06
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:01:06
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:01:07
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:01:07
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:01:07
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:01:07
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:01:08
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:03:29
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:03:29
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:03:29
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:03:30
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:03:30
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:03:30
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:03:30
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:03:38
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:03:39
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:03:39
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:03:39
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:03:41
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:03:41
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 19:04:02
-"order" is not allowed
-undefined
------------------------
-24/02/2026, 21:18:35
+05/03/2026, 0:32:24
 request entity too large
 PayloadTooLargeError: request entity too large
     at readStream (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\raw-body\index.js:163:17)
@@ -1373,7 +1241,7 @@ PayloadTooLargeError: request entity too large
     at next (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\router\index.js:291:5)
     at cors (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\cors\lib\index.js:188:7)
 -----------------------
-24/02/2026, 21:18:37
+05/03/2026, 0:32:27
 request entity too large
 PayloadTooLargeError: request entity too large
     at readStream (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\raw-body\index.js:163:17)
@@ -1387,7 +1255,7 @@ PayloadTooLargeError: request entity too large
     at next (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\router\index.js:291:5)
     at cors (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\cors\lib\index.js:188:7)
 -----------------------
-24/02/2026, 21:18:38
+05/03/2026, 0:32:28
 request entity too large
 PayloadTooLargeError: request entity too large
     at readStream (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\raw-body\index.js:163:17)
@@ -1401,7 +1269,7 @@ PayloadTooLargeError: request entity too large
     at next (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\router\index.js:291:5)
     at cors (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\cors\lib\index.js:188:7)
 -----------------------
-24/02/2026, 21:18:44
+05/03/2026, 0:33:06
 request entity too large
 PayloadTooLargeError: request entity too large
     at readStream (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\raw-body\index.js:163:17)
@@ -1415,7 +1283,7 @@ PayloadTooLargeError: request entity too large
     at next (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\router\index.js:291:5)
     at cors (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\cors\lib\index.js:188:7)
 -----------------------
-24/02/2026, 21:18:53
+05/03/2026, 0:34:44
 request entity too large
 PayloadTooLargeError: request entity too large
     at readStream (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\raw-body\index.js:163:17)
@@ -1429,7 +1297,7 @@ PayloadTooLargeError: request entity too large
     at next (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\router\index.js:291:5)
     at cors (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\cors\lib\index.js:188:7)
 -----------------------
-24/02/2026, 21:35:13
+05/03/2026, 0:35:39
 request entity too large
 PayloadTooLargeError: request entity too large
     at readStream (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\raw-body\index.js:163:17)
@@ -1443,7 +1311,7 @@ PayloadTooLargeError: request entity too large
     at next (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\router\index.js:291:5)
     at cors (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\cors\lib\index.js:188:7)
 -----------------------
-24/02/2026, 21:35:13
+05/03/2026, 0:35:41
 request entity too large
 PayloadTooLargeError: request entity too large
     at readStream (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\raw-body\index.js:163:17)
@@ -1456,4 +1324,456 @@ PayloadTooLargeError: request entity too large
     at processParams (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\router\index.js:582:12)
     at next (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\router\index.js:291:5)
     at cors (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\cors\lib\index.js:188:7)
+-----------------------
+05/03/2026, 0:35:42
+request entity too large
+PayloadTooLargeError: request entity too large
+    at readStream (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\raw-body\index.js:163:17)
+    at getRawBody (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\raw-body\index.js:116:12)
+    at read (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\body-parser\lib\read.js:113:3)
+    at jsonParser (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\body-parser\lib\types\json.js:88:5)
+    at Layer.handleRequest (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\router\lib\layer.js:152:17)
+    at trimPrefix (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\router\index.js:342:13)
+    at F:\Programming\new stuff\Duly Noted 2\backend\node_modules\router\index.js:297:9
+    at processParams (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\router\index.js:582:12)
+    at next (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\router\index.js:291:5)
+    at cors (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\cors\lib\index.js:188:7)
+-----------------------
+05/03/2026, 14:41:48
+
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:44
+
+  48 // But we want ResourceNotFoundError specifically if possible?
+  49 // Prisma P2025 is "Record to update not found".
+  50 
+→ 51 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         id: 42,
+         ~~
+         title: "asd",
+         content: "<p>asd</p>",
+         contentType: "text",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         createdAt: "2026-03-04T10:35:22.343Z",
+         updatedAt: "2026-03-04T10:35:22.343Z",
+         order: 0,
+         color: "#2e1f3a",
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `id`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:44
+
+  48 // But we want ResourceNotFoundError specifically if possible?
+  49 // Prisma P2025 is "Record to update not found".
+  50 
+→ 51 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         id: 42,
+         ~~
+         title: "asd",
+         content: "<p>asd</p>",
+         contentType: "text",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         createdAt: "2026-03-04T10:35:22.343Z",
+         updatedAt: "2026-03-04T10:35:22.343Z",
+         order: 0,
+         color: "#2e1f3a",
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `id`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.updateNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:29)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:59:29
+-----------------------
+05/03/2026, 14:50:55
+
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:44
+
+  48 // But we want ResourceNotFoundError specifically if possible?
+  49 // Prisma P2025 is "Record to update not found".
+  50 
+→ 51 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         id: 42,
+         ~~
+         title: "asd",
+         content: "<p>asd</p>",
+         contentType: "text",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         createdAt: "2026-03-04T10:35:22.343Z",
+         updatedAt: "2026-03-04T10:35:22.343Z",
+         order: 0,
+         color: "#4f8ef7",
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `id`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:44
+
+  48 // But we want ResourceNotFoundError specifically if possible?
+  49 // Prisma P2025 is "Record to update not found".
+  50 
+→ 51 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         id: 42,
+         ~~
+         title: "asd",
+         content: "<p>asd</p>",
+         contentType: "text",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         createdAt: "2026-03-04T10:35:22.343Z",
+         updatedAt: "2026-03-04T10:35:22.343Z",
+         order: 0,
+         color: "#4f8ef7",
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `id`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.updateNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:29)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:59:29
+-----------------------
+05/03/2026, 14:50:58
+
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:44
+
+  48 // But we want ResourceNotFoundError specifically if possible?
+  49 // Prisma P2025 is "Record to update not found".
+  50 
+→ 51 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         id: 42,
+         ~~
+         title: "asd",
+         content: "<p>asd</p>",
+         contentType: "text",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         createdAt: "2026-03-04T10:35:22.343Z",
+         updatedAt: "2026-03-04T10:35:22.343Z",
+         order: 0,
+         color: "#4f8ef7",
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `id`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:44
+
+  48 // But we want ResourceNotFoundError specifically if possible?
+  49 // Prisma P2025 is "Record to update not found".
+  50 
+→ 51 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         id: 42,
+         ~~
+         title: "asd",
+         content: "<p>asd</p>",
+         contentType: "text",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         createdAt: "2026-03-04T10:35:22.343Z",
+         updatedAt: "2026-03-04T10:35:22.343Z",
+         order: 0,
+         color: "#4f8ef7",
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `id`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.updateNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:29)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:59:29
+-----------------------
+05/03/2026, 14:51:10
+
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:44
+
+  48 // But we want ResourceNotFoundError specifically if possible?
+  49 // Prisma P2025 is "Record to update not found".
+  50 
+→ 51 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         id: 42,
+         ~~
+         title: "asd",
+         content: "<p>asd</p>",
+         contentType: "text",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         createdAt: "2026-03-04T10:35:22.343Z",
+         updatedAt: "2026-03-04T10:35:22.343Z",
+         order: 0,
+         color: "#000000",
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `id`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:44
+
+  48 // But we want ResourceNotFoundError specifically if possible?
+  49 // Prisma P2025 is "Record to update not found".
+  50 
+→ 51 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         id: 42,
+         ~~
+         title: "asd",
+         content: "<p>asd</p>",
+         contentType: "text",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         createdAt: "2026-03-04T10:35:22.343Z",
+         updatedAt: "2026-03-04T10:35:22.343Z",
+         order: 0,
+         color: "#000000",
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `id`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.updateNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:29)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:59:29
+-----------------------
+05/03/2026, 14:51:17
+
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:44
+
+  48 // But we want ResourceNotFoundError specifically if possible?
+  49 // Prisma P2025 is "Record to update not found".
+  50 
+→ 51 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         id: 42,
+         ~~
+         title: "asd",
+         content: "<p>asd</p>",
+         contentType: "text",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         createdAt: "2026-03-04T10:35:22.343Z",
+         updatedAt: "2026-03-04T10:35:22.343Z",
+         order: 0,
+         color: "#ffffff",
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `id`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:44
+
+  48 // But we want ResourceNotFoundError specifically if possible?
+  49 // Prisma P2025 is "Record to update not found".
+  50 
+→ 51 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         id: 42,
+         ~~
+         title: "asd",
+         content: "<p>asd</p>",
+         contentType: "text",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         createdAt: "2026-03-04T10:35:22.343Z",
+         updatedAt: "2026-03-04T10:35:22.343Z",
+         order: 0,
+         color: "#ffffff",
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `id`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.updateNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:29)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:59:29
+-----------------------
+05/03/2026, 14:51:42
+
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:44
+
+  48 // But we want ResourceNotFoundError specifically if possible?
+  49 // Prisma P2025 is "Record to update not found".
+  50 
+→ 51 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         id: 42,
+         ~~
+         title: "asd",
+         content: "<p>asd</p>",
+         contentType: "text",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         createdAt: "2026-03-04T10:35:22.343Z",
+         updatedAt: "2026-03-04T10:35:22.343Z",
+         order: 0,
+         color: "#5dbb6a",
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `id`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:44
+
+  48 // But we want ResourceNotFoundError specifically if possible?
+  49 // Prisma P2025 is "Record to update not found".
+  50 
+→ 51 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         id: 42,
+         ~~
+         title: "asd",
+         content: "<p>asd</p>",
+         contentType: "text",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         createdAt: "2026-03-04T10:35:22.343Z",
+         updatedAt: "2026-03-04T10:35:22.343Z",
+         order: 0,
+         color: "#5dbb6a",
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `id`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.updateNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:51:29)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:59:29
 -----------------------

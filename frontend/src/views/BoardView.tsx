@@ -461,7 +461,13 @@ export const BoardView: React.FC = () => {
                 isOpen={isEditNoteModalOpen}
                 onClose={() => setIsEditNoteModalOpen(false)}
                 note={selectedNote}
-                onNoteUpdated={() => setInternalRefresh(prev => prev + 1)}
+                onNoteUpdated={(updatedNote, deletedId) => {
+                    if (updatedNote) {
+                        setNotes(prev => prev.map(n => n.id === updatedNote.id ? updatedNote : n));
+                    } else if (deletedId) {
+                        setNotes(prev => prev.filter(n => n.id !== deletedId));
+                    }
+                }}
             />
 
             <CreateNoteModal

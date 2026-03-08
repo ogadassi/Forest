@@ -7,12 +7,11 @@ export interface NoteModel {
     contentType: 'text' | 'checklist';
     categoryId: number;
     category?: CategoryModel;
-    priority: number;
     isCompleted?: boolean;
     attachments: any[];
     remindAt?: Date | string; // Date string from JSON
+    color?: string;           // Optional per-note background tint
     createdAt?: Date | string;
     updatedAt?: Date | string;
     order?: number;
-    color?: string;
 }

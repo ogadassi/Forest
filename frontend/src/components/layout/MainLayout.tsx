@@ -198,7 +198,7 @@ export const MainLayout: React.FC = () => {
                     isOpen={isEditNoteOpen}
                     note={selectedNote}
                     onClose={() => { setIsEditNoteOpen(false); setSelectedNote(null); }}
-                    onNoteUpdated={handleNoteCreated}
+                    onNoteUpdated={() => { }}
                 />
             )}
         </div>
