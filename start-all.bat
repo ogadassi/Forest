@@ -1,6 +1,6 @@
 @echo off
 echo ==========================================
-echo   🚀 Starting Duly Noted 2 (Full Stack)
+echo   🚀 Starting Forest (Full Stack)
 echo ==========================================
 
 cd backend

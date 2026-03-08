@@ -1,6 +1,6 @@
 @echo off
 echo ==========================================
-echo   🚀 Starting "Duly Noted 2" Backend
+echo   🚀 Starting "Forest" Backend
 echo ==========================================
 
 if not exist "cert\localhost.pfx" (

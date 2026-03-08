@@ -6,7 +6,7 @@ $certDetails = @{
     KeyLength = 2048
     KeyUsage = "DigitalSignature","KeyEncipherment"
     KeyUsageProperty = "All"
-    FriendlyName = "DulyNoted2-Localhost"
+    FriendlyName = "Forest-Localhost"
     TextExtension = @("2.5.29.37={text}1.3.6.1.5.5.7.3.1")
 }
 

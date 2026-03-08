@@ -19,7 +19,7 @@ server.use(express.json({ limit: '50mb' }));
 // Register middleware:
 server.use(loggerMiddleware.logToConsole);
 // server.use(securityMiddleware.verifyLoggedIn); // Global security? Or per route? Usually per route or global if all private. 
-// "Duly Noted" sounds private. Let's comment out global security for now to avoid locking user out during dev, 
+// "Forest" sounds private. Let's comment out global security for now to avoid locking user out during dev, 
 // unless they requested it. User mentioned "Dev notes, Voice/Media", implies personal use.
 
 server.use("/api", noteController);
