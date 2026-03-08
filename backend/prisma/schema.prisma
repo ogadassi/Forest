@@ -36,8 +36,6 @@ model Note {
   
   remindAt    DateTime?
   order       Int      @default(0)
-  color       String?
-  
   // Relationship logic
   categoryId  Int
   category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)

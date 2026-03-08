@@ -8,12 +8,12 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': {
-                target: 'https://localhost:3001',
+                target: 'https://127.0.0.1:3001',
                 changeOrigin: true,
                 secure: false, // Allow self-signed certs
             },
             '/socket.io': {
-                target: 'https://localhost:3001',
+                target: 'https://127.0.0.1:3001',
                 changeOrigin: true,
                 secure: false, // Allow self-signed certs
                 ws: true,
