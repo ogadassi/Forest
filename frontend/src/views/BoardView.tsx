@@ -27,6 +27,14 @@ interface GridItem {
 }
 type Layouts = { [breakpoint: string]: GridItem[] };
 
+function getMinWForBreakpoint(bp: string): number {
+    if (bp === 'lg') return 2;
+    if (bp === 'md') return 4;
+    if (bp === 'sm') return 5;
+    if (bp === 'xs') return 6; // xs has 6 cols, so 1 column layout
+    return 3; // xxs has 3 cols, so 1 column layout
+}
+
 function buildDefaultLayouts(categories: CategoryModel[], existing: Layouts): Layouts {
     const newLayouts: Layouts = { lg: [], md: [], sm: [], xs: [], xxs: [] };
 
@@ -46,11 +54,13 @@ function buildDefaultLayouts(categories: CategoryModel[], existing: Layouts): La
         const colsForBp = COLS[bp as keyof typeof COLS];
         const itemsPerRow = Math.max(1, Math.floor(colsForBp / w));
 
+        const minW = getMinWForBreakpoint(bp);
+
         const newItems: GridItem[] = missing.map((cat, idx) => ({
             i: String(cat.id),
             x: ((validBase.length + idx) % itemsPerRow) * w,
             y: Math.floor((validBase.length + idx) / itemsPerRow) * 29,
-            w, h: 27, minW: 1, minH: 7,
+            w: Math.max(minW, w), h: 27, minW: minW, minH: 7,
         }));
 
         newLayouts[bp] = [...validBase, ...newItems];
@@ -148,7 +158,8 @@ export const BoardView: React.FC = () => {
                     if (!reconciled[bp]) reconciled[bp] = [];
 
                     // Force minimum dimensions on existing blocks so past layouts shrink
-                    reconciled[bp] = reconciled[bp].map(item => ({ ...item, minW: 1, minH: 7 }));
+                    const minW = getMinWForBreakpoint(bp);
+                    reconciled[bp] = reconciled[bp].map(item => ({ ...item, minW, minH: 7, w: Math.max(minW, item.w!) }));
 
                     const existingIds = new Set(reconciled[bp].map(item => item.i));
 
@@ -157,9 +168,9 @@ export const BoardView: React.FC = () => {
                         if (!existingIds.has(iStr)) {
                             // Find next available spot
                             const numCols = COLS[bp as keyof typeof COLS];
-                            const itemWidth = Math.min(4, numCols);
+                            const itemWidth = Math.max(minW, Math.min(4, numCols));
                             const lastItem = reconciled[bp].reduce((prev, current) => (prev.y > current.y) ? prev : current, { y: 0, h: 0 } as GridItem);
-                            reconciled[bp].push({ i: iStr, x: 0, y: (lastItem?.y || 0) + (lastItem?.h || 0), w: itemWidth, h: 27, minW: 1, minH: 7 });
+                            reconciled[bp].push({ i: iStr, x: 0, y: (lastItem?.y || 0) + (lastItem?.h || 0), w: itemWidth, h: 27, minW, minH: 7 });
                             modified = true;
                         }
                     });
@@ -416,7 +427,7 @@ export const BoardView: React.FC = () => {
                 cols={COLS}
                 rowHeight={ROW_HEIGHT}
                 width={containerWidth}
-                dragConfig={{ handle: '.drag-handle', cancel: '.non-draggable' }}
+                dragConfig={{ handle: '.category-drag-handle', cancel: '.category-drag-cancel' }}
                 onLayoutChange={handleLayoutChange}
                 onDragStart={() => setIsDragging(true)}
                 onDragStop={() => {

@@ -22,6 +22,14 @@ interface GridItem {
 }
 type Layouts = { [breakpoint: string]: GridItem[] };
 
+function getNoteMinWForBreakpoint(bp: string): number {
+    if (bp === 'lg') return 5;
+    if (bp === 'md') return 6; // More than half width of 10 cols
+    if (bp === 'sm') return 6; // Full width of 6 cols
+    if (bp === 'xs') return 4; // Full width of 4 cols
+    return 2; // Full width of 2 cols
+}
+
 function loadNoteLayouts(categoryId: number): Layouts {
     try { return JSON.parse(localStorage.getItem(`forest-notes-layout-v2-${categoryId}`) ?? '{}'); } catch { return {}; }
 }
@@ -45,11 +53,13 @@ function buildDefaultNoteLayouts(notes: NoteModel[], existing: Layouts): Layouts
         const colsForBp = COLS[bp as keyof typeof COLS];
         const itemsPerRow = Math.max(1, Math.floor(colsForBp / w));
 
+        const minW = getNoteMinWForBreakpoint(bp);
+
         const newItems: GridItem[] = missing.map((note, idx) => ({
             i: String(note.id),
             x: ((validBase.length + idx) % itemsPerRow) * w,
             y: Math.floor((validBase.length + idx) / itemsPerRow) * 9,
-            w, h: 8, minW: 1, minH: 2,
+            w: Math.max(minW, w), h: 8, minW, minH: 2,
         }));
         newLayouts[bp] = [...validBase, ...newItems];
     });
@@ -163,15 +173,16 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
     const containerRef = useRef<HTMLDivElement>(null);
     const [containerWidth, setContainerWidth] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
+    const [isResizing, setIsResizing] = useState(false);
 
     useEffect(() => {
-        if (!isFullscreenView) return;
         const saved = loadNoteLayouts(category.id!);
         if (saved && Object.keys(saved).length > 0) {
             const reconciled = { ...saved };
             Object.keys(BREAKPOINTS).forEach(bp => {
                 if (reconciled[bp]) {
-                    reconciled[bp] = reconciled[bp].map(item => ({ ...item, minW: 1, minH: 2 }));
+                    const minW = getNoteMinWForBreakpoint(bp);
+                    reconciled[bp] = reconciled[bp].map(item => ({ ...item, minW, minH: 2, w: Math.max(minW, item.w!) }));
                 }
             });
             setLayouts(reconciled);
@@ -179,10 +190,9 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
             const initial = buildDefaultNoteLayouts(notes, {});
             setLayouts(initial);
         }
-    }, [category.id, notes.length, isFullscreenView]);
+    }, [category.id, notes.length]);
 
     useLayoutEffect(() => {
-        if (!isFullscreenView) return;
         const el = containerRef.current;
         if (!el) return;
         setContainerWidth(el.offsetWidth);
@@ -191,7 +201,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         });
         ro.observe(el);
         return () => ro.disconnect();
-    }, [isFullscreenView]);
+    }, []);
 
     const [sortedNotes, setSortedNotes] = useState<NoteModel[]>(notes);
     useEffect(() => {
@@ -259,7 +269,12 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
     return (
         <div
             className={`category-panel-root h-full flex flex-col rounded-2xl overflow-hidden select-none relative ${isFullscreenView ? '' : 'cursor-pointer'}`}
-            onClick={!isFullscreenView ? onHeaderClick : undefined}
+            onClick={(e) => {
+                if (isFullscreenView) return;
+                if (isDragging || isResizing) return;
+                if ((e.target as HTMLElement).closest('.react-resizable-handle, .note-drag-handle')) return;
+                onHeaderClick?.();
+            }}
             style={{
                 containerType: 'size',
                 background: `linear-gradient(160deg, ${color}30 0%, rgba(26,32,27,0.6) 60%), #1e261f`,
@@ -273,7 +288,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
             >
                 {!isFullscreenView && (
                     <div
-                        className="panel-drag-handle drag-handle pr-2 mr-1 cursor-grab active:cursor-grabbing flex items-center justify-center h-full opacity-30 hover:opacity-70 transition-opacity flex-shrink-0"
+                        className="category-drag-handle panel-drag-handle pr-2 mr-1 cursor-grab active:cursor-grabbing flex items-center justify-center h-full opacity-30 hover:opacity-70 transition-opacity flex-shrink-0"
                         style={{ color }}
                         title="Drag to move"
                         onClick={(e) => e.stopPropagation()}
@@ -362,7 +377,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                         {notes.length}
                     </span>
                 </div>
-                <div className="panel-options non-draggable relative ml-2 shrink-0 flex items-center gap-1" onPointerDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()}>
+                <div className="panel-options category-drag-cancel relative ml-2 shrink-0 flex items-center gap-1" onPointerDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()}>
                     <div className="relative">
                         <button
                             onClick={() => { setShowColorPicker(!showColorPicker); setShowIconPicker(false); }}
@@ -450,8 +465,8 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
             </div >
 
             <div
-                className={`non-draggable flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scrollbar ${isFullscreenView ? '' : 'space-y-2'}`}
-                ref={isFullscreenView ? containerRef : undefined}
+                className="category-drag-cancel non-draggable flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scrollbar"
+                ref={containerRef}
             >
                 {category.type === 'checklist' ? (
                     <div className="flex flex-col h-full overflow-hidden">
@@ -559,59 +574,64 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                             <span className="text-xs text-slate-500/80">No notes here yet.</span>
                         </div>
                     </div>
-                ) : isFullscreenView && containerWidth > 0 ? (
-                    <ResponsiveGridLayout
-                        className="layout min-h-full pb-20 animate-fade-in"
-                        layouts={layouts}
-                        breakpoints={BREAKPOINTS}
-                        cols={COLS}
-                        rowHeight={60}
-                        onLayoutChange={handleLayoutChange}
-                        isDraggable={!isEditing}
-                        isResizable={!isEditing}
-                        dragConfig={{ handle: '.drag-handle', cancel: '.non-draggable' }}
-                        resizeConfig={{ handles: ['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne'] }}
-                        margin={[16, 16]}
-                        containerPadding={[0, 0]}
-                        width={containerWidth}
-                        useCSSTransforms={true}
-                        measureBeforeMount={false}
-                        onDragStart={() => setIsDragging(true)}
-                        onDragStop={() => setTimeout(() => setIsDragging(false), 50)}
+                ) : containerWidth > 0 ? (
+                    <div 
+                        className="h-full" 
+                        onClickCapture={e => {
+                            if ((e.target as HTMLElement).closest('.react-resizable-handle')) {
+                                e.stopPropagation();
+                            }
+                        }}
                     >
-                        {notes.map(note => {
-                            const lgLayout = layouts.lg?.find(l => l.i === String(note.id));
-                            const dataGrid = lgLayout ? { ...lgLayout } : { x: 0, y: 0, w: 4, h: 8 };
-                            return (
-                                <div key={note.id} data-grid={dataGrid} className="relative group">
-                                    <div
-                                        className="panel-drag-handle drag-handle absolute top-1.5 left-1.5 z-20 opacity-0 group-hover:opacity-60 transition-opacity cursor-grab active:cursor-grabbing flex items-center justify-center"
-                                        title="Drag to move"
-                                        onClick={e => e.stopPropagation()}
-                                        onPointerDown={e => e.stopPropagation()}
-                                    >
-                                        <span className="material-icons-round text-sm text-slate-400">drag_indicator</span>
+                        <ResponsiveGridLayout
+                            className="layout min-h-full pb-20 animate-fade-in notes-grid-container"
+                            layouts={{ lg: layouts.lg || [] }}
+                            breakpoints={{ lg: 0 }}
+                            cols={{ lg: 12 }}
+                            rowHeight={60}
+                            onLayoutChange={handleLayoutChange}
+                            isDraggable={!isEditing}
+                            isResizable={!isEditing}
+                            dragConfig={{ handle: '.note-drag-handle', cancel: '.non-draggable' }}
+                            resizeConfig={{ handles: ['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne'] }}
+                            margin={[16, 16]}
+                            containerPadding={[0, 0]}
+                            width={containerWidth}
+                            useCSSTransforms={true}
+                            measureBeforeMount={false}
+                            onDragStart={() => setIsDragging(true)}
+                            onDragStop={() => setTimeout(() => setIsDragging(false), 50)}
+                            onResizeStart={() => setIsResizing(true)}
+                            onResizeStop={() => setTimeout(() => setIsResizing(false), 50)}
+                        >
+                            {notes.map(note => {
+                                const lgLayout = layouts.lg?.find(l => l.i === String(note.id));
+                                const dataGrid = lgLayout ? { ...lgLayout } : { x: 0, y: 0, w: 4, h: 8 };
+                                return (
+                                    <div key={note.id} data-grid={dataGrid} className="relative group">
+                                        <div
+                                            className="note-drag-handle absolute top-1.5 left-1.5 z-20 opacity-0 group-hover:opacity-60 transition-opacity cursor-grab active:cursor-grabbing flex items-center justify-center"
+                                            title="Drag to move"
+                                            onClick={e => e.stopPropagation()}
+                                            onPointerDown={e => e.stopPropagation()}
+                                        >
+                                            <span className="material-icons-round text-sm text-slate-400">drag_indicator</span>
+                                        </div>
+                                        <div
+                                            className="h-full cursor-pointer"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (!isDragging) onNoteClick(note);
+                                            }}
+                                        >
+                                            <NoteCard note={note} hasLeftHandle onClick={() => { }} />
+                                        </div>
                                     </div>
-                                    <div
-                                        className="h-full cursor-pointer"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            if (!isDragging) onNoteClick(note);
-                                        }}
-                                    >
-                                        <NoteCard note={note} hasLeftHandle onClick={() => { }} />
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </ResponsiveGridLayout>
-                ) : (
-                    notes.map(note => (
-                        <div key={note.id} onClick={(e) => { e.stopPropagation(); }}>
-                            <NoteCard note={note} onClick={() => onNoteClick(note)} />
-                        </div>
-                    ))
-                )}
+                                );
+                            })}
+                        </ResponsiveGridLayout>
+                    </div>
+                ) : null}
             </div>
 
             {onAddNoteClick && (

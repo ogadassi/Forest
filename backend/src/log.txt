@@ -1927,3 +1927,145 @@ Unknown argument `categoryId`. Did you mean `category`? Available options are ma
     at NoteService.updateNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:48:29)
     at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:59:29
 -----------------------
+11/03/2026, 17:35:12
+
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:48:44
+
+  45 // Strip out any prototype methods or undefined properties before passing to Prisma
+  46 const { id, createdAt, updatedAt, ...plainNote } = note;
+  47 
+→ 48 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         title: "asd",
+         content: "<h1>asd</h1>",
+         contentType: "text",
+         categoryId: 38,
+         ~~~~~~~~~~
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: 0,
+         color: "#5dbb6a",
+     ?   createdAt?: DateTime | DateTimeFieldUpdateOperationsInput,
+     ?   updatedAt?: DateTime | DateTimeFieldUpdateOperationsInput,
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `categoryId`. Did you mean `category`? Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:48:44
+
+  45 // Strip out any prototype methods or undefined properties before passing to Prisma
+  46 const { id, createdAt, updatedAt, ...plainNote } = note;
+  47 
+→ 48 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         title: "asd",
+         content: "<h1>asd</h1>",
+         contentType: "text",
+         categoryId: 38,
+         ~~~~~~~~~~
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: 0,
+         color: "#5dbb6a",
+     ?   createdAt?: DateTime | DateTimeFieldUpdateOperationsInput,
+     ?   updatedAt?: DateTime | DateTimeFieldUpdateOperationsInput,
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `categoryId`. Did you mean `category`? Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.updateNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:48:29)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:59:29
+-----------------------
+11/03/2026, 17:35:16
+
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:48:44
+
+  45 // Strip out any prototype methods or undefined properties before passing to Prisma
+  46 const { id, createdAt, updatedAt, ...plainNote } = note;
+  47 
+→ 48 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         title: "asd",
+         content: "<h1><span style=\"font-weight: normal;\">asd</span></h1>",
+         contentType: "text",
+         categoryId: 38,
+         ~~~~~~~~~~
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: 0,
+         color: "#5dbb6a",
+     ?   createdAt?: DateTime | DateTimeFieldUpdateOperationsInput,
+     ?   updatedAt?: DateTime | DateTimeFieldUpdateOperationsInput,
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `categoryId`. Did you mean `category`? Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.update()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:48:44
+
+  45 // Strip out any prototype methods or undefined properties before passing to Prisma
+  46 const { id, createdAt, updatedAt, ...plainNote } = note;
+  47 
+→ 48 const updatedNote = await dal.note.update({
+       where: {
+         id: 42
+       },
+       data: {
+         title: "asd",
+         content: "<h1><span style=\"font-weight: normal;\">asd</span></h1>",
+         contentType: "text",
+         categoryId: 38,
+         ~~~~~~~~~~
+         priority: 1,
+         isPinned: false,
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: 0,
+         color: "#5dbb6a",
+     ?   createdAt?: DateTime | DateTimeFieldUpdateOperationsInput,
+     ?   updatedAt?: DateTime | DateTimeFieldUpdateOperationsInput,
+     ?   category?: CategoryUpdateOneRequiredWithoutNotesNestedInput
+       }
+     })
+
+Unknown argument `categoryId`. Did you mean `category`? Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.updateNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:48:29)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:59:29
+-----------------------
