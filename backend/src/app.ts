@@ -43,4 +43,4 @@ const httpServer = https.createServer(httpsOptions, server);
 import { socketService } from "./5-Services/socket-service";
 socketService.init(httpServer);
 
-httpServer.listen(appConfig.port, () => console.log(`Listening on https://localhost:${appConfig.port}`));
+httpServer.listen(+appConfig.port, "127.0.0.1", () => console.log(`Listening on https://127.0.0.1:${appConfig.port}`));

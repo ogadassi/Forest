@@ -4,7 +4,6 @@ import type { CategoryModel } from '../../models/CategoryModel';
 import type { NoteModel } from '../../models/NoteModel';
 import { NoteCard } from './NoteCard';
 import { searchIcons } from '../../data/materialIcons';
-import { categoryService } from '../../services/CategoryService';
 import { noteService } from '../../services/NoteService';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
@@ -61,12 +60,14 @@ interface CategoryPanelProps {
     category: CategoryModel;
     notes: NoteModel[];
     onNoteClick: (note: NoteModel) => void;
-    onRename: (newName: string) => void;
+    onUpdateCategory: (updates: Partial<CategoryModel>) => void;
     onDelete: () => void;
     onAddNoteClick?: () => void;
     isFullscreenView?: boolean;
     onHeaderClick?: () => void;
     onRefreshNotes?: () => void;
+    onUpdateNoteOptimistic?: (updatedNote: NoteModel, apiCall: () => Promise<void>) => void;
+    onDeleteNoteOptimistic?: (noteId: number, apiCall: () => Promise<void>) => void;
 }
 
 const PRESET_COLORS = [
@@ -129,7 +130,7 @@ const SortableChecklistItem = ({ note, color, onToggle, onDelete }: { note: Note
 };
 
 export const CategoryPanel: React.FC<CategoryPanelProps> = ({
-    category, notes, onNoteClick, onRename, onDelete, onAddNoteClick, isFullscreenView, onHeaderClick, onRefreshNotes
+    category, notes, onNoteClick, onUpdateCategory, onDelete, onAddNoteClick, isFullscreenView, onHeaderClick, onRefreshNotes
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newItemTitle, setNewItemTitle] = useState('');
@@ -232,18 +233,13 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         });
     }, [category.id]);
 
-    const handleUpdateInline = async (updates: Partial<CategoryModel>) => {
-        const updatedCat = { ...category, ...updates };
-        try {
-            await categoryService.updateCategory(updatedCat);
-        } catch (error) {
-            console.error('Failed inline update:', error);
-        }
+    const handleUpdateInline = (updates: Partial<CategoryModel>) => {
+        onUpdateCategory(updates);
     };
 
     const handleSubmitRename = (e?: React.FormEvent | MouseEvent) => {
         e?.preventDefault();
-        if (newName.trim() && newName !== category.name) onRename(newName.trim());
+        if (newName.trim() && newName !== category.name) onUpdateCategory({ name: newName.trim() });
         else setNewName(category.name);
         setIsEditing(false);
     };

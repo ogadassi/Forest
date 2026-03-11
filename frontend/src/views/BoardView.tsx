@@ -250,14 +250,15 @@ export const BoardView: React.FC = () => {
     }, []);
 
 
-    // Handle Category Inline Rename
-    const handleCategoryRename = async (id: number, newName: string) => {
+    // Handle Category Optimistic Update (Rename, Color, Icon)
+    const handleCategoryUpdate = async (id: number, updates: Partial<CategoryModel>) => {
         const cat = categories.find(c => c.id === id);
         if (!cat) return;
-        setCategories(prev => prev.map(c => c.id === id ? { ...c, name: newName } : c));
-        if (setGlobalCategories) setGlobalCategories(prev => prev.map(c => c.id === id ? { ...c, name: newName } : c));
+        const updatedCat = { ...cat, ...updates };
+        setCategories(prev => prev.map(c => c.id === id ? updatedCat : c));
+        if (setGlobalCategories) setGlobalCategories(prev => prev.map(c => c.id === id ? updatedCat : c));
         try {
-            await categoryService.updateCategory({ ...cat, name: newName });
+            await categoryService.updateCategory(updatedCat);
         } catch (error) {
             console.error('Failed inline update:', error);
             // Revert optimistic update
@@ -389,7 +390,7 @@ export const BoardView: React.FC = () => {
                             category={category}
                             notes={notesByCategory.get(category.id!) || []}
                             onNoteClick={handleNoteClick}
-                            onRename={name => handleCategoryRename(category.id!, name)}
+                            onUpdateCategory={updates => handleCategoryUpdate(category.id!, updates)}
                             onDelete={() => handleDeleteCategory(category.id!)}
                             onAddNoteClick={() => {
                                 setCreateNoteCategoryId(category.id!);
@@ -432,7 +433,7 @@ export const BoardView: React.FC = () => {
                             category={category}
                             notes={notesByCategory.get(category.id!) || []}
                             onNoteClick={handleNoteClick}
-                            onRename={name => handleCategoryRename(category.id!, name)}
+                            onUpdateCategory={updates => handleCategoryUpdate(category.id!, updates)}
                             onDelete={() => handleDeleteCategory(category.id!)}
                             onAddNoteClick={() => {
                                 setCreateNoteCategoryId(category.id!);
