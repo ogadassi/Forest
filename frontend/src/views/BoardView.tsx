@@ -56,12 +56,15 @@ function buildDefaultLayouts(categories: CategoryModel[], existing: Layouts): La
 
         const minW = getMinWForBreakpoint(bp);
 
-        const newItems: GridItem[] = missing.map((cat, idx) => ({
-            i: String(cat.id),
-            x: ((validBase.length + idx) % itemsPerRow) * w,
-            y: Math.floor((validBase.length + idx) / itemsPerRow) * 29,
-            w: Math.max(minW, w), h: 27, minW: minW, minH: 7,
-        }));
+        const newItems: GridItem[] = missing.map((cat, idx) => {
+            const minH = cat.type === 'timer' ? 6 : 7;
+            return {
+                i: String(cat.id),
+                x: ((validBase.length + idx) % itemsPerRow) * w,
+                y: Math.floor((validBase.length + idx) / itemsPerRow) * 29,
+                w: Math.max(minW, w), h: Math.max(minH, 27), minW: minW, minH: minH,
+            };
+        });
 
         newLayouts[bp] = [...validBase, ...newItems];
     });
@@ -159,7 +162,11 @@ export const BoardView: React.FC = () => {
 
                     // Force minimum dimensions on existing blocks so past layouts shrink
                     const minW = getMinWForBreakpoint(bp);
-                    reconciled[bp] = reconciled[bp].map(item => ({ ...item, minW, minH: 7, w: Math.max(minW, item.w!) }));
+                    reconciled[bp] = reconciled[bp].map(item => {
+                        const cat = fetchedCategories.find(c => String(c.id) === item.i);
+                        const minH = cat?.type === 'timer' ? 6 : 7;
+                        return { ...item, minW, minH, w: Math.max(minW, item.w!), h: Math.max(minH, item.h!) };
+                    });
 
                     const existingIds = new Set(reconciled[bp].map(item => item.i));
 
@@ -169,8 +176,9 @@ export const BoardView: React.FC = () => {
                             // Find next available spot
                             const numCols = COLS[bp as keyof typeof COLS];
                             const itemWidth = Math.max(minW, Math.min(4, numCols));
+                            const minH = cat.type === 'timer' ? 6 : 7;
                             const lastItem = reconciled[bp].reduce((prev, current) => (prev.y > current.y) ? prev : current, { y: 0, h: 0 } as GridItem);
-                            reconciled[bp].push({ i: iStr, x: 0, y: (lastItem?.y || 0) + (lastItem?.h || 0), w: itemWidth, h: 27, minW, minH: 7 });
+                            reconciled[bp].push({ i: iStr, x: 0, y: (lastItem?.y || 0) + (lastItem?.h || 0), w: itemWidth, h: Math.max(minH, 27), minW, minH });
                             modified = true;
                         }
                     });

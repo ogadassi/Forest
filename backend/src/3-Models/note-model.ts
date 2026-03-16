@@ -5,7 +5,7 @@ export class NoteModel {
     public id?: number;
     public title: string;
     public content: any;
-    public contentType: 'text' | 'checklist';
+    public contentType: 'text' | 'checklist' | 'timer';
     public categoryId: number;
     public priority: number;
     public isPinned: boolean;
@@ -38,7 +38,7 @@ export class NoteModel {
         id: Joi.number().forbidden(),
         title: Joi.string().required().min(1).max(100),
         content: Joi.any().required(), // JSONB can be string or array
-        contentType: Joi.string().required().valid('text', 'checklist'),
+        contentType: Joi.string().required().valid('text', 'checklist', 'timer'),
         categoryId: Joi.number().integer().positive().required(),
         priority: Joi.number().integer().min(1).max(5).required(),
         isPinned: Joi.boolean().required(),
@@ -55,7 +55,7 @@ export class NoteModel {
         id: Joi.number().integer().positive().required(),
         title: Joi.string().min(1).max(100).optional(),
         content: Joi.any().optional(),
-        contentType: Joi.string().valid('text', 'checklist').optional(),
+        contentType: Joi.string().valid('text', 'checklist', 'timer').optional(),
         categoryId: Joi.number().integer().positive().optional(),
         priority: Joi.number().integer().min(1).max(5).optional(),
         isPinned: Joi.boolean().optional(),

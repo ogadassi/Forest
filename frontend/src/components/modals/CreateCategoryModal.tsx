@@ -6,6 +6,7 @@ interface CreateCategoryModalProps {
     isOpen: boolean;
     onClose: () => void;
     onCategoryCreated: () => void;
+    defaultType?: 'notes' | 'checklist';
 }
 
 const PRESET_COLORS = [
@@ -15,11 +16,10 @@ const PRESET_COLORS = [
 ];
 
 export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
-    isOpen, onClose, onCategoryCreated,
+    isOpen, onClose, onCategoryCreated, defaultType = 'notes',
 }) => {
     const [name, setName] = useState('');
     const [color, setColor] = useState(PRESET_COLORS[0]);
-    const [type, setType] = useState<'notes' | 'checklist'>('notes');
     const [iconSearch, setIconSearch] = useState('');
     const [selectedIcon, setSelectedIcon] = useState('folder');
     const [iconResults, setIconResults] = useState<string[]>([]);
@@ -35,7 +35,6 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
         if (isOpen) {
             setName('');
             setColor(PRESET_COLORS[0]);
-            setType('notes');
             setIconSearch('');
             setSelectedIcon('folder');
             setError('');
@@ -48,7 +47,7 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
         setSubmitting(true);
         setError('');
         try {
-            await categoryService.addCategory({ name: name.trim(), color, icon: selectedIcon, type });
+            await categoryService.addCategory({ name: name.trim(), color, icon: selectedIcon, type: defaultType });
             onCategoryCreated();
             onClose();
         } catch (err) {
@@ -98,21 +97,6 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                             />
                         </div>
 
-                        <div>
-                            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1.5">Format</label>
-                            <div className="flex flex-col sm:flex-row gap-2">
-                                <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer transition-all ${type === 'notes' ? 'bg-primary/10 border-primary text-primary shadow-sm' : 'bg-background-dark border-border-dark text-slate-400 hover:border-slate-600 hover:text-slate-200'}`}>
-                                    <input type="radio" name="categoryType" value="notes" checked={type === 'notes'} onChange={() => setType('notes')} className="hidden" />
-                                    <span className="material-icons-round text-base">dashboard</span>
-                                    <span className="text-sm font-bold">Notes Board</span>
-                                </label>
-                                <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer transition-all ${type === 'checklist' ? 'bg-primary/10 border-primary text-primary shadow-sm' : 'bg-background-dark border-border-dark text-slate-400 hover:border-slate-600 hover:text-slate-200'}`}>
-                                    <input type="radio" name="categoryType" value="checklist" checked={type === 'checklist'} onChange={() => setType('checklist')} className="hidden" />
-                                    <span className="material-icons-round text-base">checklist</span>
-                                    <span className="text-sm font-bold">Checklist</span>
-                                </label>
-                            </div>
-                        </div>
 
                         <div>
                             <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Color</label>

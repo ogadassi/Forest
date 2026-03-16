@@ -121,6 +121,42 @@ export const EditNoteModal: React.FC<EditNoteModalProps> = ({ isOpen, onClose, o
         editorRef.current?.focus();
     };
 
+    const toggleChecklist = () => {
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0) return;
+
+        let node = selection.focusNode;
+        if (!node) return;
+
+        let blockNode = node.nodeType === 3 ? node.parentElement : node as HTMLElement;
+        while (blockNode && blockNode !== editorRef.current && blockNode.tagName !== 'UL' && blockNode.tagName !== 'LI') {
+            blockNode = blockNode.parentElement;
+        }
+
+        if (blockNode && (blockNode.tagName === 'UL' || blockNode.tagName === 'LI')) {
+            const ulNode = blockNode.tagName === 'LI' ? blockNode.parentElement : blockNode;
+            if (ulNode && ulNode.tagName === 'UL') {
+                ulNode.classList.toggle('checklist');
+                updateHtml();
+            }
+        } else {
+            document.execCommand('insertUnorderedList', false, undefined);
+            setTimeout(() => {
+                const sel = window.getSelection();
+                if (!sel || sel.rangeCount === 0) return;
+                let n = sel.focusNode;
+                while (n && n !== editorRef.current && n.nodeName !== 'UL') {
+                    n = n.parentNode;
+                }
+                if (n && n.nodeName === 'UL') {
+                    (n as HTMLElement).classList.add('checklist');
+                    updateHtml();
+                }
+            }, 10);
+        }
+        editorRef.current?.focus();
+    };
+
     const handleImagePick = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -370,10 +406,40 @@ export const EditNoteModal: React.FC<EditNoteModalProps> = ({ isOpen, onClose, o
                                     [&_p]:my-3
                                     [&_strong]:text-slate-100 [&_strong]:font-bold
                                     [&_em]:text-slate-400
-                                    [&_ul]:my-4 [&_ul]:pl-6 [&_li]:my-1 [&_ul_li]:list-disc [&_ul_li::marker]:text-primary/50
+                                    
+                                    /* Custom Checklist-Style Bullets */
+                                    [&_ul.checklist]:list-none [&_ul.checklist]:p-0 [&_ul.checklist]:my-4 [&_ul.checklist]:space-y-2
+                                    [&_ul.checklist_li]:relative [&_ul.checklist_li]:flex [&_ul.checklist_li]:items-start [&_ul.checklist_li]:gap-3 [&_ul.checklist_li]:border [&_ul.checklist_li]:border-white/10 [&_ul.checklist_li]:bg-white/[0.03] hover:[&_ul.checklist_li]:bg-white/[0.06] [&_ul.checklist_li]:rounded-xl [&_ul.checklist_li]:px-4 [&_ul.checklist_li]:py-3 [&_ul.checklist_li]:my-1 [&_ul.checklist_li]:transition-colors [&_ul.checklist_li]:cursor-pointer
+                                    [&_ul.checklist_li::before]:content-[''] [&_ul.checklist_li::before]:block [&_ul.checklist_li::before]:w-5 [&_ul.checklist_li::before]:h-5 [&_ul.checklist_li::before]:rounded [&_ul.checklist_li::before]:border-[1.5px] [&_ul.checklist_li::before]:border-primary/50 [&_ul.checklist_li::before]:bg-background-dark [&_ul.checklist_li::before]:shadow-sm [&_ul.checklist_li::before]:shrink-0 [&_ul.checklist_li::before]:mt-[1px] [&_ul.checklist_li::before]:transition-colors
+                                    /* Checked state */
+                                    [&_ul.checklist_li.checked]:opacity-60 [&_ul.checklist_li.checked]:text-slate-500 [&_ul.checklist_li.checked]:line-through
+                                    [&_ul.checklist_li.checked::before]:bg-primary [&_ul.checklist_li.checked::before]:border-primary
+                                    [&_ul.checklist_li.checked::after]:content-[''] [&_ul.checklist_li.checked::after]:absolute [&_ul.checklist_li.checked::after]:left-[24px] rtl:[&_ul.checklist_li.checked::after]:left-auto rtl:[&_ul.checklist_li.checked::after]:right-[24px] [&_ul.checklist_li.checked::after]:top-[16px] [&_ul.checklist_li.checked::after]:w-[5px] [&_ul.checklist_li.checked::after]:h-[9px] [&_ul.checklist_li.checked::after]:border-b-[2px] [&_ul.checklist_li.checked::after]:border-r-[2px] [&_ul.checklist_li.checked::after]:border-background-dark [&_ul.checklist_li.checked::after]:rotate-45
+                                    
+                                    /* Restore typical bullet lists */
+                                    [&_ul:not(.checklist)]:list-disc [&_ul:not(.checklist)]:pl-6 [&_ul:not(.checklist)]:my-4 [&_ul:not(.checklist)_li]:my-1 [&_ul:not(.checklist)_li::marker]:text-primary/50
+                                    
                                     focus:outline-none empty:before:content-['Start_typing...'] empty:before:text-slate-600"
                                 style={{ whiteSpace: 'pre-wrap', maxHeight: 'calc(100vh - 400px)', overflowY: 'auto' }}
                                 suppressContentEditableWarning={true}
+                                onClick={(e) => {
+                                    const target = e.target as HTMLElement;
+                                    const li = target.closest('li');
+                                    if (!li || target.closest('a')) return;
+                                    const ul = li.closest('ul');
+                                    if (!ul || !ul.classList.contains('checklist')) return;
+
+                                    // Instead of toggling if clicked on the bullet box vs text, we only toggle on the marker side or padding.
+                                    // But clicking the li itself is difficult to isolate from text, so we check if click was near the start (left side)
+                                    const rect = li.getBoundingClientRect();
+                                    const isClickOnCheckbox = (e.clientX - rect.left) < 40;
+                                    
+                                    if (isClickOnCheckbox) {
+                                        e.preventDefault();
+                                        li.classList.toggle('checked');
+                                        updateHtml();
+                                    }
+                                }}
                             />
                             <ImageResizer editorRef={editorRef} onUpdate={updateHtml} />
                         </div>
@@ -395,6 +461,9 @@ export const EditNoteModal: React.FC<EditNoteModalProps> = ({ isOpen, onClose, o
                             <button onMouseDown={e => { e.preventDefault(); execCmd('underline'); }} className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all active:scale-90 underline" title="Underline">U</button>
                             <button onMouseDown={e => { e.preventDefault(); execCmd('insertUnorderedList'); }} className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all active:scale-90" title="Bullet list">
                                 <span className="material-icons-round text-[20px]">format_list_bulleted</span>
+                            </button>
+                            <button onMouseDown={e => { e.preventDefault(); toggleChecklist(); }} className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all active:scale-90" title="Checklist">
+                                <span className="material-icons-round text-[20px]">checklist</span>
                             </button>
                             <div className="w-px h-6 bg-border-dark mx-1" />
                             <button onClick={() => imageInputRef.current?.click()} className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all active:scale-90" title="Image">

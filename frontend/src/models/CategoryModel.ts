@@ -3,5 +3,5 @@ export interface CategoryModel {
     name: string;
     color: string;
     icon?: string;
-    type?: 'notes' | 'checklist';
+    type?: 'notes' | 'checklist' | 'timer';
 }

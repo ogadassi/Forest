@@ -3,6 +3,7 @@ import { Responsive } from 'react-grid-layout';
 import type { CategoryModel } from '../../models/CategoryModel';
 import type { NoteModel } from '../../models/NoteModel';
 import { NoteCard } from './NoteCard';
+import { TimerNote } from './TimerNote';
 import { searchIcons } from '../../data/materialIcons';
 import { noteService } from '../../services/NoteService';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
@@ -140,7 +141,7 @@ const SortableChecklistItem = ({ note, color, onToggle, onDelete }: { note: Note
 };
 
 export const CategoryPanel: React.FC<CategoryPanelProps> = ({
-    category, notes, onNoteClick, onUpdateCategory, onDelete, onAddNoteClick, isFullscreenView, onHeaderClick, onRefreshNotes
+    category, notes, onNoteClick, onUpdateCategory, onDelete, onAddNoteClick, isFullscreenView, onHeaderClick, onRefreshNotes, onUpdateNoteOptimistic
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newItemTitle, setNewItemTitle] = useState('');
@@ -465,10 +466,33 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
             </div >
 
             <div
-                className="category-drag-cancel non-draggable flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scrollbar"
+                className="category-drag-cancel non-draggable flex-1 overflow-hidden p-0 relative"
                 ref={containerRef}
             >
-                {category.type === 'checklist' ? (
+                {category.type === 'timer' ? (
+                    <div
+                        className="w-full h-full flex items-center justify-center"
+                        onClick={e => e.stopPropagation()}
+                        style={{ padding: '12px' }}
+                    >
+                        <TimerNote
+                            note={{
+                                id: category.id,
+                                title: category.name,
+                                content: { timeRemaining: 300, isRunning: false, lastUpdated: Date.now(), totalTime: 300 },
+                                contentType: 'timer' as const,
+                                categoryId: category.id!,
+                                isCompleted: false,
+                                attachments: [],
+                                color: color,
+                            } as any}
+                            color={color}
+                            onUpdate={() => {}}
+                        />
+                    </div>
+                ) : (
+                    <div className="w-full h-full overflow-y-auto overflow-x-hidden p-3 custom-scrollbar">
+                    {category.type === 'checklist' ? (
                     <div className="flex flex-col h-full overflow-hidden">
                         <div className="flex-1 overflow-y-auto custom-scrollbar space-y-1 pr-1 pb-4">
                             {sortedNotes.length === 0 ? (
@@ -621,10 +645,28 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                             className="h-full cursor-pointer"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                if (!isDragging) onNoteClick(note);
+                                                if (!isDragging && note.contentType !== 'timer') onNoteClick(note);
                                             }}
                                         >
-                                            <NoteCard note={note} hasLeftHandle onClick={() => { }} />
+                                            <NoteCard
+                                                note={note}
+                                                hasLeftHandle
+                                                onClick={() => {}}
+                                                onDelete={async () => {
+                                                    try {
+                                                        await noteService.deleteNote(note.id!);
+                                                        if (onRefreshNotes) onRefreshNotes();
+                                                    } catch (err) { console.error('Failed to delete note', err); }
+                                                }}
+                                                onUpdate={(updates) => {
+                                                    const updatedNote: NoteModel = { ...note, ...updates };
+                                                    if (onUpdateNoteOptimistic) {
+                                                        onUpdateNoteOptimistic(updatedNote, () => noteService.updateNote(updatedNote).then(() => {}));
+                                                    } else {
+                                                        noteService.updateNote(updatedNote);
+                                                    }
+                                                }}
+                                            />
                                         </div>
                                     </div>
                                 );
@@ -632,9 +674,11 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                         </ResponsiveGridLayout>
                     </div>
                 ) : null}
+                    </div>
+                )}
             </div>
 
-            {onAddNoteClick && (
+            {onAddNoteClick && category.type !== 'timer' && (
                 <button
                     onClick={(e) => {
                         e.stopPropagation();

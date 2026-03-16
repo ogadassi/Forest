@@ -30,7 +30,7 @@ class NoteService {
         note.validateInsert();
 
         // Strip out any prototype methods or undefined properties before passing to Prisma
-        const { id, createdAt, updatedAt, ...plainNote } = note;
+        const { id, createdAt, updatedAt, isPinned, category, ...plainNote } = note as any;
 
         const addedNote = await dal.note.create({
             data: plainNote as any
@@ -43,7 +43,7 @@ class NoteService {
         note.validateUpdate();
 
         // Strip out any prototype methods or undefined properties before passing to Prisma
-        const { id, createdAt, updatedAt, ...plainNote } = note;
+        const { id, createdAt, updatedAt, isPinned, category, ...plainNote } = note as any;
 
         const updatedNote = await dal.note.update({
             where: { id: note.id },

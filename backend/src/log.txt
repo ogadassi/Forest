@@ -2211,3 +2211,852 @@ Unknown argument `categoryId`. Did you mean `category`? Available options are ma
     at NoteService.updateNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:48:29)
     at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:59:29
 -----------------------
+11/03/2026, 19:50:40
+
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251440489,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251440489,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.addNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:27)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:34:27
+-----------------------
+11/03/2026, 19:50:41
+
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251441903,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251441903,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.addNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:27)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:34:27
+-----------------------
+11/03/2026, 19:50:42
+
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251442062,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251442062,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.addNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:27)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:34:27
+-----------------------
+11/03/2026, 19:50:42
+
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251442239,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251442239,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.addNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:27)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:34:27
+-----------------------
+11/03/2026, 19:50:43
+
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251443868,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251443868,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.addNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:27)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:34:27
+-----------------------
+11/03/2026, 19:50:44
+
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251444217,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251444217,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.addNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:27)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:34:27
+-----------------------
+11/03/2026, 19:50:52
+
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251452124,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773251452124,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.addNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:27)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:34:27
+-----------------------
+11/03/2026, 20:13:38
+
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773252817296,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773252817296,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.addNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:27)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:34:27
+-----------------------
+11/03/2026, 20:15:34
+
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773252934921,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773252934921,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.addNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:27)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:34:27
+-----------------------
+11/03/2026, 20:16:36
+
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773252996921,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: {
+           timeRemaining: 300,
+           isRunning: false,
+           lastUpdated: 1773252996921,
+           totalTime: 300
+         },
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.addNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:27)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:34:27
+-----------------------
+11/03/2026, 20:17:33
+
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: "{\"timeRemaining\":300,\"isRunning\":false,\"lastUpdated\":1773253053218,\"totalTime\":300}",
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+PrismaClientValidationError: 
+Invalid `dal.note.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:42
+
+  32 // Strip out any prototype methods or undefined properties before passing to Prisma
+  33 const { id, createdAt, updatedAt, ...plainNote } = note;
+  34 
+→ 35 const addedNote = await dal.note.create({
+       data: {
+         title: "Timer",
+         content: "{\"timeRemaining\":300,\"isRunning\":false,\"lastUpdated\":1773253053218,\"totalTime\":300}",
+         contentType: "timer",
+         categoryId: 38,
+         priority: 1,
+         isPinned: false,
+         ~~~~~~~~
+         isCompleted: false,
+         attachments: [],
+         remindAt: undefined,
+         order: undefined,
+         color: "#fc8181",
+     ?   id?: Int,
+     ?   createdAt?: DateTime,
+     ?   updatedAt?: DateTime
+       }
+     })
+
+Unknown argument `isPinned`. Available options are marked with ?.
+    at throwValidationException (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at NoteService.addNote (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\note-service.ts:35:27)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\note-controller.ts:34:27
+-----------------------
+11/03/2026, 20:53:19
+id 47 not exist.
+undefined
+-----------------------
+11/03/2026, 20:53:19
+id 47 not exist.
+undefined
+-----------------------
+14/03/2026, 22:41:12
+
+Invalid `dal.category.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:21:50
+
+  18 
+  19 public async addCategory(category: CategoryModel): Promise<CategoryModel> {
+  20     category.validateInsert();
+→ 21     const addedCategory = await dal.category.create(
+Unique constraint failed on the fields: (`name`)
+PrismaClientKnownRequestError: 
+Invalid `dal.category.create()` invocation in
+F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:21:50
+
+  18 
+  19 public async addCategory(category: CategoryModel): Promise<CategoryModel> {
+  20     category.validateInsert();
+→ 21     const addedCategory = await dal.category.create(
+Unique constraint failed on the fields: (`name`)
+    at ei.handleRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at a (F:\Programming\new stuff\Duly Noted 2\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at CategoryService.addCategory (F:\Programming\new stuff\Duly Noted 2\backend\src\5-Services\category-service.ts:21:31)
+    at F:\Programming\new stuff\Duly Noted 2\backend\src\6-Controllers\category-controller.ts:34:31
+-----------------------

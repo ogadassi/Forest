@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import type { CategoryModel } from '../../models/CategoryModel';
 import type { NoteModel } from '../../models/NoteModel';
 
@@ -116,26 +116,28 @@ export const SmartSearchBar: React.FC<SmartSearchBarProps> = ({ categories, isOp
 
     return (
         <>
-            {/* Backdrop — no animation class so it doesn't re-trigger on result updates */}
+            {/* Modal Wrapper (Matches EditNoteModal wrapper) */}
             <div
-                className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-[2px]"
+                className="fixed inset-0 z-[100] flex items-start justify-center pt-[10vh] px-4 sm:px-6 animate-in fade-in zoom-in-[0.98] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
                 onClick={() => onOpenChange(false)}
-            />
+                style={{
+                    background: `radial-gradient(circle at 50% 50%, rgba(24, 30, 25, 0.15) 0%, rgba(24, 30, 25, 0.4) 100%)`,
+                    backdropFilter: 'blur(2px)',
+                    WebkitBackdropFilter: 'blur(2px)'
+                }}
+            >
+                <div className="absolute inset-0 cursor-default" onClick={() => onOpenChange(false)} />
 
-            {/* Modal */}
-            <div className="fixed inset-0 z-[101] flex items-start justify-center pt-[12vh] px-4 pointer-events-none">
                 <div
-                    className="w-full max-w-[85vw] md:max-w-4xl rounded-2xl overflow-hidden pointer-events-auto"
+                    className="w-full max-w-3xl rounded-[2rem] flex flex-col relative overflow-hidden transition-all duration-500 shadow-[0_32px_96px_-12px_rgba(0,0,0,0.6)] border border-border-dark bg-background-dark"
                     style={{
-                        background: 'linear-gradient(145deg, #1e2a20, #181e19)',
-                        border: '1px solid rgba(93,187,106,0.25)',
-                        boxShadow: '0 0 0 1px rgba(93,187,106,0.08), 0 32px 80px rgba(0,0,0,0.6), 0 0 60px rgba(93,187,106,0.06)',
+                        boxShadow: `inset 0 1px 0 0 rgba(255,255,255,0.05), 0 32px 96px -12px rgba(0,0,0,0.5)`,
                     }}
                     onClick={e => e.stopPropagation()}
                 >
-                    {/* Input row — search icon is always stable, no icon swap to avoid blink */}
-                    <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/5 relative">
-                        <span className="material-icons-round text-slate-400 text-lg shrink-0">search</span>
+                    {/* Input row */}
+                    <div className="flex items-center gap-4 px-6 py-5 border-b border-white/5 relative bg-white/[0.02]">
+                        <span className="material-icons-round text-primary text-xl shrink-0 drop-shadow-[0_0_8px_rgba(93,187,106,0.5)]">search</span>
                         <input
                             ref={inputRef}
                             value={query}
@@ -143,7 +145,7 @@ export const SmartSearchBar: React.FC<SmartSearchBarProps> = ({ categories, isOp
                             onKeyDown={handleKeyDown}
                             dir="auto"
                             placeholder="Ask anything about your notes…"
-                            className="flex-1 bg-transparent text-slate-100 text-sm placeholder:text-slate-600 outline-none"
+                            className="flex-1 bg-transparent text-slate-50 text-base placeholder:text-slate-500 outline-none font-medium"
                         />
                         <kbd
                             onClick={() => onOpenChange(false)}
@@ -209,9 +211,10 @@ export const SmartSearchBar: React.FC<SmartSearchBarProps> = ({ categories, isOp
                                     const globalIdx = results.categories.length + idx;
                                     const isSelected = selectedIndex === globalIdx;
                                     const cat = (note as any).category;
-                                    const preview = typeof note.content === 'string'
-                                        ? note.content.slice(0, 100)
-                                        : JSON.stringify(note.content).slice(0, 100);
+                                    let plainText = typeof note.content === 'string' ? note.content : JSON.stringify(note.content);
+                                    plainText = plainText.replace(/<img[^>]*>/gi, ' [Image] ');
+                                    plainText = plainText.replace(/<[^>]+>/g, ' '); // Strip remaining HTML
+                                    const preview = plainText.replace(/\s+/g, ' ').trim().slice(0, 100);
 
                                     return (
                                         <button
@@ -245,11 +248,13 @@ export const SmartSearchBar: React.FC<SmartSearchBarProps> = ({ categories, isOp
 
                     {/* Footer */}
                     {allResults.length > 0 && (
-                        <div className="px-4 py-2.5 border-t border-white/5 flex items-center gap-4 text-[10px] text-slate-600">
-                            <span><kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded font-mono">↑↓</kbd> Navigate</span>
-                            <span><kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded font-mono">↵</kbd> Open</span>
-                            <span><kbd className="px-1 py-0.5 bg-white/5 border border-white/10 rounded font-mono">Esc</kbd> Close</span>
-                            <span className="ml-auto">{allResults.length} result{allResults.length !== 1 ? 's' : ''}</span>
+                        <div className="px-6 py-4 border-t border-white/5 flex items-center justify-center sm:justify-between gap-4 text-[10px] text-slate-500 bg-black/10">
+                            <div className="hidden sm:flex items-center gap-4">
+                                <span><kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded font-mono">↑↓</kbd> Navigate</span>
+                                <span><kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded font-mono">↵</kbd> Open</span>
+                                <span><kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded font-mono">Esc</kbd> Close</span>
+                            </div>
+                            <span className="sm:ml-auto">{allResults.length} result{allResults.length !== 1 ? 's' : ''}</span>
                         </div>
                     )}
                 </div>
