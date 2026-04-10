@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { noteService } from '../../services/NoteService';
 import { categoryService } from '../../services/CategoryService';
 import { useSettings } from '../../context/SettingsContext';
@@ -53,7 +53,7 @@ export const SystemStats: React.FC<SystemStatsProps> = ({ refreshKey, collapsed,
             <aside
                 {...stripProps}
                 title={`${modeWord} to expand System Overview`}
-                className="h-full w-full bg-background-dark border-l border-border-dark flex flex-col items-center justify-center cursor-pointer group overflow-hidden relative select-none"
+                className="h-full w-full bg-transparent border-l border-border-dark flex flex-col items-center justify-center cursor-pointer group overflow-hidden relative select-none"
             >
                 {/* Subtle hover glow */}
                 <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-300" />
@@ -94,7 +94,7 @@ export const SystemStats: React.FC<SystemStatsProps> = ({ refreshKey, collapsed,
         <aside
             {...expandedProps}
             title={`${modeWord} to collapse System Overview`}
-            className="h-full bg-background-dark border-l border-border-dark flex flex-col overflow-hidden cursor-pointer select-none"
+            className="h-full bg-transparent border-l border-border-dark flex flex-col overflow-hidden cursor-pointer select-none"
         >
             {/* Header */}
             <div className="h-16 flex items-center justify-between px-5 border-b border-border-dark/50 shrink-0">

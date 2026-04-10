@@ -4,7 +4,7 @@ export interface NoteModel {
     id?: number;
     title: string;
     content: any; // JSONB can be string or array
-    contentType: 'text' | 'checklist' | 'timer';
+    contentType: 'text' | 'checklist' | 'timer' | 'song' | 'demo';
     categoryId: number;
     category?: CategoryModel;
     isCompleted?: boolean;

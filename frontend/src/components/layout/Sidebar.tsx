@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <aside
             {...clickProps}
             title={iconOnly ? `${modeWord} to expand sidebar` : `${modeWord} to collapse sidebar`}
-            className="h-full flex flex-col bg-background-dark border-r border-border-dark overflow-hidden cursor-pointer select-none"
+            className="h-full flex flex-col bg-transparent border-r border-border-dark overflow-hidden cursor-pointer select-none"
         >
             {/* ── HEADER ── */}
             <div className={`h-16 flex items-center border-b border-border-dark/50 shrink-0 ${iconOnly ? 'justify-center px-2' : 'justify-between px-4'}`}>

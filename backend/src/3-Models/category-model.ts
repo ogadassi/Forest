@@ -21,7 +21,7 @@ export class CategoryModel {
         name: Joi.string().required().min(2).max(50),
         color: Joi.string().required().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/), // Hex code validation
         icon: Joi.string().optional().allow(null, ""),
-        type: Joi.string().valid('notes', 'checklist', 'timer').optional()
+        type: Joi.string().valid('notes', 'checklist', 'timer', 'music').optional()
     });
 
     public static updateValidationSchema = Joi.object({
@@ -29,7 +29,7 @@ export class CategoryModel {
         name: Joi.string().min(2).max(50).optional(),
         color: Joi.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).optional(),
         icon: Joi.string().optional().allow(null, ""),
-        type: Joi.string().valid('notes', 'checklist', 'timer').optional()
+        type: Joi.string().valid('notes', 'checklist', 'timer', 'music').optional()
     });
 
     public validateInsert(): void {

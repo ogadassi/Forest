@@ -136,6 +136,13 @@ export const ImageResizer: React.FC<Props> = ({ editorRef, onUpdate }) => {
     const width = rect.width;
     const height = rect.height;
 
+    // Show the toolbar above the image if there's enough room, otherwise below
+    const TOOLBAR_H = 44; // px — approximate toolbar height including gap
+    const toolbarAbove = top >= TOOLBAR_H;
+    const toolbarStyle: React.CSSProperties = toolbarAbove
+        ? { bottom: '100%', marginBottom: 4, top: 'auto' }
+        : { top: '100%', marginTop: 4, bottom: 'auto' };
+
     const handles: { pos: HandlePos; style: React.CSSProperties }[] = [
         { pos: 'nw', style: { top: -HANDLE_SIZE / 2, left: -HANDLE_SIZE / 2 } },
         { pos: 'ne', style: { top: -HANDLE_SIZE / 2, right: -HANDLE_SIZE / 2 } },
@@ -147,7 +154,7 @@ export const ImageResizer: React.FC<Props> = ({ editorRef, onUpdate }) => {
         <div
             ref={overlayRef}
             className="absolute pointer-events-none z-50"
-            style={{ top, left, width, height }}
+            style={{ top, left, width, height, overflow: 'visible' }}
         >
             {/* Selection border */}
             <div
@@ -156,7 +163,10 @@ export const ImageResizer: React.FC<Props> = ({ editorRef, onUpdate }) => {
             />
 
             {/* Alignment toolbar */}
-            <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-card-dark border border-border-dark rounded-xl shadow-xl px-2 py-1 pointer-events-auto">
+            <div
+                className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 bg-card-dark border border-border-dark rounded-xl shadow-xl px-2 py-1 pointer-events-auto z-10"
+                style={toolbarStyle}
+            >
                 {[
                     { title: 'Float left', icon: 'format_align_left', align: 'left' },
                     { title: 'Center', icon: 'format_align_center', align: 'center' },

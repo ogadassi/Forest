@@ -11,7 +11,7 @@ import { categoryService } from '../../services/CategoryService';
 import type { CategoryModel } from '../../models/CategoryModel';
 import type { NoteModel } from '../../models/NoteModel';
 
-type WidgetType = 'notes' | 'checklist' | 'timer';
+type WidgetType = 'notes' | 'checklist' | 'timer' | 'music';
 
 const LEFT_DEFAULT = 256;
 const LEFT_COLLAPSED = 60;
@@ -122,7 +122,7 @@ export const MainLayout: React.FC = () => {
     useEffect(() => setIsMounted(true), []);
 
     return (
-        <div className="flex h-screen overflow-hidden bg-background-dark text-slate-100 font-display">
+        <div className="flex h-screen overflow-hidden bg-transparent text-slate-100 font-display">
 
             {/* ── LOADER SCREEN ── */}
             {isConnected === null && <LoaderScreen />}
@@ -143,7 +143,7 @@ export const MainLayout: React.FC = () => {
 
             {/* ── MAIN CONTENT ── */}
             <main className="flex-1 flex flex-col min-w-0">
-                <header className="h-16 border-b border-border-dark flex items-center justify-between px-6 bg-background-dark z-10 shrink-0">
+                <header className="h-16 border-b border-border-dark flex items-center justify-between px-6 bg-transparent z-10 shrink-0">
                     <div className="flex items-center gap-5">
                         <h1 className="text-lg font-bold tracking-tight text-slate-100">Forest</h1>
 
@@ -187,24 +187,26 @@ export const MainLayout: React.FC = () => {
                     <Outlet context={{ refreshKey, selectedCategoryId, setSelectedCategoryId, setRefreshKey, setCategories }} />
 
                     {/* ── FAB ─ inside dashboard only ── */}
-                    <button
-                        onClick={() => setIsWidgetPickerOpen(prev => !prev)}
-                        className="absolute bottom-8 right-8 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95"
-                        title="Create Widget"
-                        style={{
-                            background: 'linear-gradient(135deg, #5dbb6a 0%, #3d9e4a 100%)',
-                            boxShadow: isWidgetPickerOpen
-                                ? '0 0 0 8px rgba(93,187,106,0.15), 0 8px 32px rgba(93,187,106,0.4)'
-                                : '0 8px 32px rgba(93,187,106,0.3), 0 2px 8px rgba(0,0,0,0.4)',
-                        }}
-                    >
-                        <span
-                            className="material-icons-round text-2xl text-[#1a231d] transition-transform duration-300"
-                            style={{ transform: isWidgetPickerOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}
+                    {!selectedCategoryId && (
+                        <button
+                            onClick={() => setIsWidgetPickerOpen(prev => !prev)}
+                            className="absolute bottom-8 right-8 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95"
+                            title="Create Widget"
+                            style={{
+                                background: 'linear-gradient(135deg, #5dbb6a 0%, #3d9e4a 100%)',
+                                boxShadow: isWidgetPickerOpen
+                                    ? '0 0 0 8px rgba(93,187,106,0.15), 0 8px 32px rgba(93,187,106,0.4)'
+                                    : '0 8px 32px rgba(93,187,106,0.3), 0 2px 8px rgba(0,0,0,0.4)',
+                            }}
                         >
-                            add
-                        </span>
-                    </button>
+                            <span
+                                className="material-icons-round text-2xl text-[#1a231d] transition-transform duration-300"
+                                style={{ transform: isWidgetPickerOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}
+                            >
+                                add
+                            </span>
+                        </button>
+                    )}
                 </div>
             </main>
 
@@ -232,6 +234,17 @@ export const MainLayout: React.FC = () => {
                     {/* Radial hub */}
                     <div className="relative flex items-center justify-center" style={{ width: 320, height: 320 }}>
 
+                        {/* Dark Circular Background for Readability */}
+                        <div 
+                            className="absolute pointer-events-none z-0"
+                            style={{
+                                width: 440, height: 440,
+                                borderRadius: '50%',
+                                background: 'radial-gradient(circle, rgba(14,18,15,0.98) 0%, rgba(14,18,15,0.95) 55%, transparent 80%)',
+                                animation: 'hub-in 0.4s cubic-bezier(0.16,1,0.3,1) both',
+                            }}
+                        />
+
                         {/* Center hub — decorative origin dot */}
                         <div
                             className="absolute rounded-full z-10"
@@ -245,9 +258,10 @@ export const MainLayout: React.FC = () => {
 
                         {/* Spoke lines (connecting hub to petals) */}
                         {[
-                            { angle: -90,  color: '#5dbb6a' },
-                            { angle:  30,  color: '#4f8ef7' },
-                            { angle: 150,  color: '#f7874f' },
+                            { angle: -135, color: '#5dbb6a' },
+                            { angle:  -45, color: '#4f8ef7' },
+                            { angle:   45, color: '#f7874f' },
+                            { angle:  135, color: '#c44ff7' },
                         ].map((s, i) => {
                             const rad = (s.angle * Math.PI) / 180;
                             const x2 = Math.cos(rad) * 120;
@@ -272,9 +286,10 @@ export const MainLayout: React.FC = () => {
 
                         {/* Petal nodes */}
                         {[
-                            { type: 'notes'     as WidgetType, icon: 'dashboard', label: 'Notes Board', color: '#5dbb6a', angle: -90,  delay: '0ms'   },
-                            { type: 'checklist' as WidgetType, icon: 'checklist', label: 'Checklist',   color: '#4f8ef7', angle:  30,  delay: '60ms'  },
-                            { type: 'timer'     as WidgetType, icon: 'timer',     label: 'Timer',       color: '#f7874f', angle: 150,  delay: '120ms' },
+                            { type: 'notes'     as WidgetType, icon: 'dashboard', label: 'Notes Board', color: '#5dbb6a', angle: -135, delay: '0ms'   },
+                            { type: 'checklist' as WidgetType, icon: 'checklist', label: 'Checklist',   color: '#4f8ef7', angle:  -45, delay: '40ms'  },
+                            { type: 'timer'     as WidgetType, icon: 'timer',     label: 'Timer',       color: '#f7874f', angle:   45, delay: '80ms'  },
+                            { type: 'music'     as WidgetType, icon: 'music_note',label: 'Music Board', color: '#c44ff7', angle:  135, delay: '120ms' },
                         ].map((w) => {
                             const rad = (w.angle * Math.PI) / 180;
                             const radius = 120;
@@ -376,7 +391,7 @@ export const MainLayout: React.FC = () => {
                 isOpen={isCreateCategoryOpen}
                 onClose={() => setIsCreateCategoryOpen(false)}
                 onCategoryCreated={handleNoteCreated}
-                defaultType={pendingWidgetType as 'notes' | 'checklist'}
+                defaultType={pendingWidgetType as 'notes' | 'checklist' | 'timer' | 'music'}
             />
 
             {selectedNote && (

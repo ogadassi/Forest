@@ -14,7 +14,8 @@ import { searchController } from "./6-Controllers/search-controller";
 const server = express();
 
 server.use(cors());
-server.use(express.json({ limit: '50mb' }));
+server.use("/api/upload", express.json({ limit: '50mb' }));
+server.use(express.json({ limit: '1mb' }));
 
 // Register middleware:
 server.use(loggerMiddleware.logToConsole);
@@ -25,6 +26,9 @@ server.use(loggerMiddleware.logToConsole);
 server.use("/api", noteController);
 server.use("/api", categoryController);
 server.use("/api", searchController);
+
+// Root route so browser doesn't 404
+server.get("/", (req, res) => res.send("Forest API is running!"));
 
 // Route not found & Catch all:
 server.use(errorsMiddleware.routeNotFound);

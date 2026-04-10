@@ -7,7 +7,7 @@ import type { CategoryModel } from '../models/CategoryModel';
 import type { NoteModel } from '../models/NoteModel';
 import { categoryService } from '../services/CategoryService';
 import { noteService } from '../services/NoteService';
-import { CategoryPanel } from '../components/board/CategoryPanel';
+import { CategoryPanel } from '../components/CategoryPanel';
 import { EditNoteModal } from '../components/modals/EditNoteModal';
 import { CreateNoteModal } from '../components/modals/CreateNoteModal';
 
@@ -83,6 +83,7 @@ export const BoardView: React.FC = () => {
     const [categories, setCategories] = useState<CategoryModel[]>([]);
     const [notes, setNotes] = useState<NoteModel[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [layouts, setLayouts] = useState<Layouts>({});
     const containerRef = useRef<HTMLDivElement>(null);
     const [containerWidth, setContainerWidth] = useState(0);
@@ -106,6 +107,7 @@ export const BoardView: React.FC = () => {
     // Note creation state
     const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false);
     const [createNoteCategoryId, setCreateNoteCategoryId] = useState<number | undefined>(undefined);
+    const [createNoteCategoryType, setCreateNoteCategoryType] = useState<string | undefined>(undefined);
 
     const { refreshKey, selectedCategoryId, setSelectedCategoryId, setCategories: setGlobalCategories } =
         useOutletContext<{
@@ -118,7 +120,10 @@ export const BoardView: React.FC = () => {
     const [internalRefresh, setInternalRefresh] = useState(0);
 
     const loadData = useCallback(async (isInitialLoad = false) => {
-        if (isInitialLoad) setLoading(true);
+        if (isInitialLoad) {
+            setLoading(true);
+            setError(null);
+        }
         try {
             const [fetchedCategories, fetchedNotes] = await Promise.all([
                 categoryService.getAllCategories(),
@@ -191,8 +196,9 @@ export const BoardView: React.FC = () => {
                 setLayouts(initial);
             }
 
-        } catch (error) {
-            console.error('Failed to load dashboard data', error);
+        } catch (err) {
+            console.error('Failed to load dashboard data', err);
+            setError('We encountered an error while loading your data. The server might be unreachable.');
         } finally {
             if (isInitialLoad) setLoading(false);
         }
@@ -218,6 +224,11 @@ export const BoardView: React.FC = () => {
                 const missingItems = oldItems.filter(old => !newItems.some((n: any) => n.i === old.i));
                 merged[bp] = [...newItems, ...missingItems];
             });
+            
+            if (JSON.stringify(merged) === JSON.stringify(prev)) {
+                return prev;
+            }
+
             saveLayouts(merged);
             return merged;
         });
@@ -373,6 +384,34 @@ export const BoardView: React.FC = () => {
 
         if (containerWidth === 0) return null;
 
+        if (error && !loading) {
+            return (
+                <div className="flex h-full w-full flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
+                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-red-500/10 mb-6 border border-red-500/20 shadow-lg shadow-red-500/5">
+                        <svg
+                            className="w-12 h-12 text-red-500 opacity-80"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <h2 className="text-2xl font-display font-semibold text-white mb-2 tracking-tight">Could not load your Forest</h2>
+                    <p className="text-slate-400 text-base max-w-sm mb-8 leading-relaxed">
+                        {error}
+                    </p>
+                    <button
+                        onClick={() => loadData(true)}
+                        className="px-6 py-2.5 bg-primary/20 text-primary hover:bg-primary/30 rounded-xl transition-colors font-semibold shadow-lg shadow-primary/10"
+                    >
+                        Try Again
+                    </button>
+                </div>
+            );
+        }
+
         if (displayedCategories.length === 0 && !loading) {
             return (
                 <div className="flex h-full w-full flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
@@ -413,6 +452,7 @@ export const BoardView: React.FC = () => {
                             onDelete={() => handleDeleteCategory(category.id!)}
                             onAddNoteClick={() => {
                                 setCreateNoteCategoryId(category.id!);
+                                setCreateNoteCategoryType(category.type);
                                 setIsCreateNoteOpen(true);
                             }}
                             onHeaderClick={() => setSelectedCategoryId(null)}
@@ -456,6 +496,7 @@ export const BoardView: React.FC = () => {
                             onDelete={() => handleDeleteCategory(category.id!)}
                             onAddNoteClick={() => {
                                 setCreateNoteCategoryId(category.id!);
+                                setCreateNoteCategoryType(category.type);
                                 setIsCreateNoteOpen(true);
                             }}
                             onHeaderClick={() => {
@@ -466,6 +507,36 @@ export const BoardView: React.FC = () => {
                             onRefreshNotes={() => setInternalRefresh(prev => prev + 1)}
                             onUpdateNoteOptimistic={handleUpdateNoteOptimistic}
                             onDeleteNoteOptimistic={handleDeleteNoteOptimistic}
+                            onAutoResize={(pixelHeight?: number, pixelWidth?: number) => {
+                                const currentLayouts = { ...layouts };
+                                const hNeeded = pixelHeight !== undefined ? Math.ceil((pixelHeight + 14) / 34) : undefined;
+
+                                // Compute column width for the current breakpoint to derive w from pixelWidth
+                                const activeBreakpoint = containerWidth >= 1200 ? 'lg'
+                                    : containerWidth >= 996 ? 'md'
+                                    : containerWidth >= 768 ? 'sm'
+                                    : containerWidth >= 480 ? 'xs' : 'xxs';
+
+                                Object.keys(currentLayouts).forEach(bp => {
+                                    const layoutArr = [...(currentLayouts[bp] || [])];
+                                    const itemIdx = layoutArr.findIndex(l => l.i === String(category.id));
+                                    if (itemIdx > -1) {
+                                        const existing = layoutArr[itemIdx];
+                                        const newH = hNeeded !== undefined ? Math.max(existing.minH || 6, hNeeded) : existing.h;
+                                        let newW = existing.w;
+                                        if (pixelWidth !== undefined && bp === activeBreakpoint) {
+                                            const bpColCount = COLS[bp as keyof typeof COLS];
+                                            const bpColWidth = (containerWidth - 32 - (bpColCount - 1) * 14) / bpColCount;
+                                            const wNeeded = Math.ceil((pixelWidth + 14) / (bpColWidth + 14));
+                                            newW = Math.min(bpColCount, Math.max(existing.minW || 2, wNeeded));
+                                        }
+                                        layoutArr[itemIdx] = { ...existing, h: newH, w: newW };
+                                    }
+                                    currentLayouts[bp] = layoutArr;
+                                });
+                                setLayouts(currentLayouts);
+                                saveLayouts(currentLayouts);
+                            }}
                         />
                     </div>
                 ))}
@@ -499,8 +570,10 @@ export const BoardView: React.FC = () => {
                 onNoteCreated={() => {
                     setInternalRefresh(prev => prev + 1);
                     setCreateNoteCategoryId(undefined);
+                    setCreateNoteCategoryType(undefined);
                 }}
                 categoryId={createNoteCategoryId}
+                categoryType={createNoteCategoryType}
             />
         </div>
     );

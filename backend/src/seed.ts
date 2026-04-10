@@ -55,7 +55,6 @@ async function main() {
             contentType: "text",
             categoryId: swords.id,
             priority: 5,
-            isPinned: false,
             attachments: []
         }
     });

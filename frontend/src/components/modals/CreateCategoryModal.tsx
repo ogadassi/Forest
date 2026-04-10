@@ -6,7 +6,7 @@ interface CreateCategoryModalProps {
     isOpen: boolean;
     onClose: () => void;
     onCategoryCreated: () => void;
-    defaultType?: 'notes' | 'checklist';
+    defaultType?: 'notes' | 'checklist' | 'timer' | 'music';
 }
 
 const PRESET_COLORS = [

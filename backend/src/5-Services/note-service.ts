@@ -1,5 +1,6 @@
 import dal from "../2-utils/dal";
 import { NoteModel } from "../3-Models/note-model";
+import { Prisma } from "@prisma/client";
 import { ResourceNotFoundError } from "../3-Models/client-errors";
 
 class NoteService {
@@ -13,7 +14,7 @@ class NoteService {
             ]
         });
 
-        return notes.map(note => new NoteModel(note as any));
+        return notes.map(note => new NoteModel(note));
     }
 
     public async getNoteById(id: number): Promise<NoteModel> {
@@ -23,34 +24,54 @@ class NoteService {
         });
         if (!note) throw new ResourceNotFoundError(id);
 
-        return new NoteModel(note as any);
+        return new NoteModel(note);
     }
 
     public async addNote(note: NoteModel): Promise<NoteModel> {
         note.validateInsert();
 
-        // Strip out any prototype methods or undefined properties before passing to Prisma
-        const { id, createdAt, updatedAt, isPinned, category, ...plainNote } = note as any;
+        const createData: Prisma.NoteUncheckedCreateInput = {
+            title: note.title,
+            content: note.content ?? Prisma.JsonNull,
+            contentType: note.contentType,
+            categoryId: note.categoryId,
+            priority: note.priority,
+            isCompleted: note.isCompleted,
+            attachments: note.attachments ?? [],
+            remindAt: note.remindAt,
+            order: note.order,
+            color: note.color
+        };
 
         const addedNote = await dal.note.create({
-            data: plainNote as any
+            data: createData
         });
 
-        return new NoteModel(addedNote as any);
+        return new NoteModel(addedNote);
     }
 
     public async updateNote(note: NoteModel): Promise<NoteModel> {
         note.validateUpdate();
 
-        // Strip out any prototype methods or undefined properties before passing to Prisma
-        const { id, createdAt, updatedAt, isPinned, category, ...plainNote } = note as any;
+        const updateData: Prisma.NoteUncheckedUpdateInput = {
+            title: note.title,
+            content: note.content ?? Prisma.JsonNull,
+            contentType: note.contentType,
+            categoryId: note.categoryId,
+            priority: note.priority,
+            isCompleted: note.isCompleted,
+            attachments: note.attachments,
+            remindAt: note.remindAt,
+            order: note.order,
+            color: note.color
+        };
 
         const updatedNote = await dal.note.update({
             where: { id: note.id },
-            data: plainNote as any
+            data: updateData
         });
 
-        return new NoteModel(updatedNote as any);
+        return new NoteModel(updatedNote);
     }
 
     public async deleteNote(id: number): Promise<void> {
