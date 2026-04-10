@@ -63,16 +63,17 @@ export const CategoryHeader: React.FC<CategoryHeaderProps> = ({
         >
             {!isFullscreenView && !isVeryCompact && (
                 <div
-                    className="category-drag-handle panel-drag-handle absolute left-1.5 lg:left-2 z-20 opacity-0 group-hover/panel:opacity-60 transition-opacity cursor-grab active:cursor-grabbing flex items-center justify-center"
-                    style={{ color }}
-                    title="Drag to move"
+                    className="absolute top-0 left-0 w-14 h-full z-20 group/drag peer/drag cursor-grab active:cursor-grabbing flex items-center justify-start px-1.5 lg:px-2"
+                    title="Drag to move category"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <span className="material-icons-round text-[20px]">drag_indicator</span>
+                    <div className="category-drag-handle panel-drag-handle opacity-0 group-hover/drag:opacity-60 transition-opacity flex items-center justify-center p-1 rounded hover:bg-white/5 pointer-events-auto" style={{ color }}>
+                        <span className="material-icons-round text-[20px] pointer-events-none">drag_indicator</span>
+                    </div>
                 </div>
             )}
             <div
-                className={`non-draggable flex-1 flex items-center gap-1.5 min-w-0 transition-all duration-300 ${!isFullscreenView && !isVeryCompact ? 'group-hover/panel:pl-[22px]' : ''}`}
+                className={`non-draggable flex-1 flex items-center gap-1.5 min-w-0 transition-[padding] duration-300 ${!isFullscreenView && !isVeryCompact ? 'peer-hover/drag:pl-[24px]' : ''}`}
                 title={isFullscreenView ? '' : 'Click to open fullscreen'}
             >
                 <div className={`${isCompact ? 'w-6 h-6' : 'w-8 h-8'} relative shrink-0 transition-all`}>

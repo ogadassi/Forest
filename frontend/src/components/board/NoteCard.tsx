@@ -1,16 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { NoteModel } from '../../models/NoteModel';
 import { TimerNote } from './TimerNote';
 
 interface NoteCardProps {
     note: NoteModel;
     onClick: () => void;
-    onDelete?: () => void;
+    onDelete?: () => void | Promise<void>;
     hasLeftHandle?: boolean;
     onUpdate?: (updates: Partial<NoteModel>) => void;
 }
 
 export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick, onDelete, hasLeftHandle, onUpdate }) => {
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const handleDelete = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!onDelete) return;
+        setIsDeleting(true);
+        try {
+            await onDelete();
+            // We intentionally do NOT set isDeleting to false here!
+            // If deletion succeeds, this component will be unmounted.
+            // Leaving it true keeps the spinner active during the exit animation.
+        } catch (err) {
+            console.error(err);
+            setIsDeleting(false);
+        }
+    };
+
     function getDir(text: string): 'rtl' | 'ltr' {
         return /[\u0590-\u05FF\u0600-\u06FF]/.test(text) ? 'rtl' : 'ltr';
     }
@@ -69,13 +86,32 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick, onDelete, has
             >
                 {/* Delete overlay button */}
                 <button
-                    onClick={(e) => { e.stopPropagation(); onDelete?.(); }}
-                    className="absolute top-2 right-2 z-20 w-6 h-6 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 bg-red-500/20 hover:bg-red-500/40 text-red-400 hover:text-red-300 transition-all"
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="absolute top-2 right-2 z-20 w-6 h-6 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 bg-red-500/20 hover:bg-red-500/40 text-red-400 hover:text-red-300 transition-all disabled:opacity-100"
                     title="Delete timer note"
                 >
-                    <span className="material-icons-round text-sm">close</span>
+                    {isDeleting ? (
+                        <span className="material-icons-round text-sm animate-spin">sync</span>
+                    ) : (
+                        <span className="material-icons-round text-sm">close</span>
+                    )}
                 </button>
-                <div className="flex-1 p-0 flex flex-col items-center justify-center overflow-hidden">
+                {/* Drag Handle Corner */}
+                {hasLeftHandle && (
+                    <div
+                        className="absolute top-0 left-0 w-14 h-14 z-40 group/drag peer/drag cursor-grab active:cursor-grabbing flex items-start justify-start p-2"
+                        title="Drag to move"
+                        onClick={e => e.stopPropagation()}
+                        onPointerDown={e => e.stopPropagation()}
+                    >
+                        <div className="note-drag-handle opacity-0 group-hover/drag:opacity-60 transition-opacity flex items-center justify-center p-1 rounded-md hover:bg-white/5 pointer-events-auto">
+                            <span className="material-icons-round text-[20px] text-slate-400 pointer-events-none">drag_indicator</span>
+                        </div>
+                    </div>
+                )}
+
+                <div className={`flex-1 p-0 flex flex-col items-center justify-center overflow-hidden transition-[padding] duration-200 ${hasLeftHandle ? 'peer-hover/drag:pl-6' : ''}`}>
                     <TimerNote
                         note={note}
                         color={note.color || 'var(--color-primary)'}
@@ -104,11 +140,16 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick, onDelete, has
         >
             {/* Delete Button */}
             <button
-                onClick={(e) => { e.stopPropagation(); onDelete?.(); }}
-                className="absolute top-2 right-2 z-30 w-7 h-7 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 bg-red-500/20 hover:bg-red-500/40 text-red-400 hover:text-red-300 transition-all duration-200"
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="absolute top-2 right-2 z-30 w-7 h-7 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 bg-red-500/20 hover:bg-red-500/40 text-red-400 hover:text-red-300 transition-all duration-200 disabled:opacity-100"
                 title="Delete note"
             >
-                <span className="material-icons-round text-[16px]">delete</span>
+                {isDeleting ? (
+                    <span className="material-icons-round text-[16px] animate-spin">sync</span>
+                ) : (
+                    <span className="material-icons-round text-[16px]">delete</span>
+                )}
             </button>
 
             {/* Base Tint Wrapper */}
@@ -130,12 +171,28 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick, onDelete, has
                 }}
             />
 
+
+
             {/* Content Layer */}
             <div className="relative z-10 flex-1 flex flex-col h-full">
-                <div className="px-5 pt-5 flex-1 flex flex-col overflow-hidden">
+                <div className="px-5 pt-5 flex-1 flex flex-col overflow-hidden relative">
+                    {/* Drag Handle Corner */}
+                    {hasLeftHandle && (
+                        <div
+                            className="absolute top-0 left-0 w-14 h-14 z-[90] group/drag peer/drag cursor-grab active:cursor-grabbing flex items-start justify-start p-2"
+                            title="Drag to move"
+                            onClick={e => e.stopPropagation()}
+                            onPointerDown={e => e.stopPropagation()}
+                        >
+                            <div className="note-drag-handle opacity-0 group-hover/drag:opacity-60 transition-opacity flex items-center justify-center p-1 rounded-md hover:bg-white/5 pointer-events-auto">
+                                <span className="material-icons-round text-[20px] text-slate-400 pointer-events-none">drag_indicator</span>
+                            </div>
+                        </div>
+                    )}
+
                     {note.title?.trim() && (
                         <>
-                            <div className={`flex items-start justify-between gap-3 mb-3 transition-[padding] duration-200 ${hasLeftHandle ? 'group-hover:pl-6' : ''}`}>
+                            <div className={`flex items-start justify-between gap-3 mb-3 transition-[padding] duration-200 ${hasLeftHandle ? 'peer-hover/drag:pl-6' : ''}`}>
                                 <h3 dir={getDir(note.title)} className="note-title font-bold text-[15px] sm:text-base text-slate-100 leading-tight line-clamp-2 flex-1 tracking-tight drop-shadow-sm">
                                     {note.title}
                                 </h3>
@@ -157,7 +214,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick, onDelete, has
 
                     {hasContent ? (
                         <div
-                            className="flex-1 min-h-[40px] overflow-hidden relative"
+                            className={`flex-1 min-h-[40px] overflow-hidden relative transition-[padding] duration-200 ${(!note.title?.trim() && hasLeftHandle) ? 'peer-hover/drag:pl-6' : ''}`}
                             style={{
                                 maskImage: 'linear-gradient(to bottom, black calc(100% - 24px), transparent 100%)',
                                 WebkitMaskImage: 'linear-gradient(to bottom, black calc(100% - 24px), transparent 100%)'

@@ -70,14 +70,6 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
                     return (
                         <div key={note.id} data-grid={dataGrid} className="relative group">
                             <div
-                                className="note-drag-handle absolute top-1.5 left-1.5 z-20 opacity-0 group-hover:opacity-60 transition-opacity cursor-grab active:cursor-grabbing flex items-center justify-center"
-                                title="Drag to move"
-                                onClick={e => e.stopPropagation()}
-                                onPointerDown={e => e.stopPropagation()}
-                            >
-                                <span className="material-icons-round text-sm text-slate-400">drag_indicator</span>
-                            </div>
-                            <div
                                 className="h-full cursor-pointer"
                                 onClick={(e) => {
                                     e.stopPropagation();

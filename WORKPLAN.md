@@ -40,6 +40,8 @@ scope and a done state.
 **Note card (dashboard view)**
 - [x] Title/content separator — gradient-fade divider on card; tinted with note colour
 - [x] Card colour intensity — card background confirmed richer than modal (source of truth)
+- [x] Drag handle isolation — handle no longer visibly triggers when hovering the entire card, now relies on a localized corner-hover `group/drag` configuration for cleaner view.
+- [x] Delete feedback — added spinning state replacing the trash icon while awaiting API deletion for snappier UI response.
 - [x] No-title cards — title block + divider hidden when `note.title` is empty; content shifts up
 - [x] Empty cards — notes with no title and no content show an "Empty note" ghost label so they're always findable and clickable
 
