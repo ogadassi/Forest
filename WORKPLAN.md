@@ -250,7 +250,87 @@ if (category.type === 'timer') {
 
 ---
 
-## Phase 9 — Future Widget Roadmap
+## Phase 9 — Right Sidebar Removal ✅
+*Scope: eliminate the right sidebar entirely and move its content into the left sidebar.*
+
+The `SystemStats` right panel (network latency, database counts, note distribution) takes up valuable horizontal space. All of its content should be accessible from a popover/modal triggered by a button in the left sidebar footer — next to the existing Settings and Profile buttons.
+
+### Layout changes
+- [x] **Add "System Overview" button to left sidebar footer** (`Sidebar.tsx`) — use the `analytics` icon; placed between Settings and the user profile row
+- [x] **Create `SystemStatsPopover` component** — a popover or slide-out panel that renders the same stats cards (Network, Database, Distribution) currently in `SystemStats.tsx`; triggered by the new sidebar button
+- [x] **Remove right sidebar from `MainLayout.tsx`** — delete the right sidebar `<div>` wrapper, `SystemStats` import, and all `rightCollapsed` / `RIGHT_*` state and localStorage logic
+- [x] **Delete or repurpose `SystemStats.tsx`** — extract reusable stat cards into the new popover; remove the old collapsed/expanded strip UI
+- [x] **Reclaim horizontal space** — main content area should now stretch edge-to-edge between left sidebar and window boundary
+- [x] **Verify responsive behaviour** — ensure the layout still works at all breakpoints without the right panel
+
+---
+
+## Phase 10 — Authentication
+*Scope: user registration, login, session management, and profile UI.*
+
+The left sidebar already has a hardcoded "Admin User / Pro Plan" profile button (`Sidebar.tsx` lines 109-119). This phase replaces that static stub with real authentication.
+
+### Backend
+- [ ] **User model** — add `User` table to Prisma schema (`id`, `email`, `displayName`, `passwordHash`, `avatarUrl`, `plan`, `createdAt`, `updatedAt`)
+- [ ] **Auth service** (`AuthService.ts`) — registration (bcrypt hash), login (credential verification), token generation (JWT access + refresh tokens)
+- [ ] **Auth controller** (`AuthController.ts`) — `POST /auth/register`, `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout`
+- [ ] **Auth middleware** (`auth-middleware.ts`) — JWT verification middleware; attach `req.user` to all protected routes
+- [ ] **Protect existing routes** — add auth middleware to all category and note endpoints; scope queries to the authenticated user (`WHERE userId = ?`)
+- [ ] **User-scoped data** — add `userId` foreign key to `Category` and `Note` models; migrate existing data
+
+### Frontend
+- [ ] **Auth context** (`AuthContext.tsx`) — stores JWT, user info, `login()` / `register()` / `logout()` methods; persists tokens in `localStorage` or `httpOnly` cookies
+- [ ] **Login page** (`/login`) — email + password form, error handling, redirect to `/board` on success
+- [ ] **Registration page** (`/register`) — email + password + display name, validation, auto-login on success
+- [ ] **Protected routes** — wrap `MainLayout` in an auth guard; redirect unauthenticated users to `/login`
+- [ ] **Profile button wiring** (`Sidebar.tsx`) — replace hardcoded "Admin User" with real user data from auth context; clicking opens a profile dropdown with "My Account" and "Log Out"
+- [ ] **Profile page / modal** — edit display name, avatar, change password
+- [ ] **Token refresh** — auto-refresh expired access tokens using the refresh token; logout on refresh failure
+
+---
+
+## Phase 11 — Security Hardening & Pen Testing
+*Scope: audit and harden the full stack against common web vulnerabilities.*
+
+### Automated security audit
+- [ ] **Dependency audit** — run `npm audit` on both `frontend/` and `backend/`; fix all high/critical vulnerabilities
+- [ ] **Static analysis** — add ESLint security plugins (`eslint-plugin-security`, `eslint-plugin-no-unsanitized`) and fix findings
+- [ ] **Secret scanning** — verify no API keys, tokens, or credentials are committed; add `.env` to `.gitignore` if not already
+
+### Backend hardening
+- [ ] **Rate limiting** — add `express-rate-limit` to auth endpoints (login, register) and API endpoints
+- [ ] **CORS policy audit** — verify CORS origin whitelist is explicit (no wildcard `*` in production)
+- [ ] **Helmet.js** — add `helmet` middleware for HTTP security headers (CSP, HSTS, X-Frame-Options, etc.)
+- [ ] **Input validation audit** — verify all endpoints use Zod schemas; no raw `req.body` property access without validation
+- [ ] **SQL injection** — confirm Prisma parameterized queries are used everywhere; no raw SQL string concatenation
+- [ ] **Auth token security** — short-lived access tokens (15 min), `httpOnly` / `Secure` / `SameSite` cookie flags for refresh tokens
+- [ ] **Error handling** — ensure stack traces and internal errors are never leaked to the client in production
+- [ ] **File upload validation** — if audio/image uploads exist, validate MIME types, enforce size limits, sanitize filenames
+
+### Frontend hardening
+- [ ] **XSS audit** — verify no `dangerouslySetInnerHTML` without sanitisation; audit TipTap editor output rendering
+- [ ] **CSRF protection** — if using cookies for auth, implement CSRF tokens
+- [ ] **Content Security Policy** — configure CSP headers to prevent inline script injection
+- [ ] **Sensitive data in localStorage** — audit what is stored; prefer `httpOnly` cookies for tokens
+
+### Penetration testing
+- [ ] **OWASP Top 10 manual check** — test each category against the running app:
+  - [ ] A01: Broken Access Control — try accessing other users' notes/categories without auth
+  - [ ] A02: Cryptographic Failures — verify passwords are hashed (bcrypt), tokens are signed (JWT RS256 or HS256 with strong secret)
+  - [ ] A03: Injection — attempt SQL injection, NoSQL injection, command injection on all inputs
+  - [ ] A04: Insecure Design — verify business logic (can a user delete another user's data?)
+  - [ ] A05: Security Misconfiguration — check default credentials, open endpoints, debug modes
+  - [ ] A06: Vulnerable Components — verify `npm audit` findings are resolved
+  - [ ] A07: Auth Failures — test brute-force login, session fixation, token reuse after logout
+  - [ ] A08: Data Integrity — verify data cannot be tampered with in transit (HTTPS)
+  - [ ] A09: Logging & Monitoring — verify auth failures and suspicious activity are logged
+  - [ ] A10: SSRF — if any URL-fetching features exist (e.g. link previews), test for SSRF
+- [ ] **Automated scanner** — run OWASP ZAP or similar against the local dev server and triage findings
+- [ ] **Report & remediate** — document all findings with severity ratings; fix critical/high before shipping
+
+---
+
+## Phase 12 — Future Widget Roadmap
 *These are not scheduled yet — captured here so they don't get lost.*
 
 ### Interactive Utilities

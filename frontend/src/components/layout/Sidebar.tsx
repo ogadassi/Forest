@@ -9,6 +9,8 @@ interface SidebarProps {
     onSelectCategory: (id: number | null) => void;
     iconOnly: boolean;
     onToggleCollapse: () => void;
+    isStatsOpen: boolean;
+    onStatsToggle: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -17,6 +19,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     onSelectCategory,
     iconOnly,
     onToggleCollapse,
+    isStatsOpen,
+    onStatsToggle,
 }) => {
     const { sidebarClickMode } = useSettings();
     const navigate = useNavigate();
@@ -106,6 +110,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {/* ── FOOTER ── */}
             <div className={`shrink-0 border-t border-border-dark/30 py-3 px-2 flex flex-col gap-0.5`}>
                 <NavItem icon="settings" label="Settings" active={false} iconOnly={iconOnly} onClick={() => navigate('/settings')} />
+                <NavItem icon="analytics" label="System Overview" active={isStatsOpen} iconOnly={iconOnly} onClick={onStatsToggle} />
                 <div className={`flex items-center gap-3 rounded-xl px-2 py-2 mt-1 hover:bg-card-dark transition-all cursor-pointer ${iconOnly ? 'justify-center' : ''}`}>
                     <div className="w-7 h-7 rounded-full border border-border-dark bg-slate-700 flex items-center justify-center shrink-0">
                         <span className="material-icons-round text-sm text-slate-400">person</span>

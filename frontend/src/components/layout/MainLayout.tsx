@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from './Sidebar';
-import { SystemStats } from './SystemStats';
+import { SystemStatsPopover } from './SystemStatsPopover';
 import { Outlet } from 'react-router-dom';
 import { CreateCategoryModal } from '../modals/CreateCategoryModal';
 import { EditNoteModal } from '../modals/EditNoteModal';
@@ -15,9 +15,6 @@ type WidgetType = 'notes' | 'checklist' | 'timer' | 'music';
 
 const LEFT_DEFAULT = 256;
 const LEFT_COLLAPSED = 60;
-
-const RIGHT_COLLAPSED_WIDTH = 36;
-const RIGHT_DEFAULT = 320;
 
 export const MainLayout: React.FC = () => {
     const [isCreateCategoryOpen, setIsCreateCategoryOpen] = useState(false);
@@ -36,6 +33,7 @@ export const MainLayout: React.FC = () => {
     const [selectedNote, setSelectedNote] = useState<NoteModel | null>(null);
     const [isEditNoteOpen, setIsEditNoteOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isStatsOpen, setIsStatsOpen] = useState(false);
 
     const [categories, setCategories] = useState<CategoryModel[]>([]);
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
@@ -46,20 +44,10 @@ export const MainLayout: React.FC = () => {
         return saved ? JSON.parse(saved) : false;
     });
 
-    // Right sidebar (Persisted in localStorage)
-    const [rightCollapsed, setRightCollapsed] = useState(() => {
-        const saved = localStorage.getItem('forest-sidebar-right-collapsed');
-        return saved ? JSON.parse(saved) : false;
-    });
-
     // Update localStorage whenever collapse state changes
     useEffect(() => {
         localStorage.setItem('forest-sidebar-left-collapsed', JSON.stringify(leftCollapsed));
     }, [leftCollapsed]);
-
-    useEffect(() => {
-        localStorage.setItem('forest-sidebar-right-collapsed', JSON.stringify(rightCollapsed));
-    }, [rightCollapsed]);
 
     // Auto icon-only when left is narrow
     const leftIconOnly = leftCollapsed;
@@ -116,7 +104,6 @@ export const MainLayout: React.FC = () => {
     const handleLeftToggle = () => setLeftCollapsed((v: boolean) => !v);
 
     const leftActualWidth = leftCollapsed ? LEFT_COLLAPSED : LEFT_DEFAULT;
-    const rightActualWidth = rightCollapsed ? RIGHT_COLLAPSED_WIDTH : RIGHT_DEFAULT;
 
     const [isMounted, setIsMounted] = useState(false);
     useEffect(() => setIsMounted(true), []);
@@ -138,6 +125,14 @@ export const MainLayout: React.FC = () => {
                     onSelectCategory={setSelectedCategoryId}
                     iconOnly={leftIconOnly}
                     onToggleCollapse={handleLeftToggle}
+                    isStatsOpen={isStatsOpen}
+                    onStatsToggle={() => setIsStatsOpen(v => !v)}
+                />
+                <SystemStatsPopover
+                    isOpen={isStatsOpen}
+                    onClose={() => setIsStatsOpen(false)}
+                    refreshKey={refreshKey}
+                    anchorIconOnly={leftIconOnly}
                 />
             </div>
 
@@ -210,17 +205,7 @@ export const MainLayout: React.FC = () => {
                 </div>
             </main>
 
-            {/* ── RIGHT SIDEBAR ── */}
-            <div
-                className="relative flex-shrink-0"
-                style={{ width: rightActualWidth, transition: isMounted ? 'width 0.22s cubic-bezier(0.4,0,0.2,1)' : 'none' }}
-            >
-                <SystemStats
-                    refreshKey={refreshKey}
-                    collapsed={rightCollapsed}
-                    onToggleCollapse={() => setRightCollapsed((v: boolean) => !v)}
-                />
-            </div>
+
 
             {/* CreateNoteModal moved to BoardView */}
 
