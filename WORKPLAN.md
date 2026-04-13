@@ -54,73 +54,12 @@ scope and a done state.
 
 ---
 
-## Phase 2 — Checklist Note Widget
-*Scope: the checklist-specific rendering inside a card and the editor.*
+## Phase 2 — Dashboard Grid & Layout Foundation
+*Scope: fix the grid math, snap behaviour, layout persistence, and responsiveness so every widget type sits perfectly on the board before we touch their innards.*
 
-- [ ] Card preview: checked/unchecked state rendering, bullet style
-- [ ] Inline toggle persists to DB (optimistic update chain)
-- [ ] `EditNoteModal` checklist tab: add / remove / reorder items
-- [ ] `CreateNoteModal` checklist creation UX
-- [ ] **Periodic reset** — gear icon in the category widget top bar and in creation flow; settings: reset period (daily / weekly / monthly / custom), which items to reset (all unchecked vs. all vs. user-picked set), and trigger mode (automatic at period start OR prompted on first open after period passes)
+### Grid math & snap system
 
----
-
-## Phase 3 — Timer Note Widget
-*Scope: the full-card timer display (enhance existing timer note type).*
-
-- [ ] Timer card sizing (min/max in grid)
-- [ ] Start / stop / reset controls
-- [ ] Color tinting interaction with timer UI
-- [ ] Edge cases: elapsed persistence, countdown vs stopwatch
-- [ ] **Enhance existing timer** — add Pomodoro mode (configurable work/break intervals), stopwatch mode (count-up), and a history panel showing past sessions inside the note
-
----
-
-## Phase 4 — Song Note Widget
-*Scope: multi-section lyric editor and card preview.*
-
-- [ ] Card preview: section labels, lyric truncation
-- [ ] `SongNoteContent` — immersive lyric editor UX
-- [ ] Section management (add, remove, reorder, rename, vocalist colour)
-- [ ] **Per-line / per-word vocalist colouring** — each line or word can be tagged to a vocalist; each vocalist gets a colour; the colouring is visible in both the editor and the card preview
-- [ ] `EditNoteModal` song tab: save / discard
-- [ ] `CreateNoteModal` song creation flow
-
----
-
-## Phase 5 — Demo Note Widget
-*Scope: audio attachment note. Visually identical to Song note.*
-
-- [ ] Card preview: waveform / attachment indicator
-- [ ] `DemoNoteContent` — playback UX
-- [ ] **Voice recording pin** — user can attach a voice recording and pin it to a specific line or word; pinned recordings appear as a static mic icon next to that line/word that plays on tap
-- [ ] `EditNoteModal` demo tab: replace / remove audio
-- [ ] `CreateNoteModal` demo creation flow
-
----
-
-## Phase 6 — Category Panel (container widget)
-*Scope: the panels themselves, independent of note type.*
-
-- [ ] `CategoryHeader`: rename, icon picker, colour picker, delete
-- [ ] Panel scroll behaviour, empty state
-- [/] `ChecklistList`: category-level checklist widget — mostly done; **corner snap + horizontal snap still missing**
-- [ ] Note ordering / drag-to-reorder within a panel
-- [ ] "Add note" button placement and modal hand-off
-- [ ] Fullscreen (single-category) vs grid view transitions
-- [ ] **Dual-layout swap** — when entering / exiting fullscreen, switch the active note layout from `dashboardLayout` to `fullscreenLayout` (requires Phase 7 schema first)
-
-> [!IMPORTANT]
-> Implement the Phase 7 schema change **before** the dual-layout swap item — the panel needs two layout maps to exist before it can swap between them.
-
-### Content-Fit Snap + Vertical Centering (all widget types)
-
-**Philosophy** (already applied to checklist, needs applying everywhere else):
-- **Auto-fit snap**: double-clicking a resize handle snaps the panel/card to the minimum grid size that fits all content without scrolling and without cutting anything off.
-- **Vertical centering**: content is vertically centered (`my-auto` inside a `flex flex-col` parent) so any leftover space from grid quantization is split equally top and bottom — no "chin".
-- Both together ensure every widget looks intentional at every grid size.
-
-#### Grid math (how pixels become grid units)
+**Grid math (how pixels become grid units)**
 
 ```
 rowHeight = 34px   rowGap = 14px
@@ -128,10 +67,16 @@ h_units = ceil( (pixelHeight + rowGap) / (rowHeight + rowGap) )
         = ceil( (pixelHeight + 14) / 48 )
 
 // NOTE: BoardView.tsx currently divides by 34 instead of 48 — this is a bug
-// that makes panels snap too tall. Must fix alongside the formula work below.
+// that makes panels snap too tall. Must fix first.
 ```
 
-#### Status table
+**Content-Fit Snap + Vertical Centering (all widget types)**
+
+Philosophy (already applied to checklist, needs applying everywhere else):
+- **Auto-fit snap**: double-clicking a resize handle snaps the panel/card to the minimum grid size that fits all content without scrolling and without cutting anything off.
+- **Vertical centering**: content is vertically centered (`my-auto` inside a `flex flex-col` parent) so any leftover space from grid quantization is split equally top and bottom — no "chin".
+
+**Snap status table**
 
 | Widget | Snap formula | Vertical centering | Status |
 |---|---|---|---|
@@ -141,9 +86,9 @@ h_units = ceil( (pixelHeight + rowGap) / (rowHeight + rowGap) )
 | **Individual NoteCard** | ❌ not implemented — no double-click snap at the card level | ❌ title + content top-pinned | ❌ |
 | **Empty panel state** | N/A | ✅ `flex items-center justify-center` | ✅ |
 
-#### Exact fixes required
+**Exact fixes required**
 
-**Fix 1 — Grid math bug (`BoardView.tsx` line 512)**
+Fix 1 — Grid math bug (`BoardView.tsx` line 512)
 ```ts
 // BROKEN (divides by rowHeight only, ignores gap):
 const hNeeded = Math.ceil((pixelHeight + 14) / 34);
@@ -151,42 +96,44 @@ const hNeeded = Math.ceil((pixelHeight + 14) / 34);
 const hNeeded = Math.ceil((pixelHeight + 14) / 48); // 34px row + 14px gap
 ```
 
-**Fix 2 — Timer panel snap formula (`CategoryPanel/index.tsx`)**
+Fix 2 — Timer panel snap formula (`CategoryPanel/index.tsx`)
 - Add class `timer-snap-root` to the root element of `TimerNote.tsx`
-- In the `handleDoubleClick` snap branch, add a timer-specific path:
-```ts
-if (category.type === 'timer') {
-    const timerEl = root.querySelector('.timer-snap-root') as HTMLElement;
-    const headerOff = (root.querySelector('.panel-header') as HTMLElement)?.offsetHeight ?? 60;
-    requiredPixelHeight = headerOff + (timerEl?.scrollHeight ?? 200) + 24;
-}
-```
+- In the `handleDoubleClick` snap branch, add a timer-specific path
 
-**Fix 3 — Note-grid panel snap formula (`CategoryPanel/index.tsx`)**
-- Verify `notes-grid-container` is the actual class on `CategoryGrid`'s root div (check `CategoryGrid.tsx`)
+Fix 3 — Note-grid panel snap formula audit
+- Verify `notes-grid-container` is the actual class on `CategoryGrid`'s root div
 - If the class is wrong or missing, add it explicitly
-- The formula is otherwise correct: `header.offsetHeight + notesGrid.offsetHeight + 24`
 
-**Fix 4 — Note-grid panel vertical centering (`CategoryGrid.tsx` / content wrapper)**
-- The grid of note cards should be wrapped in a `flex flex-col justify-center h-full` container so it centers vertically when there's extra space
+Fix 4 — Note-grid panel vertical centering (`CategoryGrid.tsx`)
+- Wrap the grid of note cards in a `flex flex-col justify-center h-full` container
 
-**Fix 5 — Per NoteCard snap (new — `CategoryGrid.tsx` + `NoteCard.tsx`)**
+Fix 5 — Per NoteCard snap (new — `CategoryGrid.tsx` + `NoteCard.tsx`)
 - Mirror the panel snap system at the inner grid level
-- Each NoteCard needs a double-click on its inner-grid resize handle to call an `onCardAutoResize(noteId, pixelHeight)` callback
-- `CategoryPanel/index.tsx` handles this by applying the snap to the inner `layouts` state (same pixel→grid math, but using the inner grid's `rowHeight`)
 - Measure: `titleEl.offsetHeight + divider(1px) + contentEl.scrollHeight + badges(if any) + padding`
 
-**Fix 6 — NoteCard vertical centering (`NoteCard.tsx`)**
-- The content layer (`relative z-10 flex-1 flex flex-col h-full`) already stretches full height
-- Change the inner `px-5 pt-5 flex-1 flex flex-col overflow-hidden` wrapper to use `justify-center` when the note has both title and content, so equal padding appears top and bottom
-- When the note has no title or no content, keep top-aligned
+Fix 6 — NoteCard vertical centering (`NoteCard.tsx`)
+- Use `justify-center` when the note has both title and content
+- Keep top-aligned when no title or no content
 
-**Fix 7 — Checklist corner snap + horizontal snap (`CategoryPanel/index.tsx`)**
-- Corner handle: must compute both `requiredPixelHeight` AND `requiredPixelWidth` simultaneously (currently the height branch exits early without checking `isCornerHandle` for width)
-- Horizontal (right/left) handle: text-width measurement already exists but the guard `isRightHandle || isLeftHandle` must be confirmed to match the actual CSS class names on the handles
+Fix 7 — Checklist corner snap + horizontal snap (`CategoryPanel/index.tsx`)
+- Corner handle: must compute both height AND width simultaneously
+- Horizontal handle: confirm guard matches actual CSS class names
 
-**Work items (ordered for implementation):**
-- [ ] Fix 1 — grid math bug in `BoardView.tsx` (foundational, fixes all snap accuracy)
+### Layout behaviour
+
+- [ ] **Free placement grid** — disable upward compaction so users can place categories anywhere (including leaving empty rows). Overlap still prevented; items just don't get pulled upward automatically. Apply to all grids (main dashboard + inner note grids).
+- [ ] Default placement for newly created categories
+- [ ] Resize handles: which directions feel right
+- [ ] **Dual-layout schema** — store two independent note-grid layouts per category: `dashboardLayout` and `fullscreenLayout`. Both saved separately and restored when switching views.
+- [ ] **Screen-size layout persistence** — key layouts by screen-size breakpoint (`< 768px` / `768–1440px` / `> 1440px`). Layouts for each breakpoint persist independently.
+- [ ] Layout persistence: localStorage schema, migration on category add/delete
+- [ ] Responsive breakpoints: check each of `lg / md / sm / xs / xxs`
+- [ ] Drag handle visibility and UX
+- [ ] `autoResize` callback — audit pixel → grid-unit conversion accuracy for all widget types
+
+### Snap work items (ordered)
+
+- [ ] Fix 1 — grid math bug in `BoardView.tsx` (foundational)
 - [ ] Fix 2 — timer panel snap formula
 - [ ] Fix 3 — note-grid panel snap formula audit
 - [ ] Fix 4 — note-grid panel vertical centering
@@ -196,28 +143,8 @@ if (category.type === 'timer') {
 
 ---
 
-## Phase 7 — Dashboard Grid (outer shell)
-*Scope: the board-level layout, snapping, and responsiveness.*
-
-- [x] Snap math verified (unit tests passing — 9/9)
-- [ ] Default placement for newly created categories
-- [ ] Resize handles: which directions feel right
-- [ ] **Dual-layout schema** — extend the layout persistence format to store two independent note-grid layouts per category: `dashboardLayout` (note positions when panel is a small dashboard tile) and `fullscreenLayout` (note positions when panel is fullscreened). Both should be saved separately and restored when switching views.
-- [ ] **Screen-size layout persistence** — key layouts by screen-size breakpoint (`< 768px` / `768–1440px` / `> 1440px`). localStorage is already device-scoped, so this covers "per device + per screen size" without a device ID. Layouts for each breakpoint persist independently.
-- [ ] **Free placement grid** — disable upward compaction so users can place categories anywhere on the visible grid (including leaving empty rows). Overlap is still prevented; items simply don't get pulled upward automatically. Apply to all grids in the app (main dashboard + inner note grids).
-- [ ] Layout persistence: localStorage schema, migration on category add/delete
-- [ ] Responsive breakpoints: check each of `lg / md / sm / xs / xxs`
-- [ ] Drag handle visibility and UX
-- [ ] `autoResize` callback — audit pixel → grid-unit conversion accuracy for all widget types (see Phase 6 content-fit snap table)
-
----
-
-## Phase 8 — Visual Polish (all dashboard elements)
-*Scope: make every visible element look intentional, refined, and consistent. No functional changes — pure UX/visual quality.*
-
-### Checklist widget *(mostly done by user)*
-- [/] Corner snap — widget corners should lock to grid corners cleanly
-- [/] Horizontal snap — widget should snap correctly on horizontal resize
+## Phase 3 — Visual Polish (all dashboard elements)
+*Scope: make every visible element look intentional, refined, and consistent. Pure UX/visual quality pass over everything that's already on screen.*
 
 ### Category panels
 - [ ] Panel border radius, shadow, and glass effect consistency
@@ -225,6 +152,7 @@ if (category.type === 'timer') {
 - [ ] Hover states on panel header icons (edit, delete, add)
 - [ ] Empty-state illustration / copy feels premium
 - [ ] Transition when entering / leaving fullscreen view is smooth
+- [ ] Panel scroll behaviour, empty state
 
 ### Note cards (all types)
 - [ ] Card shadow depth and hover lift feel premium
@@ -233,6 +161,10 @@ if (category.type === 'timer') {
 - [ ] Badge chips (Song, Demo, Checklist, Reminder) alignment and spacing
 - [ ] Delete button appearance and hover state consistency across all card types
 - [ ] Drag handle appears at the right time (hover) and disappears cleanly
+
+### Checklist widget
+- [/] Corner snap — widget corners should lock to grid corners cleanly
+- [/] Horizontal snap — widget should snap correctly on horizontal resize
 
 ### Modals (Create & Edit)
 - [ ] Opening animation (zoom + fade) timing feels snappy not laggy
@@ -247,6 +179,65 @@ if (category.type === 'timer') {
 - [ ] Widget resize handles are subtle until hovered
 - [ ] Drag placeholder / ghost styling matches actual widget style
 - [ ] No visual flicker on layout load or after drag-drop
+
+---
+
+## Phase 4 — Checklist Note Widget
+*Scope: the checklist-specific rendering inside a card and the editor.*
+
+- [ ] Card preview: checked/unchecked state rendering, bullet style
+- [ ] Inline toggle persists to DB (optimistic update chain)
+- [ ] `EditNoteModal` checklist tab: add / remove / reorder items
+- [ ] `CreateNoteModal` checklist creation UX
+- [ ] **Periodic reset** — gear icon in the category widget top bar and in creation flow; settings: reset period (daily / weekly / monthly / custom), which items to reset (all unchecked vs. all vs. user-picked set), and trigger mode (automatic at period start OR prompted on first open after period passes)
+
+---
+
+## Phase 5 — Timer Note Widget
+*Scope: the full-card timer display (enhance existing timer note type).*
+
+- [ ] Timer card sizing (min/max in grid)
+- [ ] Start / stop / reset controls
+- [ ] Color tinting interaction with timer UI
+- [ ] Edge cases: elapsed persistence, countdown vs stopwatch
+- [ ] **Enhance existing timer** — add Pomodoro mode (configurable work/break intervals), stopwatch mode (count-up), and a history panel showing past sessions inside the note
+
+---
+
+## Phase 6 — Song Note Widget
+*Scope: multi-section lyric editor and card preview.*
+
+- [ ] Card preview: section labels, lyric truncation
+- [ ] `SongNoteContent` — immersive lyric editor UX
+- [ ] Section management (add, remove, reorder, rename, vocalist colour)
+- [ ] **Per-line / per-word vocalist colouring** — each line or word can be tagged to a vocalist; each vocalist gets a colour; the colouring is visible in both the editor and the card preview
+- [ ] `EditNoteModal` song tab: save / discard
+- [ ] `CreateNoteModal` song creation flow
+
+---
+
+## Phase 7 — Demo Note Widget
+*Scope: audio attachment note. Visually identical to Song note.*
+
+- [ ] Card preview: waveform / attachment indicator
+- [ ] `DemoNoteContent` — playback UX
+- [ ] **Voice recording pin** — user can attach a voice recording and pin it to a specific line or word; pinned recordings appear as a static mic icon next to that line/word that plays on tap
+- [ ] `EditNoteModal` demo tab: replace / remove audio
+- [ ] `CreateNoteModal` demo creation flow
+
+---
+
+## Phase 8 — Category Panel Refinements
+*Scope: the panels themselves, independent of note type.*
+
+- [ ] `CategoryHeader`: rename, icon picker, colour picker, delete
+- [ ] Note ordering / drag-to-reorder within a panel
+- [ ] "Add note" button placement and modal hand-off
+- [ ] Fullscreen (single-category) vs grid view transitions
+- [ ] **Dual-layout swap** — when entering / exiting fullscreen, switch the active note layout from `dashboardLayout` to `fullscreenLayout` (requires Phase 2 schema first)
+
+> [!IMPORTANT]
+> The dual-layout swap requires the Phase 2 schema change to be implemented first — the panel needs two layout maps to exist before it can swap between them.
 
 ---
 
