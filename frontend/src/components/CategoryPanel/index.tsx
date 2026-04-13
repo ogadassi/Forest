@@ -83,6 +83,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
     const [layouts, setLayouts] = useState<Layouts>({});
     const containerRef = useRef<HTMLDivElement>(null);
     const [containerWidth, setContainerWidth] = useState(0);
+    const [containerHeight, setContainerHeight] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
     const [isResizing, setIsResizing] = useState(false);
 
@@ -110,8 +111,10 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         const el = containerRef.current;
         if (!el) return;
         setContainerWidth(el.offsetWidth);
+        setContainerHeight(el.offsetHeight);
         const ro = new ResizeObserver(entries => {
             setContainerWidth(entries[0].contentRect.width);
+            setContainerHeight(entries[0].contentRect.height);
         });
         ro.observe(el);
         return () => ro.disconnect();
@@ -156,7 +159,13 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
 
                 if (isBottomHandle || isCornerHandle) {
                     requiredPixelHeight = 0;
-                    if (category.type === 'checklist' || category.type === 'timer') {
+                    if (category.type === 'timer') {
+                        // Timer: measure the timer content element directly
+                        const timerEl = root.querySelector('.timer-snap-root') as HTMLElement;
+                        const headerOff = (root.querySelector('.panel-header') as HTMLElement)?.offsetHeight ?? 60;
+                        requiredPixelHeight = headerOff + (timerEl?.scrollHeight ?? 200) + 24;
+
+                    } else if (category.type === 'checklist') {
                         const itemsEl = checklistItemsRef.current;
                         const addBar = checklistAddBarRef.current;
 
@@ -294,6 +303,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                 notes={notes}
                                 layouts={layouts}
                                 containerWidth={containerWidth}
+                                containerHeight={containerHeight}
                                 isEditing={false}
                                 isDragging={isDragging}
                                 setIsDragging={setIsDragging}

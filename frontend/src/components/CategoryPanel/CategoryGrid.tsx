@@ -10,6 +10,7 @@ interface CategoryGridProps {
     notes: NoteModel[];
     layouts: any;
     containerWidth: number;
+    containerHeight: number;
     isEditing: boolean;
     isDragging: boolean;
     setIsDragging: (val: boolean) => void;
@@ -21,22 +22,61 @@ interface CategoryGridProps {
 }
 
 export const CategoryGrid: React.FC<CategoryGridProps> = ({
-    notes, layouts, containerWidth, isEditing, isDragging, setIsDragging, setIsResizing, handleLayoutChange, onNoteClick, onUpdateNoteOptimistic, onRefreshNotes
+    notes, layouts, containerWidth, containerHeight, isEditing, isDragging, setIsDragging, setIsResizing, handleLayoutChange, onNoteClick, onUpdateNoteOptimistic, onRefreshNotes
 }) => {
     const COL_WIDTH = 60;
     const MARGIN = 16;
     const UNIT = COL_WIDTH + MARGIN;
+    const ROW_HEIGHT = 60; // must match rowHeight prop below
     
     // Compute the maximum number of full columns that fit in the current container width
     const currentCols = Math.max(4, Math.floor((containerWidth + MARGIN) / UNIT));
+    
+    // Compute the maximum rows that fit in the available container height
+    const maxRows = Math.max(1, Math.floor((containerHeight + MARGIN) / (ROW_HEIGHT + MARGIN)));
     
     // Compute the exact grid pixel width needed for these columns
     // This perfectly restricts `react-grid-layout` from altering the unit width
     const exactGridWidth = currentCols * UNIT - MARGIN;
 
+    // --- Horizontal Centering ---
+    // For each row of notes, recompute x positions from scratch so notes are centered.
+    // We DON'T add to the stored x (which can drift) — instead we sort row items left-to-right
+    // by their original x, then lay them out freshly from the centered starting point.
+    const centeredLayouts = (() => {
+        const raw: any[] = (layouts.lg || []).map((item: any) => ({
+            ...item,
+            maxW: currentCols,
+            maxH: maxRows,
+        }));
+        if (raw.length === 0) return raw;
+
+        // Group by y row
+        const rowMap = new Map<number, typeof raw>();
+        raw.forEach(item => {
+            const row = rowMap.get(item.y) || [];
+            row.push(item);
+            rowMap.set(item.y, row);
+        });
+
+        const result: typeof raw = [];
+        rowMap.forEach((rowItems) => {
+            // Sort left-to-right by original x
+            const sorted = [...rowItems].sort((a, b) => a.x - b.x);
+            const totalW = sorted.reduce((sum: number, item: any) => sum + item.w, 0);
+            const leftover = currentCols - Math.min(totalW, currentCols);
+            let cursor = Math.floor(leftover / 2); // centered start
+            sorted.forEach(item => {
+                result.push({ ...item, x: cursor });
+                cursor += item.w;
+            });
+        });
+        return result;
+    })();
+
     return (
         <div 
-            className="h-full" 
+            className="h-full flex flex-col"
             onClickCapture={e => {
                 if ((e.target as HTMLElement).closest('.react-resizable-handle')) {
                     e.stopPropagation();
@@ -45,7 +85,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
         >
             <ResponsiveGridLayout
                 className="layout min-h-full pb-20 animate-fade-in notes-grid-container"
-                layouts={{ lg: layouts.lg || [] }}
+                layouts={{ lg: centeredLayouts }}
                 breakpoints={{ lg: 0 }}
                 cols={{ lg: currentCols }}
                 rowHeight={60}
@@ -65,8 +105,11 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
                 onResizeStop={() => setTimeout(() => setIsResizing(false), 50)}
             >
                 {notes.map(note => {
-                    const lgLayout = layouts.lg?.find((l: any) => l.i === String(note.id));
-                    const dataGrid = lgLayout ? { ...lgLayout } : { x: 0, y: 0, w: 4, h: 8 };
+                    // Use centeredLayouts so the adjusted x position is applied
+                    const centeredItem = centeredLayouts.find((l: any) => l.i === String(note.id));
+                    const dataGrid = centeredItem
+                        ? { ...centeredItem }
+                        : { x: 0, y: 0, w: 4, h: 8, maxW: currentCols, maxH: maxRows };
                     return (
                         <div key={note.id} data-grid={dataGrid} className="relative group">
                             <div

@@ -230,7 +230,7 @@ export const TimerNote: React.FC<TimerNoteProps> = ({ note, onUpdate, color }) =
     return (
         <div 
             ref={containerRef}
-            className="w-full h-full select-none" 
+            className="timer-snap-root w-full h-full select-none" 
             onClick={e => {
                 e.stopPropagation();
                 if (isEditingTime) handleSubmit();

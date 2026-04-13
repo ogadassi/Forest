@@ -90,11 +90,10 @@ Philosophy (already applied to checklist, needs applying everywhere else):
 
 Fix 1 — Grid math bug (`BoardView.tsx` line 512)
 ```ts
-// BROKEN (divides by rowHeight only, ignores gap):
+// VERIFIED CORRECT — outer grid uses rowHeight=20 + margin=14 = 34 divisor ✓
 const hNeeded = Math.ceil((pixelHeight + 14) / 34);
-// CORRECT:
-const hNeeded = Math.ceil((pixelHeight + 14) / 48); // 34px row + 14px gap
 ```
+> The workplan note about this being broken was incorrect. The formula is right for the outer dashboard grid. The real snap bugs are Fixes 2 and 8.
 
 Fix 2 — Timer panel snap formula (`CategoryPanel/index.tsx`)
 - Add class `timer-snap-root` to the root element of `TimerNote.tsx`
@@ -104,8 +103,9 @@ Fix 3 — Note-grid panel snap formula audit
 - Verify `notes-grid-container` is the actual class on `CategoryGrid`'s root div
 - If the class is wrong or missing, add it explicitly
 
-Fix 4 — Note-grid panel vertical centering (`CategoryGrid.tsx`)
-- Wrap the grid of note cards in a `flex flex-col justify-center h-full` container
+Fix 4 — Note-grid panel centering (`CategoryGrid.tsx`)
+- **Vertical**: Wrap the grid of note cards in a `flex flex-col justify-center h-full` container so it centers when there's extra vertical space
+- **Horizontal**: When the total note cards don't fill the available columns (e.g. one card in a wide panel), dynamically center the grid content or auto-calculate the card's `x` offset so it doesn't hug the left edge. This should be recalculated on panel resize and on note add/delete.
 
 Fix 5 — Per NoteCard snap (new — `CategoryGrid.tsx` + `NoteCard.tsx`)
 - Mirror the panel snap system at the inner grid level
@@ -131,15 +131,28 @@ Fix 7 — Checklist corner snap + horizontal snap (`CategoryPanel/index.tsx`)
 - [ ] Drag handle visibility and UX
 - [ ] `autoResize` callback — audit pixel → grid-unit conversion accuracy for all widget types
 
+Fix 8 — Inner note grid overflow clamping (`CategoryGrid.tsx`)
+- Note cards inside a category panel can currently snap to a size larger than the panel itself on **both axes**, causing overflow
+- The inner `react-grid-layout` must clamp `maxW` and `maxH` for each note card to the panel's available columns and rows
+- These limits should be recalculated dynamically when the parent panel is resized
+
 ### Snap work items (ordered)
 
-- [ ] Fix 1 — grid math bug in `BoardView.tsx` (foundational)
-- [ ] Fix 2 — timer panel snap formula
-- [ ] Fix 3 — note-grid panel snap formula audit
-- [ ] Fix 4 — note-grid panel vertical centering
+- [x] Fix 1 — grid math in `BoardView.tsx` (verified correct — rowHeight=20 + margin=14 = 34 ✓)
+- [x] Fix 2 — timer panel snap formula (now uses `.timer-snap-root` element, not checklist refs)
+- [x] Fix 3 — note-grid panel snap formula audit (`.notes-grid-container` class confirmed correct)
+- [/] Fix 4 — note-grid panel centering (vertical + horizontal) — **code written, needs visual verification**
 - [ ] Fix 5 — per NoteCard snap system
 - [ ] Fix 6 — NoteCard vertical centering
 - [ ] Fix 7 — checklist corner + horizontal snap
+- [x] Fix 8 — inner note grid overflow clamping (maxW + maxH now enforced per note card)
+
+> [!IMPORTANT]
+> **Start of next session — verify these before continuing:**
+> 1. **Horizontal centering**: Is the "Hate Your Guts" note in the TRIOT panel centered with equal left/right gap? (`CategoryGrid.tsx` — `centeredLayouts` algorithm)
+> 2. **Panel minH**: Can the TRIOT panel be resized smaller than ~170px tall? It shouldn't be. If localStorage is fighting the constraint, add a one-time migration to clear old `minH` values below 5.
+> 3. **Note overflow**: Can a note card inside a panel be resized larger than the panel on either axis? It shouldn't be able to.
+
 
 ---
 

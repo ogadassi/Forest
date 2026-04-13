@@ -57,7 +57,10 @@ function buildDefaultLayouts(categories: CategoryModel[], existing: Layouts): La
         const minW = getMinWForBreakpoint(bp);
 
         const newItems: GridItem[] = missing.map((cat, idx) => {
-            const minH = cat.type === 'timer' ? 6 : 7;
+            // minH: outer rows. Each outer row = rowHeight(20) + margin(14) = 34px.
+            // Panel needs: header(~48px) + padding(24px) + at least one note row(76px) = ~148px
+            // ceil(148/34) ≈ 5. Timer is taller by default.
+            const minH = cat.type === 'timer' ? 8 : 5;
             return {
                 i: String(cat.id),
                 x: ((validBase.length + idx) % itemsPerRow) * w,
@@ -169,7 +172,7 @@ export const BoardView: React.FC = () => {
                     const minW = getMinWForBreakpoint(bp);
                     reconciled[bp] = reconciled[bp].map(item => {
                         const cat = fetchedCategories.find(c => String(c.id) === item.i);
-                        const minH = cat?.type === 'timer' ? 6 : 7;
+                        const minH = cat?.type === 'timer' ? 8 : 5;
                         return { ...item, minW, minH, w: Math.max(minW, item.w!), h: Math.max(minH, item.h!) };
                     });
 
@@ -222,7 +225,14 @@ export const BoardView: React.FC = () => {
 
                 // Keep old items that aren't in the new array (because they are currently filtered out)
                 const missingItems = oldItems.filter(old => !newItems.some((n: any) => n.i === old.i));
-                merged[bp] = [...newItems, ...missingItems];
+                // Clamp h and w to their minimums before saving
+                const clampedNew = newItems.map((item: GridItem) => {
+                    const cat = categories.find(c => String(c.id) === item.i);
+                    const minH = cat?.type === 'timer' ? 8 : 5;
+                    const minW = getMinWForBreakpoint(bp);
+                    return { ...item, minH, minW, h: Math.max(minH, item.h!), w: Math.max(minW, item.w!) };
+                });
+                merged[bp] = [...clampedNew, ...missingItems];
             });
             
             if (JSON.stringify(merged) === JSON.stringify(prev)) {
@@ -325,12 +335,17 @@ export const BoardView: React.FC = () => {
         ? categories.filter(c => c.id === selectedCategoryId)
         : categories;
 
-    // Filter visible layout per breakpoint
+    // Filter visible layout per breakpoint and enforce current minH/minW on every render
     const visibleLayouts: Layouts = {};
     Object.keys(layouts).forEach(bp => {
-        visibleLayouts[bp] = layouts[bp].filter(l =>
-            displayedCategories.some(c => String(c.id) === l.i)
-        );
+        const minW = getMinWForBreakpoint(bp);
+        visibleLayouts[bp] = layouts[bp]
+            .filter(l => displayedCategories.some(c => String(c.id) === l.i))
+            .map(l => {
+                const cat = displayedCategories.find(c => String(c.id) === l.i);
+                const minH = cat?.type === 'timer' ? 8 : 5;
+                return { ...l, minW, minH, w: Math.max(minW, l.w!), h: Math.max(minH, l.h!) };
+            });
     });
 
     const notesByCategory = React.useMemo(() => {
