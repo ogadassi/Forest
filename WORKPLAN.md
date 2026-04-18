@@ -62,12 +62,15 @@ scope and a done state.
 **Grid math (how pixels become grid units)**
 
 ```
-rowHeight = 34px   rowGap = 14px
-h_units = ceil( (pixelHeight + rowGap) / (rowHeight + rowGap) )
-        = ceil( (pixelHeight + 14) / 48 )
+// OUTER dashboard grid (BoardView.tsx) — VERIFIED CORRECT ✓
+rowHeight = 20px   margin = 14px
+h_units = ceil( (pixelHeight + 14) / (20 + 14) )
+        = ceil( (pixelHeight + 14) / 34 )
 
-// NOTE: BoardView.tsx currently divides by 34 instead of 48 — this is a bug
-// that makes panels snap too tall. Must fix first.
+// INNER note grid (CategoryGrid.tsx)
+rowHeight = 60px   margin = 16px
+h_units = ceil( (pixelHeight + 16) / (60 + 16) )
+        = ceil( (pixelHeight + 16) / 76 )
 ```
 
 **Content-Fit Snap + Vertical Centering (all widget types)**
@@ -76,38 +79,29 @@ Philosophy (already applied to checklist, needs applying everywhere else):
 - **Auto-fit snap**: double-clicking a resize handle snaps the panel/card to the minimum grid size that fits all content without scrolling and without cutting anything off.
 - **Vertical centering**: content is vertically centered (`my-auto` inside a `flex flex-col` parent) so any leftover space from grid quantization is split equally top and bottom — no "chin".
 
-**Snap status table**
+**Snap status table** *(updated after Phase 2 session 1)*
 
 | Widget | Snap formula | Vertical centering | Status |
 |---|---|---|---|
-| **Checklist panel** | `header.offsetHeight + items.scrollHeight + addBar.offsetHeight + 14` | `my-auto` on `checklistItemsRef` div | ✅ *corner + horizontal snap still missing* |
-| **Timer panel** | ❌ broken — branches into the checklist path, reads `checklistItemsRef` (null for timers) → measures 0 | ✅ `flex items-center justify-center` already | ❌ |
-| **Note-grid panel** | partially works — `header.offsetHeight + notesGrid.offsetHeight + 24` — but `notes-grid-container` selector may not match actual DOM class | ❌ `CategoryGrid` content is top-aligned | ❌ |
-| **Individual NoteCard** | ❌ not implemented — no double-click snap at the card level | ❌ title + content top-pinned | ❌ |
+| **Checklist panel** | `header.offsetHeight + items.scrollHeight + addBar.offsetHeight + 14` | `my-auto` on `checklistItemsRef` div | ✅ *corner + horizontal snap still missing (Fix 7)* |
+| **Timer panel** | ✅ Fixed — now uses `.timer-snap-root` element height | ✅ `flex items-center justify-center` | ✅ snap fixed, centering was already ok |
+| **Note-grid panel** | ✅ Fixed — `notes-grid-container` class confirmed correct on `CategoryGrid` | ❌ centering code written, needs visual verification (Fix 4) | ⚠️ partial |
+| **Individual NoteCard** | ❌ not implemented — no double-click snap at the card level | ❌ title + content top-pinned | ❌ (Fix 5, Fix 6) |
 | **Empty panel state** | N/A | ✅ `flex items-center justify-center` | ✅ |
 
-**Exact fixes required**
+**Fix descriptions**
 
-Fix 1 — Grid math bug (`BoardView.tsx` line 512)
-```ts
-// VERIFIED CORRECT — outer grid uses rowHeight=20 + margin=14 = 34 divisor ✓
-const hNeeded = Math.ceil((pixelHeight + 14) / 34);
-```
-> The workplan note about this being broken was incorrect. The formula is right for the outer dashboard grid. The real snap bugs are Fixes 2 and 8.
+~~Fix 1~~ — Grid math in `BoardView.tsx` — **DONE ✓** (formula was always correct: `ceil((h+14)/34)`)
 
-Fix 2 — Timer panel snap formula (`CategoryPanel/index.tsx`)
-- Add class `timer-snap-root` to the root element of `TimerNote.tsx`
-- In the `handleDoubleClick` snap branch, add a timer-specific path
+~~Fix 2~~ — Timer panel snap formula — **DONE ✓** (`timer-snap-root` class added to `TimerNote.tsx`; `CategoryPanel/index.tsx` snap branch updated)
 
-Fix 3 — Note-grid panel snap formula audit
-- Verify `notes-grid-container` is the actual class on `CategoryGrid`'s root div
-- If the class is wrong or missing, add it explicitly
+~~Fix 3~~ — Note-grid panel snap selector — **DONE ✓** (`notes-grid-container` class confirmed correct on `CategoryGrid`)
 
-Fix 4 — Note-grid panel centering (`CategoryGrid.tsx`)
-- **Vertical**: Wrap the grid of note cards in a `flex flex-col justify-center h-full` container so it centers when there's extra vertical space
-- **Horizontal**: When the total note cards don't fill the available columns (e.g. one card in a wide panel), dynamically center the grid content or auto-calculate the card's `x` offset so it doesn't hug the left edge. This should be recalculated on panel resize and on note add/delete.
+Fix 4 — Note-grid panel centering (`CategoryGrid.tsx`) ⚠️ *code written, needs visual verification*
+- **Vertical**: wrap note grid in `flex flex-col justify-center h-full`
+- **Horizontal**: `centeredLayouts` algorithm recomputes `x` positions per row from scratch so notes center instead of pinning left; recalculated on panel resize and note add/delete
 
-Fix 5 — Per NoteCard snap (new — `CategoryGrid.tsx` + `NoteCard.tsx`)
+Fix 5 — Per NoteCard snap (`CategoryGrid.tsx` + `NoteCard.tsx`)
 - Mirror the panel snap system at the inner grid level
 - Measure: `titleEl.offsetHeight + divider(1px) + contentEl.scrollHeight + badges(if any) + padding`
 
@@ -176,8 +170,11 @@ Fix 8 — Inner note grid overflow clamping (`CategoryGrid.tsx`)
 - [ ] Drag handle appears at the right time (hover) and disappears cleanly
 
 ### Checklist widget
-- [/] Corner snap — widget corners should lock to grid corners cleanly
-- [/] Horizontal snap — widget should snap correctly on horizontal resize
+- [ ] Visual appearance and spacing of checked vs unchecked items
+- [ ] Add-item bar styling consistency
+
+> [!NOTE]
+> Checklist corner snap and horizontal snap are **Phase 2 Fix 7** items (snap/math concern, not visual). They are tracked there, not here.
 
 ### Modals (Create & Edit)
 - [ ] Opening animation (zoom + fade) timing feels snappy not laggy
