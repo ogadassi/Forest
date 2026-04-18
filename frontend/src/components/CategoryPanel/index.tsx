@@ -128,11 +128,64 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
     const INNER_MARGIN = 8;
     const CONTAINER_PAD = 12;
 
-    // True only while user is actively dragging or resizing a note card.
-    // handleLayoutChange fires for BOTH note resizes and panel resizes.
-    // We only want to store pxW/pxX during actual note interactions.
-    const isUserInteractingWithNoteRef = useRef(false);
     const containerWidthRef = useRef(0);
+    const stabilizeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const hasInitializedRef = useRef(false);
+
+    // True only while the user is actively dragging or resizing a note card.
+    const isUserInteractingWithNoteRef = useRef(false);
+    const [gridKey, setGridKey] = useState(0);
+
+    // After panel resize stops, remount the inner grid with pixel-corrected layout values.
+    const stabilize = useCallback((finalWidth: number) => {
+        const colW = (finalWidth - 2 * CONTAINER_PAD - (INNER_COLS - 1) * INNER_MARGIN) / INNER_COLS;
+        if (colW <= 0) return;
+
+        setLayouts(prev => {
+            const corrected: any = {};
+            Object.keys(prev).forEach(bp => {
+                if (!prev[bp]) return;
+                corrected[bp] = prev[bp].map((item: any) => {
+                    if (item.pxW == null) return item; // no stored pixels yet, leave as-is
+                    const displayW = Math.max(1, Math.min(INNER_COLS,
+                        Math.round((item.pxW + INNER_MARGIN) / (colW + INNER_MARGIN))
+                    ));
+                    const displayX = item.pxX != null
+                        ? Math.max(0, Math.min(INNER_COLS - displayW,
+                            Math.round(item.pxX / (colW + INNER_MARGIN))
+                          ))
+                        : item.x;
+                    return { ...item, w: displayW, x: displayX };
+                });
+            });
+            saveNoteLayouts(category.id!, corrected);
+            return corrected;
+        });
+        setGridKey(k => k + 1); // remount the grid with corrected layout
+    }, [category.id]);
+
+    useLayoutEffect(() => {
+        const el = containerRef.current;
+        if (!el) return;
+        const initialW = el.offsetWidth;
+        containerWidthRef.current = initialW;
+        setContainerWidth(initialW);
+        setContainerHeight(el.offsetHeight);
+        hasInitializedRef.current = true;
+
+        const ro = new ResizeObserver(entries => {
+            const w = entries[0].contentRect.width;
+            containerWidthRef.current = w;
+            setContainerWidth(w);
+            setContainerHeight(entries[0].contentRect.height);
+
+            // Debounce: stabilize layout 300ms after panel resize stops
+            if (stabilizeTimerRef.current) clearTimeout(stabilizeTimerRef.current);
+            stabilizeTimerRef.current = setTimeout(() => stabilize(w), 300);
+        });
+        ro.observe(el);
+        return () => { ro.disconnect(); if (stabilizeTimerRef.current) clearTimeout(stabilizeTimerRef.current); };
+    }, [stabilize]);
 
     const handleNoteInteractionChange = useCallback((active: boolean) => {
         isUserInteractingWithNoteRef.current = active;
@@ -151,23 +204,28 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                 const currentArr = allLayouts[bp] as GridItem[];
                 const unseen = (merged[bp] || []).filter(oldItem => !currentArr.find(a => a.i === oldItem.i));
 
-                let items: any[];
-                if (isNoteInteraction && colW > 0) {
-                    // User moved/resized a note — update pxW/pxX from the new column values
-                    items = currentArr.map((item: any) => ({
-                        ...item,
-                        pxW: item.w * colW + (item.w - 1) * INNER_MARGIN,
-                        pxX: item.x * colW + item.x * INNER_MARGIN,
-                    }));
-                } else {
-                    // Panel resize triggered this — keep existing pxW/pxX, ignore new column values
-                    items = currentArr.map((item: any) => {
-                        const existing = (merged[bp] || []).find((e: any) => e.i === item.i);
-                        return existing
-                            ? { ...item, pxW: existing.pxW, pxX: existing.pxX } // restore saved pixels
-                            : item; // new note, no pxW yet
-                    });
-                }
+                const items = currentArr.map((item: any) => {
+                    const existing = (merged[bp] || []).find((e: any) => e.i === item.i);
+                    if (isNoteInteraction && colW > 0) {
+                        // User moved/resized a note — store new pixel dimensions
+                        return {
+                            ...item,
+                            pxW: item.w * colW + (item.w - 1) * INNER_MARGIN,
+                            pxX: item.x * colW + item.x * INNER_MARGIN,
+                        };
+                    } else if (existing?.pxW != null) {
+                        // Panel resize fired this — keep stored pixel dims, don't overwrite
+                        return { ...item, pxW: existing.pxW, pxX: existing.pxX };
+                    } else if (colW > 0) {
+                        // First render / new note — initialize pxW from current position
+                        return {
+                            ...item,
+                            pxW: item.w * colW + (item.w - 1) * INNER_MARGIN,
+                            pxX: item.x * colW + item.x * INNER_MARGIN,
+                        };
+                    }
+                    return item;
+                });
                 merged[bp] = [...items, ...unseen];
             });
             saveNoteLayouts(category.id!, merged);
@@ -356,6 +414,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                 onUpdateNoteOptimistic={onUpdateNoteOptimistic}
                                 onRefreshNotes={onRefreshNotes}
                                 onNoteInteractionChange={handleNoteInteractionChange}
+                                gridKey={gridKey}
                             />
                         ) : null}
                     </div>

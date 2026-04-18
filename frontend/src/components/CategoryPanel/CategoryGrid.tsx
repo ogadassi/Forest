@@ -19,13 +19,14 @@ interface CategoryGridProps {
     onNoteClick: (note: NoteModel) => void;
     onUpdateNoteOptimistic?: (updatedNote: NoteModel, apiCall: () => Promise<void>) => void;
     onRefreshNotes?: () => void;
-    onNoteInteractionChange?: (active: boolean) => void; // true while user drags/resizes a note
+    onNoteInteractionChange?: (active: boolean) => void;
+    gridKey?: number;
 }
 
 export const CategoryGrid: React.FC<CategoryGridProps> = ({
     notes, layouts, containerWidth, containerHeight, isEditing, isDragging,
     setIsDragging, setIsResizing, handleLayoutChange, onNoteClick,
-    onUpdateNoteOptimistic, onRefreshNotes, onNoteInteractionChange
+    onUpdateNoteOptimistic, onRefreshNotes, onNoteInteractionChange, gridKey
 }) => {
     // Fixed 12-column inner grid.
     // react-grid-layout computes colWidth = (containerWidth - MARGIN*(COLS-1)) / COLS
@@ -51,20 +52,9 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
             }}
         >
             <ResponsiveGridLayout
+                key={gridKey}
                 className="layout min-h-full pb-20 animate-fade-in notes-grid-container"
-                layouts={{ lg: rawLayouts.map((item: any) => {
-                    // Pixel-stable: if pxW is stored, convert to columns for current container width.
-                    // This keeps note pixel size constant when only the panel is resized.
-                    const CONTAINER_PAD = 12;
-                    const colW = (containerWidth - 2 * CONTAINER_PAD - (INNER_COLS - 1) * MARGIN) / INNER_COLS;
-                    const displayW = (item.pxW && colW > 0)
-                        ? Math.max(1, Math.min(INNER_COLS, Math.round((item.pxW + MARGIN) / (colW + MARGIN))))
-                        : item.w;
-                    const displayX = (item.pxX !== undefined && colW > 0)
-                        ? Math.max(0, Math.min(INNER_COLS - displayW, Math.round(item.pxX / (colW + MARGIN))))
-                        : item.x;
-                    return { ...item, w: displayW, x: displayX, maxW: INNER_COLS, maxH: maxRows };
-                }) }}
+                layouts={{ lg: rawLayouts.map((item: any) => ({ ...item, maxW: INNER_COLS, maxH: maxRows })) }}
                 breakpoints={{ lg: 0 }}
                 cols={{ lg: INNER_COLS }}
                 rowHeight={ROW_HEIGHT}
@@ -85,21 +75,9 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
             >
                 {notes.map(note => {
                     const lgLayout = rawLayouts.find((l: any) => l.i === String(note.id));
-                    // Same pxW→col conversion applied to data-grid for correctness
-                    const CONTAINER_PAD = 12;
-                    const colW = (containerWidth - 2 * CONTAINER_PAD - (INNER_COLS - 1) * MARGIN) / INNER_COLS;
-                    let dataGrid: any;
-                    if (lgLayout) {
-                        const displayW = (lgLayout.pxW && colW > 0)
-                            ? Math.max(1, Math.min(INNER_COLS, Math.round((lgLayout.pxW + MARGIN) / (colW + MARGIN))))
-                            : lgLayout.w;
-                        const displayX = (lgLayout.pxX !== undefined && colW > 0)
-                            ? Math.max(0, Math.min(INNER_COLS - displayW, Math.round(lgLayout.pxX / (colW + MARGIN))))
-                            : lgLayout.x;
-                        dataGrid = { ...lgLayout, w: displayW, x: displayX, maxW: INNER_COLS, maxH: maxRows };
-                    } else {
-                        dataGrid = { x: 0, y: 0, w: INNER_COLS, h: 8, maxW: INNER_COLS, maxH: maxRows };
-                    }
+                    const dataGrid = lgLayout
+                        ? { ...lgLayout, maxW: INNER_COLS, maxH: maxRows }
+                        : { x: 0, y: 0, w: INNER_COLS, h: 8, maxW: INNER_COLS, maxH: maxRows };
                     return (
                         <div key={note.id} data-grid={dataGrid} className="relative group">
                             <div
