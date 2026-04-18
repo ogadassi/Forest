@@ -107,81 +107,59 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         }
     }, [category.id, notes.length]);
 
-    const prevContainerWidthRef = useRef<number>(0);
+    // Mirror containerWidth in a ref so handleLayoutChange can read it without a stale closure
+    const containerWidthRef = useRef<number>(0);
 
     useLayoutEffect(() => {
         const el = containerRef.current;
         if (!el) return;
         setContainerWidth(el.offsetWidth);
         setContainerHeight(el.offsetHeight);
+        containerWidthRef.current = el.offsetWidth;
         const ro = new ResizeObserver(entries => {
-            setContainerWidth(entries[0].contentRect.width);
-            setContainerHeight(entries[0].contentRect.height);
+            const w = entries[0].contentRect.width;
+            const h = entries[0].contentRect.height;
+            containerWidthRef.current = w;
+            setContainerWidth(w);
+            setContainerHeight(h);
         });
         ro.observe(el);
         return () => ro.disconnect();
     }, []);
 
-    // --- Pixel-stable note sizing ---
-    // When the panel resizes, recalculate each note's w (and x) to preserve its
-    // pixel width. This way:
-    //   - Enlarging the panel adds empty space (notes don't grow with it)
-    //   - Shrinking the panel to fit around a note makes it fill the space
+    // Grid constants — must match CategoryGrid.tsx
     const INNER_COLS = 12;
     const INNER_MARGIN = 8;
     const CONTAINER_PAD = 12;
 
-    useEffect(() => {
-        const prevWidth = prevContainerWidthRef.current;
-        prevContainerWidthRef.current = containerWidth;
-
-        // Skip on first measurement, no change, or tiny reflows (< 20px is sub-grid-unit noise)
-        if (prevWidth === 0 || prevWidth === containerWidth || containerWidth === 0) return;
-        if (Math.abs(containerWidth - prevWidth) < 20) return;
-
-        // Compute column pixel widths at old and new sizes
-        const colWidthAt = (cw: number) =>
-            (cw - 2 * CONTAINER_PAD - (INNER_COLS - 1) * INNER_MARGIN) / INNER_COLS;
-        const oldColW = colWidthAt(prevWidth);
-        const newColW = colWidthAt(containerWidth);
-
-        if (oldColW <= 0 || newColW <= 0) return;
-
-        setLayouts(prev => {
-            const updated = { ...prev };
-            Object.keys(updated).forEach(bp => {
-                if (!updated[bp]) return;
-                updated[bp] = updated[bp].map((item: any) => {
-                    // Convert old grid units → pixels → new grid units
-                    const pixelW = item.w * oldColW + (item.w - 1) * INNER_MARGIN;
-                    const pixelX = item.x * oldColW + item.x * INNER_MARGIN;
-
-                    let newW = Math.round((pixelW + INNER_MARGIN) / (newColW + INNER_MARGIN));
-                    newW = Math.max(1, Math.min(INNER_COLS, newW));
-
-                    let newX = Math.round(pixelX / (newColW + INNER_MARGIN));
-                    newX = Math.max(0, Math.min(INNER_COLS - newW, newX));
-
-                    return { ...item, w: newW, x: newX };
-                });
-            });
-            saveNoteLayouts(category.id!, updated);
-            return updated;
-        });
-    }, [containerWidth, category.id]);
+    const colWidthAt = (cw: number) =>
+        (cw - 2 * CONTAINER_PAD - (INNER_COLS - 1) * INNER_MARGIN) / INNER_COLS;
 
     const handleLayoutChange = useCallback((_currentLayout: readonly GridItem[], allLayouts: any) => {
+        const cw = containerWidthRef.current;
+        const colW = colWidthAt(cw);
+
         setLayouts(prev => {
             const merged = { ...prev };
             Object.keys(allLayouts).forEach(bp => {
                 const currentArr = allLayouts[bp] as GridItem[];
                 const unseen = (merged[bp] || []).filter(oldItem => !currentArr.find(a => a.i === oldItem.i));
-                merged[bp] = [...currentArr, ...unseen];
+
+                // Convert column w/x to pixels and store alongside column values.
+                // CategoryGrid will use pxW/pxX to compute stable column counts at current size.
+                const withPixels = currentArr.map((item: any) => ({
+                    ...item,
+                    pxW: colW > 0 ? item.w * colW + (item.w - 1) * INNER_MARGIN : item.pxW,
+                    pxX: colW > 0 ? item.x * colW + item.x * INNER_MARGIN : item.pxX,
+                    pxH: item.h,
+                }));
+                merged[bp] = [...withPixels, ...unseen];
             });
             saveNoteLayouts(category.id!, merged);
             return merged;
         });
     }, [category.id]);
+
 
     useEffect(() => {
         if (!onAutoResize || isFullscreenView) return;
