@@ -39,43 +39,10 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
     // This perfectly restricts `react-grid-layout` from altering the unit width
     const exactGridWidth = currentCols * UNIT - MARGIN;
 
-    // --- Horizontal Centering ---
-    // centeredLayouts: what the grid DISPLAYS (centered x positions).
-    // normalizeCentering: reverses the offset so we always SAVE 0-based x positions.
-    // This prevents cumulative drift where each save shifts notes further right.
+    // No forced centering — the panel is a grid and users own note positions.
+    // Layout items with saved positions are rendered as-is.
+    const rawLayouts = layouts.lg || [];
 
-    const applyOrRemoveCentering = (items: any[], cols: number, apply: boolean): any[] => {
-        if (items.length === 0) return items;
-        const rowMap = new Map<number, any[]>();
-        items.forEach(item => {
-            const row = rowMap.get(item.y) || [];
-            row.push(item);
-            rowMap.set(item.y, row);
-        });
-        const result: any[] = [];
-        rowMap.forEach(rowItems => {
-            const sorted = [...rowItems].sort((a, b) => a.x - b.x);
-            const totalW = sorted.reduce((sum: number, item: any) => sum + item.w, 0);
-            const leftover = cols - Math.min(totalW, cols);
-            const offset = Math.floor(leftover / 2);
-            let cursor = apply ? offset : 0;
-            sorted.forEach(item => {
-                result.push({ ...item, x: cursor });
-                cursor += item.w;
-            });
-        });
-        return result;
-    };
-
-    const centeredLayouts = applyOrRemoveCentering(
-        (layouts.lg || []).map((item: any) => ({ ...item, maxW: currentCols, maxH: maxRows })),
-        currentCols,
-        true  // apply centering for display
-    );
-
-    // Used by handleLayoutChange: undo centering before saving
-    const normalizeCentering = (items: any[]) =>
-        applyOrRemoveCentering(items, currentCols, false);
 
     return (
         <div 
@@ -88,18 +55,11 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
         >
             <ResponsiveGridLayout
                 className="layout min-h-full pb-20 animate-fade-in notes-grid-container"
-                layouts={{ lg: centeredLayouts }}
+                layouts={{ lg: rawLayouts.map((item: any) => ({ ...item, maxW: currentCols, maxH: maxRows })) }}
                 breakpoints={{ lg: 0 }}
                 cols={{ lg: currentCols }}
                 rowHeight={60}
-                onLayoutChange={(currentLayout: any, allLayouts: any) => {
-                    // Strip centering offset before persisting — prevents cumulative drift
-                    const normalized = { ...allLayouts };
-                    Object.keys(normalized).forEach(bp => {
-                        normalized[bp] = normalizeCentering(normalized[bp] || []);
-                    });
-                    handleLayoutChange(currentLayout, normalized);
-                }}
+                onLayoutChange={handleLayoutChange}
                 isDraggable={!isEditing}
                 isResizable={!isEditing}
                 dragConfig={{ handle: '.note-drag-handle', cancel: '.non-draggable' }}
@@ -115,11 +75,14 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
                 onResizeStop={() => setTimeout(() => setIsResizing(false), 50)}
             >
                 {notes.map(note => {
-                    // Use centeredLayouts so the adjusted x position is applied
-                    const centeredItem = centeredLayouts.find((l: any) => l.i === String(note.id));
-                    const dataGrid = centeredItem
-                        ? { ...centeredItem }
-                        : { x: 0, y: 0, w: 4, h: 8, maxW: currentCols, maxH: maxRows };
+                    const lgLayout = rawLayouts.find((l: any) => l.i === String(note.id));
+                    // New notes (no saved position) start centered in the panel.
+                    // Existing notes keep their saved x — the user owns those positions.
+                    const defaultW = Math.min(4, currentCols);
+                    const defaultX = Math.max(0, Math.floor((currentCols - defaultW) / 2));
+                    const dataGrid = lgLayout
+                        ? { ...lgLayout, maxW: currentCols, maxH: maxRows }
+                        : { x: defaultX, y: 0, w: defaultW, h: 8, maxW: currentCols, maxH: maxRows };
                     return (
                         <div key={note.id} data-grid={dataGrid} className="relative group">
                             <div
