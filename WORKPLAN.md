@@ -97,9 +97,7 @@ Philosophy (already applied to checklist, needs applying everywhere else):
 
 ~~Fix 3~~ — Note-grid panel snap selector — **DONE ✓** (`notes-grid-container` class confirmed correct on `CategoryGrid`)
 
-Fix 4 — Note-grid panel centering (`CategoryGrid.tsx`) ⚠️ *code written, needs visual verification*
-- **Vertical**: wrap note grid in `flex flex-col justify-center h-full`
-- **Horizontal**: `centeredLayouts` algorithm recomputes `x` positions per row from scratch so notes center instead of pinning left; recalculated on panel resize and note add/delete
+~~Fix 4~~ — Note-grid panel centering — **DONE ✓**
 
 Fix 5 — Per NoteCard snap (`CategoryGrid.tsx` + `NoteCard.tsx`)
 - Mirror the panel snap system at the inner grid level
@@ -112,6 +110,19 @@ Fix 6 — NoteCard vertical centering (`NoteCard.tsx`)
 Fix 7 — Checklist corner snap + horizontal snap (`CategoryPanel/index.tsx`)
 - Corner handle: must compute both height AND width simultaneously
 - Horizontal handle: confirm guard matches actual CSS class names
+
+Fix 9 — Pixel-stable note sizing (**HIGH PRIORITY**)
+
+**Goal**: when the user resizes the *panel*, note cards maintain their pixel size (panel growing adds empty space; panel shrinking to fit note makes the note fill the new width). When the user resizes the *note card directly*, note size changes normally.
+
+**Why previous attempts failed**: `handleLayoutChange` fires for both note resizes AND panel resizes (react-grid-layout rescales all items proportionally on width change). We were saving `pxW/pxX` on all `handleLayoutChange` calls, including the unwanted proportional ones.
+
+**Clean implementation** (confirmed viable):
+1. **Add `isUserInteractingWithNote` ref** — set to `true` in `onResizeStart`/`onDragStart`, cleared in `onResizeStop`/`onDragStop` (with a small timeout, since `onLayoutChange` fires before `onResizeStop`)
+2. **In `handleLayoutChange`**: only compute and save `pxW`/`pxX` when `isUserInteractingWithNote` is true. When it's false (panel resize triggered the event), skip saving — keep the previously stored pixel values
+3. **In `CategoryGrid` render**: convert stored `pxW/pxX` → column counts using current `containerWidth`. Pass as `data-grid`. Use `key` on the `ResponsiveGridLayout` tied to computed `displayW` to force a fresh mount when column counts meaningfully change
+
+**Files**: `CategoryPanel/index.tsx` (flag + handleLayoutChange), `CategoryGrid.tsx` (render conversion)
 
 ### Layout behaviour
 
@@ -135,7 +146,8 @@ Fix 8 — Inner note grid overflow clamping (`CategoryGrid.tsx`)
 - [x] Fix 1 — grid math in `BoardView.tsx` (verified correct — rowHeight=20 + margin=14 = 34 ✓)
 - [x] Fix 2 — timer panel snap formula (now uses `.timer-snap-root` element, not checklist refs)
 - [x] Fix 3 — note-grid panel snap formula audit (`.notes-grid-container` class confirmed correct)
-- [x] Fix 4 — note-grid panel centering — **VERIFIED ✓** (centered in screenshot; normalizeCentering prevents drift)
+- [x] Fix 4 — note-grid panel centering — **VERIFIED ✓**
+- [ ] **Fix 9 — Pixel-stable note sizing** ← HIGH PRIORITY, next up
 - [ ] Fix 5 — per NoteCard snap system
 - [ ] Fix 6 — NoteCard vertical centering
 - [ ] Fix 7 — checklist corner + horizontal snap
