@@ -49,19 +49,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
         >
             <ResponsiveGridLayout
                 className="layout min-h-full pb-20 animate-fade-in notes-grid-container"
-                layouts={{ lg: rawLayouts.map((item: any) => {
-                    // Convert stored pixel dims → column counts at current panel width.
-                    // If pxW is stored, the note size is pixel-stable across panel resizes.
-                    // If not (legacy / new note), use w/x directly.
-                    const colW = (containerWidth - 2 * 12 - 11 * MARGIN) / INNER_COLS;
-                    const displayW = (item.pxW && colW > 0)
-                        ? Math.max(1, Math.min(INNER_COLS, Math.round((item.pxW + MARGIN) / (colW + MARGIN))))
-                        : item.w;
-                    const displayX = (item.pxX !== undefined && colW > 0)
-                        ? Math.max(0, Math.min(INNER_COLS - displayW, Math.round(item.pxX / (colW + MARGIN))))
-                        : item.x;
-                    return { ...item, w: displayW, x: displayX, maxW: INNER_COLS, maxH: maxRows };
-                }) }}
+                layouts={{ lg: rawLayouts.map((item: any) => ({ ...item, maxW: INNER_COLS, maxH: maxRows })) }}
                 breakpoints={{ lg: 0 }}
                 cols={{ lg: INNER_COLS }}
                 rowHeight={ROW_HEIGHT}
@@ -82,20 +70,9 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
             >
                 {notes.map(note => {
                     const lgLayout = rawLayouts.find((l: any) => l.i === String(note.id));
-                    const colW = (containerWidth - 2 * 12 - 11 * MARGIN) / INNER_COLS;
-                    let dataGrid: any;
-                    if (lgLayout) {
-                        const displayW = (lgLayout.pxW && colW > 0)
-                            ? Math.max(1, Math.min(INNER_COLS, Math.round((lgLayout.pxW + MARGIN) / (colW + MARGIN))))
-                            : lgLayout.w;
-                        const displayX = (lgLayout.pxX !== undefined && colW > 0)
-                            ? Math.max(0, Math.min(INNER_COLS - displayW, Math.round(lgLayout.pxX / (colW + MARGIN))))
-                            : lgLayout.x;
-                        dataGrid = { ...lgLayout, w: displayW, x: displayX, maxW: INNER_COLS, maxH: maxRows };
-                    } else {
-                        // New note: full width, no pxW yet (handleLayoutChange will set it on first render)
-                        dataGrid = { x: 0, y: 0, w: INNER_COLS, h: 8, maxW: INNER_COLS, maxH: maxRows };
-                    }
+                    const dataGrid = lgLayout
+                        ? { ...lgLayout, maxW: INNER_COLS, maxH: maxRows }
+                        : { x: 0, y: 0, w: INNER_COLS, h: 8, maxW: INNER_COLS, maxH: maxRows };
                     return (
                         <div key={note.id} data-grid={dataGrid} className="relative group">
                             <div

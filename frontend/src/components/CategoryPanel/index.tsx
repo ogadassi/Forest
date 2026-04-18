@@ -107,53 +107,26 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         }
     }, [category.id, notes.length]);
 
-    // Mirror containerWidth in a ref so handleLayoutChange can read it without a stale closure
-    const containerWidthRef = useRef<number>(0);
-
     useLayoutEffect(() => {
         const el = containerRef.current;
         if (!el) return;
         setContainerWidth(el.offsetWidth);
         setContainerHeight(el.offsetHeight);
-        containerWidthRef.current = el.offsetWidth;
         const ro = new ResizeObserver(entries => {
-            const w = entries[0].contentRect.width;
-            const h = entries[0].contentRect.height;
-            containerWidthRef.current = w;
-            setContainerWidth(w);
-            setContainerHeight(h);
+            setContainerWidth(entries[0].contentRect.width);
+            setContainerHeight(entries[0].contentRect.height);
         });
         ro.observe(el);
         return () => ro.disconnect();
     }, []);
 
-    // Grid constants — must match CategoryGrid.tsx
-    const INNER_COLS = 12;
-    const INNER_MARGIN = 8;
-    const CONTAINER_PAD = 12;
-
-    const colWidthAt = (cw: number) =>
-        (cw - 2 * CONTAINER_PAD - (INNER_COLS - 1) * INNER_MARGIN) / INNER_COLS;
-
     const handleLayoutChange = useCallback((_currentLayout: readonly GridItem[], allLayouts: any) => {
-        const cw = containerWidthRef.current;
-        const colW = colWidthAt(cw);
-
         setLayouts(prev => {
             const merged = { ...prev };
             Object.keys(allLayouts).forEach(bp => {
                 const currentArr = allLayouts[bp] as GridItem[];
                 const unseen = (merged[bp] || []).filter(oldItem => !currentArr.find(a => a.i === oldItem.i));
-
-                // Convert column w/x to pixels and store alongside column values.
-                // CategoryGrid will use pxW/pxX to compute stable column counts at current size.
-                const withPixels = currentArr.map((item: any) => ({
-                    ...item,
-                    pxW: colW > 0 ? item.w * colW + (item.w - 1) * INNER_MARGIN : item.pxW,
-                    pxX: colW > 0 ? item.x * colW + item.x * INNER_MARGIN : item.pxX,
-                    pxH: item.h,
-                }));
-                merged[bp] = [...withPixels, ...unseen];
+                merged[bp] = [...currentArr, ...unseen];
             });
             saveNoteLayouts(category.id!, merged);
             return merged;
