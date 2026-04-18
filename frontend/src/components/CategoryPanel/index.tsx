@@ -107,6 +107,8 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         }
     }, [category.id, notes.length]);
 
+    const prevContainerWidthRef = useRef<number>(0);
+
     useLayoutEffect(() => {
         const el = containerRef.current;
         if (!el) return;
@@ -119,6 +121,54 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         ro.observe(el);
         return () => ro.disconnect();
     }, []);
+
+    // --- Pixel-stable note sizing ---
+    // When the panel resizes, recalculate each note's w (and x) to preserve its
+    // pixel width. This way:
+    //   - Enlarging the panel adds empty space (notes don't grow with it)
+    //   - Shrinking the panel to fit around a note makes it fill the space
+    const INNER_COLS = 12;
+    const INNER_MARGIN = 8;
+    const CONTAINER_PAD = 12;
+
+    useEffect(() => {
+        const prevWidth = prevContainerWidthRef.current;
+        prevContainerWidthRef.current = containerWidth;
+
+        // Skip on first measurement, no change, or tiny reflows (< 20px is sub-grid-unit noise)
+        if (prevWidth === 0 || prevWidth === containerWidth || containerWidth === 0) return;
+        if (Math.abs(containerWidth - prevWidth) < 20) return;
+
+        // Compute column pixel widths at old and new sizes
+        const colWidthAt = (cw: number) =>
+            (cw - 2 * CONTAINER_PAD - (INNER_COLS - 1) * INNER_MARGIN) / INNER_COLS;
+        const oldColW = colWidthAt(prevWidth);
+        const newColW = colWidthAt(containerWidth);
+
+        if (oldColW <= 0 || newColW <= 0) return;
+
+        setLayouts(prev => {
+            const updated = { ...prev };
+            Object.keys(updated).forEach(bp => {
+                if (!updated[bp]) return;
+                updated[bp] = updated[bp].map((item: any) => {
+                    // Convert old grid units → pixels → new grid units
+                    const pixelW = item.w * oldColW + (item.w - 1) * INNER_MARGIN;
+                    const pixelX = item.x * oldColW + item.x * INNER_MARGIN;
+
+                    let newW = Math.round((pixelW + INNER_MARGIN) / (newColW + INNER_MARGIN));
+                    newW = Math.max(1, Math.min(INNER_COLS, newW));
+
+                    let newX = Math.round(pixelX / (newColW + INNER_MARGIN));
+                    newX = Math.max(0, Math.min(INNER_COLS - newW, newX));
+
+                    return { ...item, w: newW, x: newX };
+                });
+            });
+            saveNoteLayouts(category.id!, updated);
+            return updated;
+        });
+    }, [containerWidth, category.id]);
 
     const handleLayoutChange = useCallback((_currentLayout: readonly GridItem[], allLayouts: any) => {
         setLayouts(prev => {
