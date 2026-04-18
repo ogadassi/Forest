@@ -40,39 +40,42 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
     const exactGridWidth = currentCols * UNIT - MARGIN;
 
     // --- Horizontal Centering ---
-    // For each row of notes, recompute x positions from scratch so notes are centered.
-    // We DON'T add to the stored x (which can drift) — instead we sort row items left-to-right
-    // by their original x, then lay them out freshly from the centered starting point.
-    const centeredLayouts = (() => {
-        const raw: any[] = (layouts.lg || []).map((item: any) => ({
-            ...item,
-            maxW: currentCols,
-            maxH: maxRows,
-        }));
-        if (raw.length === 0) return raw;
+    // centeredLayouts: what the grid DISPLAYS (centered x positions).
+    // normalizeCentering: reverses the offset so we always SAVE 0-based x positions.
+    // This prevents cumulative drift where each save shifts notes further right.
 
-        // Group by y row
-        const rowMap = new Map<number, typeof raw>();
-        raw.forEach(item => {
+    const applyOrRemoveCentering = (items: any[], cols: number, apply: boolean): any[] => {
+        if (items.length === 0) return items;
+        const rowMap = new Map<number, any[]>();
+        items.forEach(item => {
             const row = rowMap.get(item.y) || [];
             row.push(item);
             rowMap.set(item.y, row);
         });
-
-        const result: typeof raw = [];
-        rowMap.forEach((rowItems) => {
-            // Sort left-to-right by original x
+        const result: any[] = [];
+        rowMap.forEach(rowItems => {
             const sorted = [...rowItems].sort((a, b) => a.x - b.x);
             const totalW = sorted.reduce((sum: number, item: any) => sum + item.w, 0);
-            const leftover = currentCols - Math.min(totalW, currentCols);
-            let cursor = Math.floor(leftover / 2); // centered start
+            const leftover = cols - Math.min(totalW, cols);
+            const offset = Math.floor(leftover / 2);
+            let cursor = apply ? offset : 0;
             sorted.forEach(item => {
                 result.push({ ...item, x: cursor });
                 cursor += item.w;
             });
         });
         return result;
-    })();
+    };
+
+    const centeredLayouts = applyOrRemoveCentering(
+        (layouts.lg || []).map((item: any) => ({ ...item, maxW: currentCols, maxH: maxRows })),
+        currentCols,
+        true  // apply centering for display
+    );
+
+    // Used by handleLayoutChange: undo centering before saving
+    const normalizeCentering = (items: any[]) =>
+        applyOrRemoveCentering(items, currentCols, false);
 
     return (
         <div 
@@ -89,7 +92,14 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
                 breakpoints={{ lg: 0 }}
                 cols={{ lg: currentCols }}
                 rowHeight={60}
-                onLayoutChange={handleLayoutChange}
+                onLayoutChange={(currentLayout: any, allLayouts: any) => {
+                    // Strip centering offset before persisting — prevents cumulative drift
+                    const normalized = { ...allLayouts };
+                    Object.keys(normalized).forEach(bp => {
+                        normalized[bp] = normalizeCentering(normalized[bp] || []);
+                    });
+                    handleLayoutChange(currentLayout, normalized);
+                }}
                 isDraggable={!isEditing}
                 isResizable={!isEditing}
                 dragConfig={{ handle: '.note-drag-handle', cancel: '.non-draggable' }}

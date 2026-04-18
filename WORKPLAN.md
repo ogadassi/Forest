@@ -135,18 +135,11 @@ Fix 8 — Inner note grid overflow clamping (`CategoryGrid.tsx`)
 - [x] Fix 1 — grid math in `BoardView.tsx` (verified correct — rowHeight=20 + margin=14 = 34 ✓)
 - [x] Fix 2 — timer panel snap formula (now uses `.timer-snap-root` element, not checklist refs)
 - [x] Fix 3 — note-grid panel snap formula audit (`.notes-grid-container` class confirmed correct)
-- [/] Fix 4 — note-grid panel centering (vertical + horizontal) — **code written, needs visual verification**
+- [x] Fix 4 — note-grid panel centering — **VERIFIED ✓** (centered in screenshot; normalizeCentering prevents drift)
 - [ ] Fix 5 — per NoteCard snap system
 - [ ] Fix 6 — NoteCard vertical centering
 - [ ] Fix 7 — checklist corner + horizontal snap
 - [x] Fix 8 — inner note grid overflow clamping (maxW + maxH now enforced per note card)
-
-> [!IMPORTANT]
-> **Start of next session — verify these before continuing:**
-> 1. **Horizontal centering**: Is the "Hate Your Guts" note in the TRIOT panel centered with equal left/right gap? (`CategoryGrid.tsx` — `centeredLayouts` algorithm)
-> 2. **Panel minH**: Can the TRIOT panel be resized smaller than ~170px tall? It shouldn't be. If localStorage is fighting the constraint, add a one-time migration to clear old `minH` values below 5.
-> 3. **Note overflow**: Can a note card inside a panel be resized larger than the panel on either axis? It shouldn't be able to.
-
 
 ---
 
