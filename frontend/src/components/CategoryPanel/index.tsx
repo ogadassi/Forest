@@ -112,21 +112,63 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         if (!el) return;
         setContainerWidth(el.offsetWidth);
         setContainerHeight(el.offsetHeight);
+        containerWidthRef.current = el.offsetWidth;
         const ro = new ResizeObserver(entries => {
-            setContainerWidth(entries[0].contentRect.width);
+            const w = entries[0].contentRect.width;
+            containerWidthRef.current = w;
+            setContainerWidth(w);
             setContainerHeight(entries[0].contentRect.height);
         });
         ro.observe(el);
         return () => ro.disconnect();
     }, []);
 
+    // Grid constants — must match CategoryGrid.tsx
+    const INNER_COLS = 12;
+    const INNER_MARGIN = 8;
+    const CONTAINER_PAD = 12;
+
+    // True only while user is actively dragging or resizing a note card.
+    // handleLayoutChange fires for BOTH note resizes and panel resizes.
+    // We only want to store pxW/pxX during actual note interactions.
+    const isUserInteractingWithNoteRef = useRef(false);
+    const containerWidthRef = useRef(0);
+
+    const handleNoteInteractionChange = useCallback((active: boolean) => {
+        isUserInteractingWithNoteRef.current = active;
+    }, []);
+
     const handleLayoutChange = useCallback((_currentLayout: readonly GridItem[], allLayouts: any) => {
+        const isNoteInteraction = isUserInteractingWithNoteRef.current;
+        const cw = containerWidthRef.current;
+        const colW = cw > 0
+            ? (cw - 2 * CONTAINER_PAD - (INNER_COLS - 1) * INNER_MARGIN) / INNER_COLS
+            : 0;
+
         setLayouts(prev => {
             const merged = { ...prev };
             Object.keys(allLayouts).forEach(bp => {
                 const currentArr = allLayouts[bp] as GridItem[];
                 const unseen = (merged[bp] || []).filter(oldItem => !currentArr.find(a => a.i === oldItem.i));
-                merged[bp] = [...currentArr, ...unseen];
+
+                let items: any[];
+                if (isNoteInteraction && colW > 0) {
+                    // User moved/resized a note — update pxW/pxX from the new column values
+                    items = currentArr.map((item: any) => ({
+                        ...item,
+                        pxW: item.w * colW + (item.w - 1) * INNER_MARGIN,
+                        pxX: item.x * colW + item.x * INNER_MARGIN,
+                    }));
+                } else {
+                    // Panel resize triggered this — keep existing pxW/pxX, ignore new column values
+                    items = currentArr.map((item: any) => {
+                        const existing = (merged[bp] || []).find((e: any) => e.i === item.i);
+                        return existing
+                            ? { ...item, pxW: existing.pxW, pxX: existing.pxX } // restore saved pixels
+                            : item; // new note, no pxW yet
+                    });
+                }
+                merged[bp] = [...items, ...unseen];
             });
             saveNoteLayouts(category.id!, merged);
             return merged;
@@ -313,6 +355,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                                 onNoteClick={onNoteClick}
                                 onUpdateNoteOptimistic={onUpdateNoteOptimistic}
                                 onRefreshNotes={onRefreshNotes}
+                                onNoteInteractionChange={handleNoteInteractionChange}
                             />
                         ) : null}
                     </div>
