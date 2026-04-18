@@ -24,25 +24,19 @@ interface CategoryGridProps {
 export const CategoryGrid: React.FC<CategoryGridProps> = ({
     notes, layouts, containerWidth, containerHeight, isEditing, isDragging, setIsDragging, setIsResizing, handleLayoutChange, onNoteClick, onUpdateNoteOptimistic, onRefreshNotes
 }) => {
-    const COL_WIDTH = 60;
-    const MARGIN = 16;
-    const UNIT = COL_WIDTH + MARGIN;
-    const ROW_HEIGHT = 60; // must match rowHeight prop below
-    
-    // Compute the maximum number of full columns that fit in the current container width
-    const currentCols = Math.max(4, Math.floor((containerWidth + MARGIN) / UNIT));
-    
-    // Compute the maximum rows that fit in the available container height
+    // Fixed 12-column inner grid.
+    // react-grid-layout computes colWidth = (containerWidth - MARGIN*(COLS-1)) / COLS
+    // so the grid ALWAYS fills the panel exactly — no leftover pixel gap.
+    // w=12 = full width, w=6 = half, w=4 = third. Centering is mathematically exact.
+    const INNER_COLS = 12;
+    const MARGIN = 8;
+    const ROW_HEIGHT = 60;
+
     const maxRows = Math.max(1, Math.floor((containerHeight + MARGIN) / (ROW_HEIGHT + MARGIN)));
-    
-    // Compute the exact grid pixel width needed for these columns
-    // This perfectly restricts `react-grid-layout` from altering the unit width
-    const exactGridWidth = currentCols * UNIT - MARGIN;
 
     // No forced centering — the panel is a grid and users own note positions.
     // Layout items with saved positions are rendered as-is.
     const rawLayouts = layouts.lg || [];
-
 
     return (
         <div 
@@ -55,18 +49,18 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
         >
             <ResponsiveGridLayout
                 className="layout min-h-full pb-20 animate-fade-in notes-grid-container"
-                layouts={{ lg: rawLayouts.map((item: any) => ({ ...item, maxW: currentCols, maxH: maxRows })) }}
+                layouts={{ lg: rawLayouts.map((item: any) => ({ ...item, maxW: INNER_COLS, maxH: maxRows })) }}
                 breakpoints={{ lg: 0 }}
-                cols={{ lg: currentCols }}
-                rowHeight={60}
+                cols={{ lg: INNER_COLS }}
+                rowHeight={ROW_HEIGHT}
                 onLayoutChange={handleLayoutChange}
                 isDraggable={!isEditing}
                 isResizable={!isEditing}
                 dragConfig={{ handle: '.note-drag-handle', cancel: '.non-draggable' }}
                 resizeConfig={{ handles: ['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne'] }}
                 margin={[MARGIN, MARGIN]}
-                containerPadding={[0, 0]}
-                width={exactGridWidth}
+                containerPadding={[12, 8]}
+                width={containerWidth}
                 useCSSTransforms={true}
                 measureBeforeMount={false}
                 onDragStart={() => setIsDragging(true)}
@@ -76,13 +70,11 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
             >
                 {notes.map(note => {
                     const lgLayout = rawLayouts.find((l: any) => l.i === String(note.id));
-                    // New notes (no saved position) start centered in the panel.
-                    // Existing notes keep their saved x — the user owns those positions.
-                    const defaultW = Math.min(4, currentCols);
-                    const defaultX = Math.max(0, Math.floor((currentCols - defaultW) / 2));
+                    // New notes default to full panel width (w=12, x=0).
+                    // Users can resize/reposition freely — saved positions are always respected.
                     const dataGrid = lgLayout
-                        ? { ...lgLayout, maxW: currentCols, maxH: maxRows }
-                        : { x: defaultX, y: 0, w: defaultW, h: 8, maxW: currentCols, maxH: maxRows };
+                        ? { ...lgLayout, maxW: INNER_COLS, maxH: maxRows }
+                        : { x: 0, y: 0, w: INNER_COLS, h: 8, maxW: INNER_COLS, maxH: maxRows };
                     return (
                         <div key={note.id} data-grid={dataGrid} className="relative group">
                             <div

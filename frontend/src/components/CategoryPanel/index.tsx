@@ -278,7 +278,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
                         />
                     </div>
                 ) : (
-                    <div className={`w-full h-full overflow-x-hidden ${category.type === 'checklist' ? 'pt-0 px-3 pb-3' : 'p-3'} overflow-y-hidden`}>
+                    <div className={`w-full h-full overflow-x-hidden ${category.type === 'checklist' ? 'pt-0 px-3 pb-3' : ''} overflow-y-hidden`}>
                         {category.type === 'checklist' ? (
                             <ChecklistList
                                 category={category}
