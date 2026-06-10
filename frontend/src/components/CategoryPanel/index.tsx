@@ -12,6 +12,8 @@ const COLS = { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 };
 interface GridItem {
     i: string; x: number; y: number;
     w: number; h: number; minW?: number; minH?: number;
+    pxW?: number;
+    pxX?: number;
 }
 type Layouts = { [breakpoint: string]: GridItem[] };
 
@@ -107,21 +109,7 @@ export const CategoryPanel: React.FC<CategoryPanelProps> = ({
         }
     }, [category.id, notes.length]);
 
-    useLayoutEffect(() => {
-        const el = containerRef.current;
-        if (!el) return;
-        setContainerWidth(el.offsetWidth);
-        setContainerHeight(el.offsetHeight);
-        containerWidthRef.current = el.offsetWidth;
-        const ro = new ResizeObserver(entries => {
-            const w = entries[0].contentRect.width;
-            containerWidthRef.current = w;
-            setContainerWidth(w);
-            setContainerHeight(entries[0].contentRect.height);
-        });
-        ro.observe(el);
-        return () => ro.disconnect();
-    }, []);
+
 
     // Grid constants — must match CategoryGrid.tsx
     const INNER_COLS = 12;
